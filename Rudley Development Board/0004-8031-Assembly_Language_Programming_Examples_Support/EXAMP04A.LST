@@ -1,0 +1,64 @@
+EXAMP04A        EXAMP04A.ASM                                                                                  JUN-07-22   PAGE 1
+
+                       1    ; EXAMP04A.ASM - Demonstrate a "if" statement. - Add Values
+                       2    ; Started 06/07/2022
+                       3    ; Vary a 8-bit value from 0x00 to 0xFF and compare.
+                       4    ; Use the Monitor Program to write out a message.
+                       5    ; Write out the Value.
+                       6    ;
+                       7    $MOD51
+                       8    $TITLE(EXAMP04A.ASM)
+                       9    $DATE(JUN-07-22)
+                      10    $PAGEWIDTH(132)
+                      11    $OBJECT(EXAMP04A.HEX);
+                      12    ;
+  0080                13    VALUE    EQU   080H              ; Compare to this Value.
+  001B                14    ESC      EQU   01BH              ; Escape Character.
+  000A                15    LF       EQU   10                ; Line Feed.
+  000D                16    CR       EQU   13                ; Carrage Return.
+  077C                17    WTSTRING EQU   077CH             ; Location of subroutine that writes characters.
+  07ED                18    WRBYTE   EQU   07EDH             ; Location of subroutine that writes a Value.
+                      19    ;
+0800                  20             ORG   0800H             ; Set the ORG to 0x0800 to start in the user ROM.
+0800 7C00             21                     MOV   R4,#00000H        ; Initialize and set R4 to zero.
+0802 BC801F           22    L01:     CJNE  R4,#VALUE,NEQUAL  ; If not equal then write out "not equal".
+0805 12077C           23                     LCALL WTSTRING          ; If equal, then write out "equal".
+                      24                                     ; Write out "equal".
+0808 0A0D5468         25                     DB    LF,CR,'The Value is Equal='
+080C 65205661   
+0810 6C756520   
+0814 69732045   
+0818 7175616C   
+081C 3D         
+081D 1B               26             DB    ESC
+081E EC               27             MOV   A,R4              ; Move the variable R4 to "A".
+081F 1207ED           28             LCALL WRBYTE            ; Write out the variable when "equal".
+0822 8021             29             SJMP  L02               ; Jump to end to loop around.
+0824 12077C           30    NEQUAL:  LCALL WTSTRING          ; If equal, then write out "equal".
+                      31                                     ; Write out "not equal".
+0827 0A0D5468         32                     DB    LF,CR,'The Value is Not Equal='
+082B 65205661   
+082F 6C756520   
+0833 6973204E   
+0837 6F742045   
+083B 7175616C   
+083F 3D         
+0840 1B               33             DB    ESC
+0841 EC               34             MOV   A,R4              ; Move the variable R4 to "A".
+0842 1207ED           35             LCALL WRBYTE            ; Write out the variable when "not equal".
+0845 0C               36    L02:     INC   R4                ; Increment R4.
+0846 80BA             37                     SJMP  L01               ; Jump back to the beginning of the loop.
+                      38             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP04A        EXAMP04A.ASM                                                                                  JUN-07-22   PAGE 2
+
+CR . . . . . . . . . . . . . . .    NUMB  000DH  
+ESC. . . . . . . . . . . . . . .    NUMB  001BH  
+L01. . . . . . . . . . . . . . .  C ADDR  0802H  
+L02. . . . . . . . . . . . . . .  C ADDR  0845H  
+LF . . . . . . . . . . . . . . .    NUMB  000AH  
+NEQUAL . . . . . . . . . . . . .  C ADDR  0824H  
+VALUE. . . . . . . . . . . . . .    NUMB  0080H  
+WRBYTE . . . . . . . . . . . . .    NUMB  07EDH  
+WTSTRING . . . . . . . . . . . .    NUMB  077CH  

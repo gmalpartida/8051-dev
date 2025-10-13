@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Assemble, Upload and Run an 8051 Program
+# ========================================
+#
+# 1st (and only) parameter: assembler source file
+#
+# This will (optionally) reset your 8051 target system, assemble
+# the specified source file, upload the generated Intel-HEX file
+# over a serial port, and finally start the program.
+# For this, a customized version of the bootstrap program BOOT-51
+# must be installed on the target, and the macro assembler ASEM-51
+# must be installed on the host system!
+#
+# To get the shell script running, change the configuration
+# parameters below according to your local requirements:
+
+# Serial port for upload:
+uploaddevice=/dev/ttyS1
+
+# Baudrate:
+baudrate=9600
+
+# Program start address (hex):
+startaddress=8000
+
+# Port for resetting the target system:
+# (specify /dev/null, if not supported)
+resetdevice=/dev/lp0
+
+# Duration of the reset pulse (in ms):
+pulsewidth=50
+
+# The rest of the work is done by the upload script:
+upload $uploaddevice $baudrate $startaddress $resetdevice $pulsewidth $1

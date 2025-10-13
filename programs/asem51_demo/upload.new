@@ -1,0 +1,95 @@
+#!/bin/sh
+#           Will be invoked by boot.
+#           Do not edit or run upload directly!
+
+# check number of parameters:
+if [ $# -ne 6 ]
+then
+  echo ""
+  echo "     usage:         boot <source>"
+  echo ""
+  exit 1
+fi
+
+# calculate a realistic reset recovery time:
+# ------------------------------------------
+declare -i sign_on_msg_lg
+declare -i sign_on_baudrate
+declare -i sign_on_output_time
+declare -i prompt_output_time
+declare -i reset_recovery_time
+
+# length of BOOT-51 sign-on message (including prompt):
+sign_on_msg_lg=70
+
+# effective baudrate for sign-on message output:
+if [ $2 -gt 9600 ]
+then
+  sign_on_baudrate=9600
+else
+  sign_on_baudrate=$2
+fi
+
+# time necessary to output the BOOT-51 sign-on message:
+sign_on_output_time="1 + 10000 * $sign_on_msg_lg / $sign_on_baudrate"
+
+# time necessary to output the BOOT-51 prompt:
+prompt_output_time="1 + 10000 * 4 / $sign_on_baudrate"
+
+# total time necessary to recover from reset:
+reset_recovery_time="2 * $5 + $sign_on_output_time"
+
+# reset target system:
+# --------------------
+echo ""
+echo "     resetting target system ..."
+
+if [ "$1" = "$4" -o "$1" = "/dev/$4" ]
+then
+  # upload device $1 is the same (serial port) as reset device $4
+  # -------------------------------------------------------------
+  # reset target system - drop the RS-232 DTR signal:
+  stty -F $1 $2 sane clocal -crtscts hupcl || exit $?
+  # keep DTR low for $5 ms:
+  reset51 /dev/null $5 || exit $?
+  # set serial port $1 to default values, baudrate to $2, and DTR high:
+  stty -F $1 $2 sane clocal -crtscts -hupcl || exit $?
+else
+  # upload device is serial port $1, reset device is printer port $4
+  # ----------------------------------------------------------------
+  # set serial port $1 to default values, and baudrate to $2:
+  stty -F $1 $2 sane clocal -crtscts -hupcl || exit $?
+  # reset target system over (printer) port $4:
+  # (Note: reset can only be run as root now!)
+  reset51 $4 $5 || exit $?
+fi
+
+# wait for reset recovery time:
+reset51 /dev/null $reset_recovery_time || exit $?
+
+# assemble program:
+# -----------------
+# has file name been specified with or without extension?
+if [ ! -e "$6" -a -e "$6.a51" ]
+then
+  sourcefile="$6.a51"
+else
+  sourcefile="$6"
+fi
+
+# run assembler to generate an Intel-HEX file:
+asem -v "$sourcefile" "$6.hex" || exit $?
+
+# upload Intel-HEX file to target system:
+# ---------------------------------------
+echo "U" >$1 || exit $?
+echo ""
+echo "     uploading file $6.hex ..."
+echo ""
+reset51 /dev/null $prompt_output_time || exit $?
+cp "$6.hex" $1 || exit $?
+reset51 /dev/null $prompt_output_time || exit $?
+
+# start program at location $3:
+# -----------------------------
+echo "G $3" >$1 || exit $?

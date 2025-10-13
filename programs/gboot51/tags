@@ -1,0 +1,57 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ASEM	Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
+ASEM_FLAGS	Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
+CR	src/gboot51-2.asm	/^	CR equ 0dh$/;"	d
+HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXBIN_FLAGS	Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP_FLAGS	Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+MINICOM_FLAGS	Makefile	/^MINICOM_FLAGS= 8051$/;"	m
+OBJCOPY_FLAGS	Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+SRC	Makefile	/^SRC=src\/gboot51-2.asm$/;"	m
+TARGET	Makefile	/^TARGET=bin\/gboot51-2$/;"	m
+UCSIM_51	Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -s \/dev\/pts\/1 $(TARGET).hex$/;"	m
+VI	Makefile	/^VI=vi$/;"	m
+cseg	src/gboot51-2.asm	/^cseg$/;"	l
+cseg	src/gboot51.asm	/^cseg$/;"	l
+delay2	inc/delay.asm	/^delay2:$/;"	l
+delay3	inc/delay.asm	/^delay3:$/;"	l
+delay_1_sec	inc/delay.asm	/^delay_1_sec:$/;"	l
+full	src/gboot51.asm	/^full:$/;"	l
+go	src/gboot51.asm	/^go:$/;"	l
+ie0_vector	src/gboot51-2.asm	/^ie0_vector:$/;"	l
+ie0_vector	src/gboot51.asm	/^ie0_vector:$/;"	l
+ie1_vector	src/gboot51-2.asm	/^ie1_vector:$/;"	l
+ie1_vector	src/gboot51.asm	/^ie1_vector:$/;"	l
+init_t1_as_baud_generator	inc/timer.asm	/^init_t1_as_baud_generator:$/;"	l
+loop	src/gboot51.asm	/^loop:$/;"	l
+loop_echo	src/gboot51-2.asm	/^loop_echo:$/;"	l
+loop_rx_string	src/gboot51-2.asm	/^loop_rx_string:$/;"	l
+main	src/gboot51-2.asm	/^main:$/;"	l
+main	src/gboot51.asm	/^main:$/;"	l
+mor	src/gboot51.asm	/^mor:$/;"	l
+rcve	src/gboot51.asm	/^rcve:$/;"	l
+read	src/gboot51.asm	/^read:$/;"	l
+rok	src/gboot51.asm	/^rok:$/;"	l
+sd	src/gboot51.asm	/^sd:$/;"	l
+send	src/gboot51.asm	/^send:$/;"	l
+serial_isr	src/gboot51.asm	/^serial_isr:$/;"	l
+serial_vector	src/gboot51-2.asm	/^serial_vector:$/;"	l
+serial_vector	src/gboot51.asm	/^serial_vector:$/;"	l
+tf0_vector	src/gboot51-2.asm	/^tf0_vector:$/;"	l
+tf0_vector	src/gboot51.asm	/^tf0_vector:$/;"	l
+tf1_vector	src/gboot51-2.asm	/^tf1_vector:$/;"	l
+tf1_vector	src/gboot51.asm	/^tf1_vector:$/;"	l
+uart_init_baud_gen	src/gboot51-2.asm	/^uart_init_baud_gen:$/;"	l
+uart_rx_char	src/gboot51-2.asm	/^uart_rx_char:$/;"	l
+uart_rx_string	src/gboot51-2.asm	/^uart_rx_string:$/;"	l
+uart_tx_char	src/gboot51-2.asm	/^uart_tx_char:$/;"	l
+wait	inc/delay.asm	/^wait:$/;"	l
+xmit	src/gboot51.asm	/^xmit:$/;"	l

@@ -1,0 +1,36 @@
+EXAMP05         EXAMP05.ASM                                                                                   JUN-07-22   PAGE 1
+
+                       1    ; EXAMP05.ASM - Initialze the Internal Scratch-Pad Ram from 0x30 to 0x7F
+                       2    ; Started 06/04/2022
+                       3    ;
+                       4    $MOD51
+                       5    $TITLE(EXAMP05.ASM)
+                       6    $DATE(JUN-07-22)
+                       7    $PAGEWIDTH(132)
+                       8    $OBJECT(EXAMP05.HEX);
+                       9    ;
+  0000                10    VALUE    EQU  000H              ; This is the value to set the ram to.
+  0030                11    ASTART   EQU  030H              ; This is the start address.
+  007F                12    AEND     EQU  07FH              ; This is the end address. 
+                      13    ;
+0800                  14             ORG  0800H             ; Set the ORG to 0x0800 to start in the user ROM.
+                      15    ;
+0800 7930             16             MOV  R1,#ASTART        ; Set "R1" to the start address.
+0802 7400             17             MOV  A,#VALUE          ; Set "A" to the VALUE.
+0804 F7               18    L01:     MOV  @R1,A             ; Load the VALUE to the address.
+0805 B97F02           19                     CJNE R1,#AEND,L02      ; IF R1 .NOT..EQUAL. AEND Jump to Inctrement R1.
+0808 8003             20                     SJMP L03               ; ELSE Jump to End.
+080A 09               21    L02:     INC  R1                ; Increment R1.
+080B 80F7             22             SJMP L01               ; Jump around to main loop.
+080D 020000           23    L03:     LJMP 0000H             ; Jump back to the Monitor Rom.
+                      24             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP05         EXAMP05.ASM                                                                                   JUN-07-22   PAGE 2
+
+AEND . . . . . . . . . . . . . .    NUMB  007FH  
+ASTART . . . . . . . . . . . . .    NUMB  0030H  
+L01. . . . . . . . . . . . . . .  C ADDR  0804H  
+L02. . . . . . . . . . . . . . .  C ADDR  080AH  
+L03. . . . . . . . . . . . . . .  C ADDR  080DH  
+VALUE. . . . . . . . . . . . . .    NUMB  0000H  

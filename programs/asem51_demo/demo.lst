@@ -1,0 +1,1271 @@
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+        Source File:    demo.a51
+        Object File:    demo.hex
+        List File:      demo.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:                          ;                      Demo Program for ASEM-51 V1.3
+    2:                          ;                      =============================
+    3:                          ;
+    4:                          ;                         W.W. Heinz, 25. 6. 2002
+    5:
+    6:
+    7:                          ; 1. Primary Controls:
+    8:                          ; --------------------
+    9:
+   10:                          $DATE(June 2002)      ;set date string
+   11:
+   12:                          $DEBUG                ;generate debug information (OMF-51 output only)
+   13:
+   14:          N      003C     $PAGELENGTH (60)      ;set list file page length to 60 lines
+   15:
+   16:          N      006E     $PAGEWIDTH (110)      ;set list file line width to 110 columns
+   17:
+   18:                          $NOTABS               ;expand all tab characters to blanks
+   19:
+   20:                          ; $NOPAGING           ;no page formatting in list file
+   21:
+   22:                          $NOSYMBOLS            ;don't generate a symbol table
+   23:
+   24:                          $XREF                 ;generate a cross reference listing
+   25:
+   26:                          ; $PHILIPS            ;switch to the reduced Philips 83C75x instruction set
+   27:
+   28:                          ; $NOMACRO            ;suppress macro expansion
+   29:
+   30:                          $NOBUILTIN            ;do not list predefined symbols (SFR)
+   31:
+   32:                          $NOMOD51              ;disable predefined standard 8051 SFR symbols
+   33:
+   34:
+   35:                          ; 2. General Controls:
+   36:                          ; --------------------
+   37:
+   38:                          $TITLE(The original ASEM-51 Demo Program!)      ;set page header title
+   39:
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   40:                          $NOLIST               ;listing off
+  137:
+  138:                          $EJECT                ;start new page in list file
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+  139:
+  140:                          $NOGEN                ;list macro calls only
+  141:                          $GENONLY              ;list macro expansion lines only
+  142:                          $GEN                  ;list macro calls and expansion lines
+  143:
+  144:                          $NOCOND               ;don't list lines in false IFxx branches
+  145:                          $CONDONLY             ;list assembled lines in IFxx constructions only
+  146:                          $COND                 ;list full IFxx .. ENDIF constructions
+  147:
+  148:                          $SAVE                 ;save current $LIST/$GEN/$COND state
+  149:                          $RESTORE              ;restore old $LIST/$GEN/$COND state
+  150:
+  151:
+  152:                          ; 3. Symbol Definitions:
+  153:                          ; ----------------------
+  154:
+  155:                                  NAME       ASEM_51_DEMO         ;module name
+  156:
+  157:          N      FFFF             TARZAN     EQU  -1              ;constant number
+  158:          R        R1             INDEXREG   EQU   R1             ;invariant register
+  159:
+  160:          N      000A             JANE       SET   10             ;number
+  161:          N      FFFF             JANE       SET   65535          ;(may be redefined)
+  162:          R        R5             COUNTREG   SET   R5             ;register
+  163:          R         A             COUNTREG   SET   A              ;(may be redefined)
+  164:
+  165:          N        30             CHEETA     DATA  30H            ;DATA address
+  166:
+  167:          N        90             JONES      IDATA 90H            ;IDATA address
+  168:
+  169:          N      5000             MICKEY     XDATA 5000H          ;XDATA address
+  170:
+  171:          B        83             GOOFY      BIT   080H.3         ;BIT address
+  172:
+  173:          N      F000             DONALD     CODE  0f000h         ;CODE address
+  174:
+  175:    0000                  ?ABCDEFGHIJKLMNopqrstuvwxyz_0123456789: ;label (31 significant characters)
+  176:
+  177:
+  178:                          ; 4. Constants and other Operands
+  179:                          ; -------------------------------
+  180:
+  181:          N      06EE             KONST1  EQU   1774      ;decimal
+  182:          N      06EE             KONST1d EQU   1774d     ;decimal again
+  183:          N      1774             KONST2  EQU   1774H     ;hex
+  184:          N      03FC             KONST3  EQU   1774Q     ;octal
+  185:          N      03FC             KONST3o EQU   1774o     ;octal again
+  186:          N      00AA             KONST4  EQU   10101010B ;binary
+  187:          N      407E             KONST5  EQU   '@~'      ;ASCII (1 or 2 characters)
+  188:
+  189:          N      06EE             KONST12 EQU   KONST1    ;symbol
+  190:          D      0000             KONST20 EQU   AR0       ;register 0
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 4
+
+
+
+ Line  I  Addr  Code            Source
+
+  191:          D      0001             KONST21 EQU   AR1       ;   .
+  192:          D      0002             KONST22 EQU   AR2       ;   .
+  193:          D      0003             KONST23 EQU   AR3       ;   .
+  194:          D      0004             KONST24 EQU   AR4       ;   .
+  195:          D      0005             KONST25 EQU   AR5       ;   .
+  196:          D      0006             KONST26 EQU   AR6       ;   .
+  197:          D      0007             KONST27 EQU   AR7       ;register 7
+  198:          C      0000             KONST29 EQU   $         ;location counter
+  199:
+  200:
+  201:                          ; 5. Operators and Expressions
+  202:                          ; ----------------------------
+  203:
+  204:                          ; Operator Precedance:
+  205:                          ;
+  206:                          ;       ( )                                                   ^   highest
+  207:                          ;       + - NOT HIGH LOW                       (unary)        |
+  208:                          ;       .                                                     |
+  209:                          ;       * / MOD                                               |
+  210:                          ;       SHL SHR                                               |
+  211:                          ;       + -                                    (binary)       |
+  212:                          ;       EQ = NE <> LT < LE <= GT > GE >=                      |
+  213:                          ;       AND                                                   |
+  214:                          ;       OR XOR                                                v   lowest
+  215:
+  216:
+  217:          N      1449             POSITIV EQU      +5193          ;unary plus
+  218:          N      EBB7             NEGATIV EQU      -5193          ;unary minus
+  219:          N      AAAA             KOMPLEM EQU  NOT  05555H        ;logical complement
+  220:          N      0012             HIBYTE  EQU  HIGH 01234H        ;high byte
+  221:          N      0034             LOBYTE  EQU  LOW  01234H        ;low byte
+  222:
+  223:          B      00BD             BITNO5  EQU  0B8H.5             ;bit operator
+  224:
+  225:          N      15B9             PRODUC  EQU  83 * 67            ;multiplication
+  226:          N      0015             QUOTIE  EQU  84 / 4             ;division
+  227:          N      0003             MODULO  EQU  83 MOD 8           ;remainder
+  228:
+  229:          N      2340             SHIFTL  EQU  1234H SHL  4       ;shift left
+  230:          N      0123             SHIFTR  EQU  1234H SHR  4       ;shift right
+  231:
+  232:          N      0096             SUMME   EQU  83 + 67            ;addition       (binary plus)
+  233:          N      0010             DIFFER  EQU  83 - 67            ;subtraction    (binary minus)
+  234:
+  235:          N      FFFF             EQUAL1  EQU   827  EQ  827      ;equal to
+  236:          N      0000             EQUAL2  EQU   827  =  -827      ;equal to
+  237:
+  238:          N      0000             NOTEQ1  EQU   235  NE  235      ;not equal to
+  239:          N      FFFF             NOTEQ2  EQU   235  <> -235      ;not equal to
+  240:
+  241:          N      FFFF             LESS1   EQU   367  LT  597      ;less than
+  242:          N      0000             LESS2   EQU  -367  <   597      ;less than
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 5
+
+
+
+ Line  I  Addr  Code            Source
+
+  243:
+  244:          N      FFFF             LESSEQ1 EQU   367  LE  597      ;less or equal
+  245:          N      0000             LESSEQ2 EQU  -367  <=  597      ;less or equal
+  246:
+  247:          N      0000             GREAT1  EQU   367  GT  597      ;greater than
+  248:          N      FFFF             GREAT2  EQU  -367  >   597      ;greater than
+  249:
+  250:          N      0000             GREQ1   EQU   367  GE  597      ;greater or equal
+  251:          N      FFFF             GREQ2   EQU  -367  >=  597      ;greater or equal
+  252:
+  253:          N      0000             LOGAND  EQU  0AAAAH AND 05555H  ;logical and
+  254:          N      FFFF             LOGOR   EQU  0AAAAH  OR 05555H  ;logical or
+  255:          N      00FF             LOGXOR  EQU  055AAH XOR 05555H  ;exclusive or
+  256:
+  257:          N      001E             KONST30 EQU  5*(JANE-$+AR5 OR 2) AND 0FFH    ;expression (=30)
+  258:
+  259:
+  260:                          ; 6. Pseudo Commands:
+  261:                          ; -------------------
+  262:
+  263:          N      7FF0             ORG  07ff0H    ;set location counter of current segment
+  264:
+  265:    7FF0  01 07                   DB   1,7       ;define byte
+  266:    7FF2  00 02 00 0C             DW   2,12,9    ;define word
+          7FF6  00 09
+  267:    7FF8  N      0003             DS   3         ;define space
+  268:
+  269:                                  DSEG           ;switch to DATA segment
+  270:
+  271:      00  N        20             DS   32        ;define space for registers and stack
+  272:      20  N        01     RAM:    DS   1         ;define space for a variable
+  273:      21  N        01     RAM1:   DS   1
+  274:      22  N        01     RAM2:   DS   1
+  275:
+  276:          N        80             ISEG AT 080H   ;switch to IDATA segment and set location counter
+  277:
+  278:      80  N        10             DS   10H       ;define space
+  279:
+  280:                                  XSEG           ;switch to XDATA segment
+  281:          N      C000             ORG  0C000H    ;and set location counter
+  282:
+  283:    C000  N      0005             DS   5         ;define space
+  284:
+  285:          N        40             BSEG AT 040h   ;switch to BIT segment and set location counter
+  286:          N        50             ORG  050H      ;change location counter
+  287:
+  288:      50  N        04     BITAD:  DBIT 4         ;define bits
+  289:
+  290:                                  CSEG           ;return to CODE segment
+  291:
+  292:    7FFB  74 68 69 73     STRING: DB 'this is text',0
+          7FFF  20 69 73 20
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 6
+
+
+
+ Line  I  Addr  Code            Source
+
+          8003  74 65 78 74
+          8007  00
+  293:    8008  61 62 63 64     MIXED:  DB 'a',062H,'cdefghij',06bh,'l',060h+13,'n',MIXED-STRING
+          800C  65 66 67 68
+          8010  69 6A 6B 6C
+          8014  6D 6E 0D
+  294:
+  295:          N        01             USING 1        ;set register bank
+  296:
+  297:
+  298:                          ; 7. Instruction Set:
+  299:                          ; -------------------
+  300:
+  301:                                  ;Jumps and Calls:
+  302:                                  ;----------------
+  303:
+  304:    8017  00              PROCED: NOP     ;subroutine
+  305:    8018  22                      RET
+  306:
+  307:    8019  00              INTSER: NOP     ;interrupt service routine
+  308:    801A  32                      RETI
+  309:
+  310:    801B  11 17           THERE:  ACALL PROCED
+  311:    801D  12 80 17                LCALL PROCED
+  312:    8020  11 17                   CALL  PROCED
+  313:
+  314:    8022  01 1B                   AJMP  THERE
+  315:    8024  02 80 1B                LJMP  THERE
+  316:    8027  80 F2                   SJMP  THERE
+  317:    8029  73                      JMP   @A+DPTR
+  318:    802A  80 EF                   JMP   THERE
+  319:
+  320:    802C  60 ED                   JZ    THERE
+  321:    802E  70 EB                   JNZ   THERE
+  322:
+  323:    8030  40 E9                   JC    THERE
+  324:    8032  50 E7                   JNC   THERE
+  325:
+  326:    8034  B5 20 E4                CJNE A,RAM,THERE
+  327:    8037  B4 AA E1                CJNE A,#KONST4,THERE
+  328:
+  329:    803A  B8 AA DE                CJNE R0,#KONST4,THERE
+  330:    803D  B9 AA DB                CJNE R1,#KONST4,THERE
+  331:    8040  BA AA D8                CJNE R2,#KONST4,THERE
+  332:    8043  BB AA D5                CJNE R3,#KONST4,THERE
+  333:    8046  BC AA D2                CJNE R4,#KONST4,THERE
+  334:    8049  BD AA CF                CJNE R5,#KONST4,THERE
+  335:    804C  BE AA CC                CJNE R6,#KONST4,THERE
+  336:    804F  BF AA C9                CJNE R7,#KONST4,THERE
+  337:
+  338:    8052  B6 AA C6                CJNE @R0,#KONST4,THERE
+  339:    8055  B7 AA C3                CJNE @R1,#KONST4,THERE
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 7
+
+
+
+ Line  I  Addr  Code            Source
+
+  340:
+  341:    8058  D8 C1                   DJNZ R0,THERE
+  342:    805A  D9 BF                   DJNZ R1,THERE
+  343:    805C  DA BD                   DJNZ R2,THERE
+  344:    805E  DB BB                   DJNZ R3,THERE
+  345:    8060  DC B9                   DJNZ R4,THERE
+  346:    8062  DD B7                   DJNZ R5,THERE
+  347:    8064  DE B5                   DJNZ R6,THERE
+  348:    8066  DF B3                   DJNZ R7,THERE
+  349:
+  350:    8068  D5 20 B0                DJNZ RAM,THERE
+  351:
+  352:    806B  20 50 AD                JB BITAD,THERE
+  353:    806E  30 50 AA                JNB BITAD,THERE
+  354:    8071  10 50 A7                JBC BITAD,THERE
+  355:
+  356:                                  ;Arithmetic Instructions:
+  357:                                  ;------------------------
+  358:
+  359:    8074  28                      ADD A,R0
+  360:    8075  29                      ADD A,R1
+  361:    8076  2A                      ADD A,R2
+  362:    8077  2B                      ADD A,R3
+  363:    8078  2C                      ADD A,R4
+  364:    8079  2D                      ADD A,R5
+  365:    807A  2E                      ADD A,R6
+  366:    807B  2F                      ADD A,R7
+  367:
+  368:    807C  25 20                   ADD A,RAM
+  369:
+  370:    807E  26                      ADD A,@R0
+  371:    807F  27                      ADD A,@R1
+  372:
+  373:    8080  24 AA                   ADD A,#KONST4
+  374:
+  375:    8082  38                      ADDC A,R0
+  376:    8083  39                      ADDC A,R1
+  377:    8084  3A                      ADDC A,R2
+  378:    8085  3B                      ADDC A,R3
+  379:    8086  3C                      ADDC A,R4
+  380:    8087  3D                      ADDC A,R5
+  381:    8088  3E                      ADDC A,R6
+  382:    8089  3F                      ADDC A,R7
+  383:
+  384:    808A  35 20                   ADDC A,RAM
+  385:
+  386:    808C  36                      ADDC A,@R0
+  387:    808D  37                      ADDC A,@R1
+  388:
+  389:    808E  34 AA                   ADDC A,#KONST4
+  390:
+  391:    8090  98                      SUBB A,R0
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 8
+
+
+
+ Line  I  Addr  Code            Source
+
+  392:    8091  99                      SUBB A,R1
+  393:    8092  9A                      SUBB A,R2
+  394:    8093  9B                      SUBB A,R3
+  395:    8094  9C                      SUBB A,R4
+  396:    8095  9D                      SUBB A,R5
+  397:    8096  9E                      SUBB A,R6
+  398:    8097  9F                      SUBB A,R7
+  399:
+  400:    8098  95 20                   SUBB A,RAM
+  401:
+  402:    809A  96                      SUBB A,@R0
+  403:    809B  97                      SUBB A,@R1
+  404:
+  405:    809C  94 AA                   SUBB A,#KONST4
+  406:
+  407:    809E  04                      INC A
+  408:
+  409:    809F  08                      INC R0
+  410:    80A0  09                      INC R1
+  411:    80A1  0A                      INC R2
+  412:    80A2  0B                      INC R3
+  413:    80A3  0C                      INC R4
+  414:    80A4  0D                      INC R5
+  415:    80A5  0E                      INC R6
+  416:    80A6  0F                      INC R7
+  417:
+  418:    80A7  05 20                   INC RAM
+  419:
+  420:    80A9  06                      INC @R0
+  421:    80AA  07                      INC @R1
+  422:
+  423:    80AB  14                      DEC A
+  424:
+  425:    80AC  18                      DEC R0
+  426:    80AD  19                      DEC R1
+  427:    80AE  1A                      DEC R2
+  428:    80AF  1B                      DEC R3
+  429:    80B0  1C                      DEC R4
+  430:    80B1  1D                      DEC R5
+  431:    80B2  1E                      DEC R6
+  432:    80B3  1F                      DEC R7
+  433:
+  434:    80B4  15 20                   DEC RAM
+  435:
+  436:    80B6  16                      DEC @R0
+  437:    80B7  17                      DEC @R1
+  438:
+  439:    80B8  A3                      INC DPTR
+  440:    80B9  A4                      MUL AB
+  441:    80BA  84                      DIV AB
+  442:    80BB  D4                      DA A
+  443:
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                        June 2002  PAGE 9
+
+
+
+ Line  I  Addr  Code            Source
+
+  444:                                  ;Logical Instructions:
+  445:                                  ;---------------------
+  446:
+  447:    80BC  58                      ANL A,R0
+  448:    80BD  59                      ANL A,R1
+  449:    80BE  5A                      ANL A,R2
+  450:    80BF  5B                      ANL A,R3
+  451:    80C0  5C                      ANL A,R4
+  452:    80C1  5D                      ANL A,R5
+  453:    80C2  5E                      ANL A,R6
+  454:    80C3  5F                      ANL A,R7
+  455:
+  456:    80C4  55 20                   ANL A,RAM
+  457:
+  458:    80C6  56                      ANL A,@R0
+  459:    80C7  57                      ANL A,@R1
+  460:
+  461:    80C8  54 AA                   ANL A,#KONST4
+  462:
+  463:    80CA  52 20                   ANL RAM,A
+  464:
+  465:    80CC  53 20 AA                ANL RAM,#KONST4
+  466:
+  467:    80CF  48                      ORL A,R0
+  468:    80D0  49                      ORL A,R1
+  469:    80D1  4A                      ORL A,R2
+  470:    80D2  4B                      ORL A,R3
+  471:    80D3  4C                      ORL A,R4
+  472:    80D4  4D                      ORL A,R5
+  473:    80D5  4E                      ORL A,R6
+  474:    80D6  4F                      ORL A,R7
+  475:
+  476:    80D7  45 20                   ORL A,RAM
+  477:
+  478:    80D9  46                      ORL A,@R0
+  479:    80DA  47                      ORL A,@R1
+  480:
+  481:    80DB  44 AA                   ORL A,#KONST4
+  482:
+  483:    80DD  42 20                   ORL RAM,A
+  484:
+  485:    80DF  43 20 AA                ORL RAM,#KONST4
+  486:
+  487:    80E2  68                      XRL A,R0
+  488:    80E3  69                      XRL A,R1
+  489:    80E4  6A                      XRL A,R2
+  490:    80E5  6B                      XRL A,R3
+  491:    80E6  6C                      XRL A,R4
+  492:    80E7  6D                      XRL A,R5
+  493:    80E8  6E                      XRL A,R6
+  494:    80E9  6F                      XRL A,R7
+  495:
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 10
+
+
+
+ Line  I  Addr  Code            Source
+
+  496:    80EA  65 20                   XRL A,RAM
+  497:
+  498:    80EC  66                      XRL A,@R0
+  499:    80ED  67                      XRL A,@R1
+  500:
+  501:    80EE  64 AA                   XRL A,#KONST4
+  502:
+  503:    80F0  62 20                   XRL RAM,A
+  504:
+  505:    80F2  63 20 AA                XRL RAM,#KONST4
+  506:
+  507:    80F5  E4                      CLR A
+  508:    80F6  F4                      CPL A
+  509:    80F7  23                      RL A
+  510:    80F8  33                      RLC A
+  511:    80F9  03                      RR A
+  512:    80FA  13                      RRC A
+  513:    80FB  C4                      SWAP A
+  514:
+  515:                                  ;Move Instructions:
+  516:                                  ;------------------
+  517:
+  518:    80FC  E8                      MOV A,R0
+  519:    80FD  E9                      MOV A,R1
+  520:    80FE  EA                      MOV A,R2
+  521:    80FF  EB                      MOV A,R3
+  522:    8100  EC                      MOV A,R4
+  523:    8101  ED                      MOV A,R5
+  524:    8102  EE                      MOV A,R6
+  525:    8103  EF                      MOV A,R7
+  526:
+  527:    8104  E5 20                   MOV A,RAM
+  528:
+  529:    8106  E6                      MOV A,@R0
+  530:    8107  E7                      MOV A,@R1
+  531:
+  532:    8108  74 AA                   MOV A,#KONST4
+  533:
+  534:    810A  F8                      MOV R0,A
+  535:    810B  F9                      MOV R1,A
+  536:    810C  FA                      MOV R2,A
+  537:    810D  FB                      MOV R3,A
+  538:    810E  FC                      MOV R4,A
+  539:    810F  FD                      MOV R5,A
+  540:    8110  FE                      MOV R6,A
+  541:    8111  FF                      MOV R7,A
+  542:
+  543:    8112  A8 20                   MOV R0,RAM
+  544:    8114  A9 20                   MOV R1,RAM
+  545:    8116  AA 20                   MOV R2,RAM
+  546:    8118  AB 20                   MOV R3,RAM
+  547:    811A  AC 20                   MOV R4,RAM
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 11
+
+
+
+ Line  I  Addr  Code            Source
+
+  548:    811C  AD 20                   MOV R5,RAM
+  549:    811E  AE 20                   MOV R6,RAM
+  550:    8120  AF 20                   MOV R7,RAM
+  551:
+  552:    8122  78 AA                   MOV R0,#KONST4
+  553:    8124  79 AA                   MOV R1,#KONST4
+  554:    8126  7A AA                   MOV R2,#KONST4
+  555:    8128  7B AA                   MOV R3,#KONST4
+  556:    812A  7C AA                   MOV R4,#KONST4
+  557:    812C  7D AA                   MOV R5,#KONST4
+  558:    812E  7E AA                   MOV R6,#KONST4
+  559:    8130  7F AA                   MOV R7,#KONST4
+  560:
+  561:    8132  F5 20                   MOV RAM,A
+  562:
+  563:    8134  88 20                   MOV RAM,R0
+  564:    8136  89 20                   MOV RAM,R1
+  565:    8138  8A 20                   MOV RAM,R2
+  566:    813A  8B 20                   MOV RAM,R3
+  567:    813C  8C 20                   MOV RAM,R4
+  568:    813E  8D 20                   MOV RAM,R5
+  569:    8140  8E 20                   MOV RAM,R6
+  570:    8142  8F 20                   MOV RAM,R7
+  571:
+  572:    8144  85 21 22                MOV RAM2,RAM1
+  573:
+  574:    8147  86 20                   MOV RAM,@R0
+  575:    8149  87 20                   MOV RAM,@R1
+  576:
+  577:    814B  75 20 AA                MOV RAM,#KONST4
+  578:
+  579:    814E  F6                      MOV @R0,A
+  580:    814F  F7                      MOV @R1,A
+  581:
+  582:    8150  A6 20                   MOV @R0,RAM
+  583:    8152  A7 20                   MOV @R1,RAM
+  584:
+  585:    8154  76 AA                   MOV @R0,#KONST4
+  586:    8156  77 AA                   MOV @R1,#KONST4
+  587:
+  588:    8158  90 40 7E                MOV DPTR,#KONST5
+  589:
+  590:    815B  93                      MOVC A,@A+DPTR
+  591:    815C  83                      MOVC A,@A+PC
+  592:
+  593:    815D  E2                      MOVX A,@R0
+  594:    815E  E3                      MOVX A,@R1
+  595:    815F  E0                      MOVX A,@DPTR
+  596:
+  597:    8160  F2                      MOVX @R0,A
+  598:    8161  F3                      MOVX @R1,A
+  599:    8162  F0                      MOVX @DPTR,A
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 12
+
+
+
+ Line  I  Addr  Code            Source
+
+  600:
+  601:    8163  C0 20                   PUSH RAM
+  602:    8165  D0 20                   POP RAM
+  603:
+  604:    8167  C8                      XCH A,R0
+  605:    8168  C9                      XCH A,R1
+  606:    8169  CA                      XCH A,R2
+  607:    816A  CB                      XCH A,R3
+  608:    816B  CC                      XCH A,R4
+  609:    816C  CD                      XCH A,R5
+  610:    816D  CE                      XCH A,R6
+  611:    816E  CF                      XCH A,R7
+  612:
+  613:    816F  C5 20                   XCH A,RAM
+  614:
+  615:    8171  C6                      XCH A,@R0
+  616:    8172  C7                      XCH A,@R1
+  617:
+  618:    8173  D6                      XCHD A,@R0
+  619:    8174  D7                      XCHD A,@R1
+  620:
+  621:                                  ;Bit Instructions:
+  622:                                  ;-----------------
+  623:
+  624:    8175  C3                      CLR C
+  625:    8176  C2 50                   CLR BITAD
+  626:
+  627:    8178  D3                      SETB C
+  628:    8179  D2 50                   SETB BITAD
+  629:
+  630:    817B  B3                      CPL C
+  631:    817C  B2 50                   CPL BITAD
+  632:
+  633:    817E  82 50                   ANL C,BITAD
+  634:    8180  B0 50                   ANL C,/BITAD
+  635:
+  636:    8182  72 50                   ORL C,BITAD
+  637:    8184  A0 50                   ORL C,/BITAD
+  638:
+  639:    8186  A2 50                   MOV C,BITAD
+  640:    8188  92 50                   MOV BITAD,C
+  641:
+  642:
+  643:                          ; 8. Register Symbols:
+  644:                          ; --------------------
+  645:
+  646:    818A  F7                      MOV @R1,A
+  647:    818B  F7                      MOV @R1,COUNTREG            ;same as:  MOV @R1,A
+  648:    818C  F7                      MOV @INDEXREG,A             ;same as:  MOV @R1,A
+  649:    818D  F7                      MOV @INDEXREG,COUNTREG      ;same as:  MOV @R1,A
+  650:
+  651:
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 13
+
+
+
+ Line  I  Addr  Code            Source
+
+  652:                          ; 9. Predefined Symbols:
+  653:                          ; ----------------------
+  654:
+  655:                                  ; Special Function Registers:
+  656:                                  ; ---------------------------
+  657:
+  658:    818E  E5 F0                   MOV A,B
+  659:    8190  A9 E0                   MOV R1,ACC
+  660:    8192  E5 D0                   MOV A,PSW
+  661:    8194  E5 B8                   MOV A,IP
+  662:    8196  E5 B0                   MOV A,P3
+  663:    8198  E5 A8                   MOV A,IE
+  664:    819A  E5 A0                   MOV A,P2
+  665:    819C  E5 99                   MOV A,SBUF
+  666:    819E  E5 98                   MOV A,SCON
+  667:    81A0  E5 90                   MOV A,P1
+  668:    81A2  E5 8D                   MOV A,TH1
+  669:    81A4  E5 8C                   MOV A,TH0
+  670:    81A6  E5 8B                   MOV A,TL1
+  671:    81A8  E5 8A                   MOV A,TL0
+  672:    81AA  E5 89                   MOV A,TMOD
+  673:    81AC  E5 88                   MOV A,TCON
+  674:    81AE  E5 87                   MOV A,PCON
+  675:    81B0  E5 83                   MOV A,DPH
+  676:    81B2  E5 82                   MOV A,DPL
+  677:    81B4  E5 81                   MOV A,SP
+  678:    81B6  E5 80                   MOV A,P0
+  679:
+  680:                                  ;SFR Bit Addresses:
+  681:                                  ;------------------
+  682:
+  683:    81B8  A2 D7                   MOV C,CY        ;PSW
+  684:    81BA  A2 D6                   MOV C,AC
+  685:    81BC  A2 D5                   MOV C,F0
+  686:    81BE  A2 D4                   MOV C,RS1
+  687:    81C0  A2 D3                   MOV C,RS0
+  688:    81C2  A2 D2                   MOV C,OV
+  689:    81C4  A2 D0                   MOV C,P
+  690:
+  691:    81C6  A2 BC                   MOV C,PS        ;IP
+  692:    81C8  A2 BB                   MOV C,PT1
+  693:    81CA  A2 BA                   MOV C,PX1
+  694:    81CC  A2 B9                   MOV C,PT0
+  695:    81CE  A2 B8                   MOV C,PX0
+  696:
+  697:    81D0  A2 B7                   MOV C,RD        ;P3
+  698:    81D2  A2 B6                   MOV C,WR
+  699:    81D4  A2 B5                   MOV C,T1
+  700:    81D6  A2 B4                   MOV C,T0
+  701:    81D8  A2 B3                   MOV C,INT1
+  702:    81DA  A2 B2                   MOV C,INT0
+  703:    81DC  A2 B1                   MOV C,TXD
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 14
+
+
+
+ Line  I  Addr  Code            Source
+
+  704:    81DE  A2 B0                   MOV C,RXD
+  705:
+  706:    81E0  A2 AF                   MOV C,EA        ;IE
+  707:    81E2  A2 AC                   MOV C,ES
+  708:    81E4  A2 AB                   MOV C,ET1
+  709:    81E6  A2 AA                   MOV C,EX1
+  710:    81E8  A2 A9                   MOV C,ET0
+  711:    81EA  A2 A8                   MOV C,EX0
+  712:
+  713:    81EC  A2 9F                   MOV C,SM0       ;SCON
+  714:    81EE  A2 9E                   MOV C,SM1
+  715:    81F0  A2 9D                   MOV C,SM2
+  716:    81F2  A2 9C                   MOV C,REN
+  717:    81F4  A2 9B                   MOV C,TB8
+  718:    81F6  A2 9A                   MOV C,RB8
+  719:    81F8  A2 99                   MOV C,TI
+  720:    81FA  A2 98                   MOV C,RI
+  721:
+  722:    81FC  A2 8F                   MOV C,TF1       ;TCON
+  723:    81FE  A2 8E                   MOV C,TR1
+  724:    8200  A2 8D                   MOV C,TF0
+  725:    8202  A2 8C                   MOV C,TR0
+  726:    8204  A2 8B                   MOV C,IE1
+  727:    8206  A2 8A                   MOV C,IT1
+  728:    8208  A2 89                   MOV C,IE0
+  729:    820A  A2 88                   MOV C,IT0
+  730:
+  731:    820C  A2 90                   MOV C,P1.0      ;P1
+  732:    820E  A2 91                   MOV C,P1.1
+  733:    8210  A2 92                   MOV C,P1.2
+  734:    8212  A2 93                   MOV C,P1.3
+  735:    8214  A2 94                   MOV C,P1.4
+  736:    8216  A2 95                   MOV C,P1.5
+  737:    8218  A2 96                   MOV C,P1.6
+  738:    821A  A2 97                   MOV C,P1.7
+  739:
+  740:    821C  A2 B0                   MOV C,P3.0      ;P3
+  741:    821E  A2 B1                   MOV C,P3.1
+  742:    8220  A2 B2                   MOV C,P3.2
+  743:    8222  A2 B3                   MOV C,P3.3
+  744:    8224  A2 B4                   MOV C,P3.4
+  745:    8226  A2 B5                   MOV C,P3.5
+  746:    8228  A2 B6                   MOV C,P3.6
+  747:    822A  A2 B7                   MOV C,P3.7
+  748:
+  749:                                  ; ROM Addresses:
+  750:                                  ; --------------
+  751:
+  752:    822C  90 00 00                MOV DPTR,#RESET
+  753:    822F  90 00 03                MOV DPTR,#EXTI0
+  754:    8232  90 00 0B                MOV DPTR,#TIMER0
+  755:    8235  90 00 13                MOV DPTR,#EXTI1
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 15
+
+
+
+ Line  I  Addr  Code            Source
+
+  756:    8238  90 00 1B                MOV DPTR,#TIMER1
+  757:    823B  90 00 23                MOV DPTR,#SINT
+  758:
+  759:
+  760:                          ; 10. Conditional Assembly:
+  761:                          ; -------------------------
+  762:                          ; The most important meta instructions for conditional assembly are
+  763:                          ; introduced in this section. The general controls $WARNING and $ERROR,
+  764:                          ; and the predefined symbols ??ASEM_51 and ??VERSION are also shown here,
+  765:                          ; because the make sense in conjunction with conditional assembly only.
+  766:
+  767:                          ; a.) The IF, IFN, ELSE, and ENDIF meta instructions:
+  768:
+  769:          N      0000             IF NOTEQ1
+  770:                                    DB 'string 1',0
+  771:                                  ELSE
+  772:          N      0000               IFN EQUAL2
+  773:    823E  73 74 72 69                 DB 'string 2',0
+          8242  6E 67 20 32
+          8246  00
+  774:                                    ELSE
+  775:                                      DB 'string 3',0
+  776:                                    ENDIF
+  777:                                  ENDIF
+  778:
+  779:                          ; b.) The IFDEF and IFNDEF meta instructions:
+  780:
+  781:                                  IFDEF GHOST
+  782:                                    DB 'haunting',0
+  783:                                  ELSE
+  784:    8247  6E 6F 74 68               DB 'nothing',0
+          824B  69 6E 67 00
+  785:                                    IFNDEF VAMPIRE
+  786:    824F  62 6F 72 69                 DB 'boring',0
+          8253  6E 67 00
+  787:                                    ELSE
+  788:                                      DB 'sucking',0
+  789:                                    ENDIF
+  790:                                  ENDIF
+  791:
+  792:                          ; c.) The predefined symbols ??ASEM_51 and ??VERSION,
+  793:                          ;     and the general controls $WARNING and $ERROR:
+  794:
+  795:                                  IFDEF ??ASEM_51               ;product identification
+  796:          N      0000               IF ??VERSION < 0130H        ;version number
+  797:                                      ;display a user-defined warning:
+  798:                          $WARNING(Warning: ASEM-51 version 1.3 (or later)) required.)
+  799:                                    ENDIF
+  800:                                  ELSE
+  801:                                    ;fire a user-defined error message:
+  802:                          $ERROR(Fatal: Assembler is not ASEM-51!)
+  803:                                  ENDIF
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 16
+
+
+
+ Line  I  Addr  Code            Source
+
+  804:
+  805:
+  806:                          ; 11. Macro Processing:
+  807:                          ; ---------------------
+  808:                          ; Macro processing is by far too complex, to show all possibilities in a
+  809:                          ; small demo program. So, only a few simple (but typical) constructions
+  810:                          ; are listed here. Furthermore, some assembler controls and meta
+  811:                          ; instructions for conditional assembly are introduced in this section,
+  812:                          ; because they make sense in conjunction with macro processing only.
+  813:
+  814:                          ; a.) The MACRO, LOCAL and ENDM meta instructions, macro
+  815:                          ;     parameters, and the macro commentary operator ;; :
+  816:
+  817:                                  ;define macro CJEQ: "compare and jump if equal"
+  818:
+  819:                                  CJEQ MACRO param1, param2, param3
+  820:                                    LOCAL temp
+  821:                                    CJNE param1, param2, temp   ;;continue if not equal
+  822:                                    JMP param3                  ;;jump otherwise
+  823:                          temp:
+  824:                                  ENDM
+  825:
+  826:                                  ;CJEQ macro calls:
+  827:
+  828:                                  CJEQ A, CHEETA, HERE
+  829+ 1  8256  B5 30 03                  CJNE A, CHEETA, ??0000
+  830+ 1  8259  02 82 5C                  JMP HERE
+  831+ 1  825C                  ??0000:
+  832:    825C                  HERE:   CJEQ @R0, #13, THERE
+  833+ 1  825C  B6 0D 02                  CJNE @R0, #13, ??0001
+  834+ 1  825F  01 1B                     JMP THERE
+  835+ 1  8261                  ??0001:
+  836:                                  CJEQ R4, #DIFFER, HERE
+  837+ 1  8261  BC 10 02                  CJNE R4, #DIFFER, ??0002
+  838+ 1  8264  80 F6                     JMP HERE
+  839+ 1  8266                  ??0002:
+  840:
+  841:                          ; b.) The REPT meta instruction:
+  842:
+  843:                                  ;repeat block: "seven NOPs"
+  844:
+  845:          N      0007             REPT 7
+  846:                                    NOP   ;;short pause
+  847:                                  ENDM
+  848+ 1  8266  00                        NOP
+  849+ 1  8267  00                        NOP
+  850+ 1  8268  00                        NOP
+  851+ 1  8269  00                        NOP
+  852+ 1  826A  00                        NOP
+  853+ 1  826B  00                        NOP
+  854+ 1  826C  00                        NOP
+  855:
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 17
+
+
+
+ Line  I  Addr  Code            Source
+
+  856:                          ; c.) The EXITM meta instruction, recursive macro calls,
+  857:                          ;     and the macro operators % and & :
+  858:
+  859:                                  ;define macro DEFNSYM: "define n symbols"
+  860:
+  861:                                  DEFNSYM MACRO symname, count
+  862:                                    IF count
+  863:                                      DEFNSYM symname, %count-1
+  864:                                      symname&count EQU count
+  865:                                    ELSE
+  866:                                      EXITM       ;;stop recursion if count=0
+  867:                                    ENDIF
+  868:                                  ENDM
+  869:
+  870:                          ; d.) The general controls $SAVE, $GENONLY, and $CONDONLY:
+  871:
+  872:                          $SAVE                              ;save current $GEN/$COND/$LIST state
+  873:                          $GENONLY                           ;list only macro expansion lines
+  874:                          $CONDONLY                          ;list only true IFxx branches
+  875:
+  876:                                  ;DEFNSYM macro calls:
+  877:
+  894+ 5        N      0001                 SYMBOL1 EQU 1
+  898+ 4        N      0002                 SYMBOL2 EQU 2
+  902+ 3        N      0003                 SYMBOL3 EQU 3
+  906+ 2        N      0004                 SYMBOL4 EQU 4
+  910+ 1        N      0005                 SYMBOL5 EQU 5
+  938+ 9        N      0001                 CONST1 EQU 1
+  942+ 8        N      0002                 CONST2 EQU 2
+  946+ 7        N      0003                 CONST3 EQU 3
+  950+ 6        N      0004                 CONST4 EQU 4
+  954+ 5        N      0005                 CONST5 EQU 5
+  958+ 4        N      0006                 CONST6 EQU 6
+  962+ 3        N      0007                 CONST7 EQU 7
+  966+ 2        N      0008                 CONST8 EQU 8
+  970+ 1        N      0009                 CONST9 EQU 9
+  974:
+  975:                          ; e.) The IFB and ELSEIFB meta instructions, and <...> literal brackets:
+  976:
+  977:                                  ;define macro PATCH: "concatenate 3 literals"
+  978:
+  979:                                  PATCH MACRO p1, p2, p3
+  980:                                    IFB <p1>
+  981:                                      PATCH 1_, <p2>, <p3>
+  982:                                    ELSEIFB <p2>
+  983:                                      PATCH <p1>, _2_, <p3>
+  984:                                    ELSEIFB <p3>
+  985:                                      PATCH <p1>, <p2>, _3
+  986:                                    ELSE
+  987:                                      DB '&p1&p2&p3'
+  988:                                    ENDIF
+  989:                                  ENDM
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 18
+
+
+
+ Line  I  Addr  Code            Source
+
+  990:
+  991:                          ; f.) The general control $GEN:
+  992:
+  993:                          $GEN                                    ;list macro calls and expansion lines
+  994:
+  995:                          ; g.) Omitting macro parameters, and the literal operator ! :
+  996:
+  997:                                  ;PATCH macro calls:
+  998:
+  999:                                  PATCH one, two, three           ;3 literal parameters specified
+ 1007+ 1  826D  6F 6E 65 74                 DB 'onetwothree'
+       1  8271  77 6F 74 68
+       1  8275  72 65 65
+ 1009:                                  PATCH ,two                      ;1st and 3rd parameter omitted
+ 1011+ 1                                    PATCH 1_, <two>, <>
+ 1017+ 2                                    PATCH <1_>, <two>, _3
+ 1025+ 3  8278  31 5F 74 77                 DB '1_two_3'
+       3  827C  6F 5F 33
+ 1037:                                  PATCH one,,three                ;2nd parameter omitted
+ 1041+ 1                                    PATCH <one>, _2_, <three>
+ 1049+ 2  827F  6F 6E 65 5F                 DB 'one_2_three'
+       2  8283  32 5F 74 68
+       2  8287  72 65 65
+ 1056:                                  PATCH                           ;all parameters omitted
+ 1058+ 1                                    PATCH 1_, <>, <>
+ 1062+ 2                                    PATCH <1_>, _2_, <>
+ 1068+ 3                                    PATCH <1_>, <_2_>, _3
+ 1076+ 4  828A  31 5F 5F 32                 DB '1__2__3'
+       4  828E  5F 5F 33
+ 1093:                                  PATCH first, <, , >, last!;     ;special characters passed literally
+ 1101+ 1  8291  66 69 72 73                 DB 'first, , last;'
+       1  8295  74 2C 20 2C
+       1  8299  20 6C 61 73
+       1  829D  74 3B
+ 1103:
+ 1104:                          ; h.) The general control $RESTORE:
+ 1105:
+ 1106:                          $RESTORE                                ;restore old $GEN/$COND/$LIST state
+ 1107:
+ 1108:
+ 1109:                          ; 12. End of Program:
+ 1110:                          ; -------------------
+ 1111:
+ 1112:                                  END     ;end statement
+ 1113:
+ 1114:                                  ;Only blank and commentary lines are allowed here!
+
+
+
+
+
+                     register banks used:  0, 1
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 19
+
+
+
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 20
+
+
+
+
+
+               C R O S S - R E F E R E N C E - L I S T I N G
+               =============================================
+
+
+SYMBOL                            TYPE     VALUE     DEFINED  REFERENCED
+--------------------------------------------------------------------------------------------------------
+??0000                            CODE      825C         831         829
+??0001                            CODE      8261         835         833
+??0002                            CODE      8266         839         837
+?ABCDEFGHIJKLMNOPQRSTUVWXYZ_012   CODE      0000         175
+AC                                BIT         D6         125         684
+ACC                               DATA        E0          70         659
+ASEM_51_DEMO                      MODULE                 155
+B                                 DATA        F0          71         658
+BITAD                             BIT         50         288         352     353     354     625     628
+                                                                     631     633     634     636     637
+                                                                     639     640
+BITNO5                            NUMBER    00BD         223
+CHEETA                            DATA        30         165         829
+CJEQ                              MACRO                  819         828     832     836
+CONST1                            NUMBER    0001         938
+CONST2                            NUMBER    0002         942
+CONST3                            NUMBER    0003         946
+CONST4                            NUMBER    0004         950
+CONST5                            NUMBER    0005         954
+CONST6                            NUMBER    0006         958
+CONST7                            NUMBER    0007         962
+CONST8                            NUMBER    0008         966
+CONST9                            NUMBER    0009         970
+COUNTREG                          REGISTER    R5         162         647     649
+                                  REGISTER     A         163
+CPRL2                             BIT         C8         112
+CT2                               BIT         C9         113
+CY                                BIT         D7         126         683
+DEFNSYM                           MACRO                  861         878     880     882     884     886
+                                                                     888     914     916     918     920
+                                                                     922     924     926     928     930
+                                                                     932
+DIFFER                            NUMBER    0010         233         837     914
+DONALD                            CODE      F000         173
+DPH                               DATA        83          49         675
+DPL                               DATA        82          48         676
+EA                                BIT         AF          97         706
+EQUAL1                            NUMBER    FFFF         235
+EQUAL2                            NUMBER    0000         236         772
+ES                                BIT         AC          95         707
+ET0                               BIT         A9          92         710
+ET1                               BIT         AB          94         708
+ET2                               BIT         AD          96
+EX0                               BIT         A8          91         711
+EX1                               BIT         AA          93         709
+EXEN2                             BIT         CB         115
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 21
+
+
+
+SYMBOL                            TYPE     VALUE     DEFINED  REFERENCED
+--------------------------------------------------------------------------------------------------------
+EXF2                              BIT         CE         118
+EXTI0                             CODE      0003         129         753
+EXTI1                             CODE      0013         131         755
+F0                                BIT         D5         124         685
+GHOST                             undef.    ----                     781
+GOOFY                             BIT         83         171
+GREAT1                            NUMBER    0000         247
+GREAT2                            NUMBER    FFFF         248
+GREQ1                             NUMBER    0000         250
+GREQ2                             NUMBER    FFFF         251
+HERE                              CODE      825C         832         830     838
+HIBYTE                            NUMBER    0012         220
+IE                                DATA        A8          61         663
+IE0                               BIT         89          74         728
+IE1                               BIT         8B          76         726
+INDEXREG                          REGISTER    R1         158         648     649
+INT0                              BIT         B2         100         702
+INT1                              BIT         B3         101         701
+INTSER                            CODE      8019         307
+IP                                DATA        B8          63         661
+IT0                               BIT         88          73         729
+IT1                               BIT         8A          75         727
+JANE                              NUMBER    000A         160         257
+                                  NUMBER    FFFF         161
+JONES                             IDATA       90         167
+KOMPLEM                           NUMBER    AAAA         219
+KONST1                            NUMBER    06EE         181         189
+KONST12                           NUMBER    06EE         189
+KONST1D                           NUMBER    06EE         182
+KONST2                            NUMBER    1774         183
+KONST20                           NUMBER    0000         190
+KONST21                           NUMBER    0001         191
+KONST22                           NUMBER    0002         192
+KONST23                           NUMBER    0003         193
+KONST24                           NUMBER    0004         194
+KONST25                           NUMBER    0005         195
+KONST26                           NUMBER    0006         196
+KONST27                           NUMBER    0007         197
+KONST29                           NUMBER    0000         198
+KONST3                            NUMBER    03FC         184
+KONST30                           NUMBER    001E         257
+KONST3O                           NUMBER    03FC         185
+KONST4                            NUMBER    00AA         186         327     329     330     331     332
+                                                                     333     334     335     336     338
+                                                                     339     373     389     405     461
+                                                                     465     481     485     501     505
+                                                                     532     552     553     554     555
+                                                                     556     557     558     559     577
+                                                                     585     586
+KONST5                            NUMBER    407E         187         588
+LESS1                             NUMBER    FFFF         241
+LESS2                             NUMBER    0000         242
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 22
+
+
+
+SYMBOL                            TYPE     VALUE     DEFINED  REFERENCED
+--------------------------------------------------------------------------------------------------------
+LESSEQ1                           NUMBER    FFFF         244
+LESSEQ2                           NUMBER    0000         245
+LOBYTE                            NUMBER    0034         221
+LOGAND                            NUMBER    0000         253
+LOGOR                             NUMBER    FFFF         254
+LOGXOR                            NUMBER    00FF         255
+MICKEY                            XDATA     5000         169
+MIXED                             CODE      8008         293         293
+MODULO                            NUMBER    0003         227
+NEGATIV                           NUMBER    EBB7         218
+NOTEQ1                            NUMBER    0000         238         769
+NOTEQ2                            NUMBER    FFFF         239
+OV                                BIT         D2         121         688
+P                                 BIT         D0         120         689
+P0                                DATA        80          46         678
+P1                                DATA        90          57         667     731     732     733     734
+                                                                     735     736     737     738
+P2                                DATA        A0          60         664
+P3                                DATA        B0          62         662     740     741     742     743
+                                                                     744     745     746     747
+PATCH                             MACRO                  979         999    1009    1011    1017    1037
+                                                                    1041    1056    1058    1062    1068
+                                                                    1093
+PCON                              DATA        87          50         674
+POSITIV                           NUMBER    1449         217
+PROCED                            CODE      8017         304         310     311     312
+PRODUC                            NUMBER    15B9         225
+PS                                BIT         BC         110         691
+PSW                               DATA        D0          69         660
+PT0                               BIT         B9         107         694
+PT1                               BIT         BB         109         692
+PT2                               BIT         BD         111
+PX0                               BIT         B8         106         695
+PX1                               BIT         BA         108         693
+QUOTIE                            NUMBER    0015         226
+RAM                               DATA        20         272         326     350     368     384     400
+                                                                     418     434     456     463     465
+                                                                     476     483     485     496     503
+                                                                     505     527     543     544     545
+                                                                     546     547     548     549     550
+                                                                     561     563     564     565     566
+                                                                     567     568     569     570     574
+                                                                     575     577     582     583     601
+                                                                     602     613
+RAM1                              DATA        21         273         572
+RAM2                              DATA        22         274         572
+RB8                               BIT         9A          85         718
+RCAP2H                            DATA        CB          66
+RCAP2L                            DATA        CA          65
+RCLK                              BIT         CD         117
+RD                                BIT         B7         105         697
+REN                               BIT         9C          87         716
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 23
+
+
+
+SYMBOL                            TYPE     VALUE     DEFINED  REFERENCED
+--------------------------------------------------------------------------------------------------------
+RESET                             CODE      0000         128         752
+RI                                BIT         98          83         720
+RS0                               BIT         D3         122         687
+RS1                               BIT         D4         123         686
+RXD                               BIT         B0          98         704
+SBUF                              DATA        99          59         665
+SCON                              DATA        98          58         666
+SHIFTL                            NUMBER    2340         229
+SHIFTR                            NUMBER    0123         230
+SINT                              CODE      0023         133         757
+SM0                               BIT         9F          90         713
+SM1                               BIT         9E          89         714
+SM2                               BIT         9D          88         715
+SP                                DATA        81          47         677
+STRING                            CODE      7FFB         292         293
+SUMME                             NUMBER    0096         232
+SYMBOL1                           NUMBER    0001         894
+SYMBOL2                           NUMBER    0002         898
+SYMBOL3                           NUMBER    0003         902
+SYMBOL4                           NUMBER    0004         906
+SYMBOL5                           NUMBER    0005         910
+T0                                BIT         B4         102         700
+T1                                BIT         B5         103         699
+T2                                BIT         90          81
+T2CON                             DATA        C8          64
+T2EX                              BIT         91          82
+TARZAN                            NUMBER    FFFF         157
+TB8                               BIT         9B          86         717
+TCLK                              BIT         CC         116
+TCON                              DATA        88          51         673
+TF0                               BIT         8D          78         724
+TF1                               BIT         8F          80         722
+TF2                               BIT         CF         119
+TH0                               DATA        8C          55         669
+TH1                               DATA        8D          56         668
+TH2                               DATA        CD          68
+THERE                             CODE      801B         310         314     315     316     318     320
+                                                                     321     323     324     326     327
+                                                                     329     330     331     332     333
+                                                                     334     335     336     338     339
+                                                                     341     342     343     344     345
+                                                                     346     347     348     350     352
+                                                                     353     354     834
+TI                                BIT         99          84         719
+TIMER0                            CODE      000B         130         754
+TIMER1                            CODE      001B         132         756
+TIMER2                            CODE      002B         134
+TL0                               DATA        8A          53         671
+TL1                               DATA        8B          54         670
+TL2                               DATA        CC          67
+TMOD                              DATA        89          52         672
+TR0                               BIT         8C          77         725
+
+ASEM-51 V1.3                       The original ASEM-51 Demo Program!                       June 2002  PAGE 24
+
+
+
+SYMBOL                            TYPE     VALUE     DEFINED  REFERENCED
+--------------------------------------------------------------------------------------------------------
+TR1                               BIT         8E          79         723
+TR2                               BIT         CA         114
+TXD                               BIT         B1          99         703
+VAMPIRE                           undef.    ----                     785
+WR                                BIT         B6         104         698

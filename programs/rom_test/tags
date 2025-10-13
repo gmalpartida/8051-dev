@@ -1,0 +1,36 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AS	Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
+ASFLAGS	Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
+FLASHER	Makefile	/^FLASHER=minipro$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+INC	Makefile	/^INC=inc$/;"	m
+LD	Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
+MAKEBIN	Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+PACKIHX	Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
+ROM	Makefile	/^ROM='AT28C16@DIP24'$/;"	m
+SRC	Makefile	/^SRC=src\/rom_test.asm$/;"	m
+TARGET	Makefile	/^TARGET=bin\/rom_test$/;"	m
+UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+VI	Makefile	/^VI=vi$/;"	m
+add0	src/rom_test.asm	/^add0:$/;"	l
+add1	src/rom_test.asm	/^add1:$/;"	l
+add10	src/rom_test.asm	/^add10:	$/;"	l
+add11	src/rom_test.asm	/^add11:$/;"	l
+add12	src/rom_test.asm	/^add12:$/;"	l
+add13	src/rom_test.asm	/^add13:$/;"	l
+add14	src/rom_test.asm	/^add14:$/;"	l
+add2	src/rom_test.asm	/^add2:	$/;"	l
+add3	src/rom_test.asm	/^add3:$/;"	l
+add4	src/rom_test.asm	/^add4:$/;"	l
+add5	src/rom_test.asm	/^add5:	$/;"	l
+add6	src/rom_test.asm	/^add6:$/;"	l
+add7	src/rom_test.asm	/^add7:	$/;"	l
+add8	src/rom_test.asm	/^add8:$/;"	l
+add9	src/rom_test.asm	/^add9:$/;"	l
+main	src/rom_test.asm	/^main:$/;"	l

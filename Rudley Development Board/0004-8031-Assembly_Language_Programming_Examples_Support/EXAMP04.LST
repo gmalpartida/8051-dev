@@ -1,0 +1,57 @@
+EXAMP04         EXAMP04.ASM                                                                                   JUN-06-22   PAGE 1
+
+                       1    ; EXAMP04.ASM - Demonstrate a "if" statement.
+                       2    ; Started 06/06/2022
+                       3    ; Vary a 8-bit value from 0x00 to 0xFF and compare.
+                       4    ; Use the Monitor Program to write out a message.
+                       5    ;
+                       6    $MOD51
+                       7    $TITLE(EXAMP04.ASM)
+                       8    $DATE(JUN-06-22)
+                       9    $PAGEWIDTH(132)
+                      10    $OBJECT(EXAMP04.HEX);
+                      11    ;
+  0080                12    VALUE    EQU   080H             ; Compare to this Value.
+  001B                13    ESC      EQU   01BH             ; Escape Character.
+  000A                14    LF       EQU   10               ; Line Feed.
+  000D                15    CR       EQU   13               ; Carrage Return.
+  077C                16    WTSTRING EQU   077CH            ; Location of subroutine that writes characters.
+                      17    ;
+0800                  18             ORG   0800H            ; Set the ORG to 0x0800 to start in the user ROM.
+0800 7C00             19                     MOV   R4,#00000H       ; Initialize and set R4 to zero.
+0802 BC801B           20    L01:     CJNE  R4,#VALUE,NEQUAL ; If not equal then write out "not equal".
+0805 12077C           21                     LCALL WTSTRING         ; If equal, then write out "equal".
+                      22                                    ; Write out "equal".
+0808 0A0D5468         23                     DB    LF,CR,'The Value is Equal.'
+080C 65205661   
+0810 6C756520   
+0814 69732045   
+0818 7175616C   
+081C 2E         
+081D 1B               24             DB    ESC
+081E 801D             25             SJMP  L02              ; Jump to end to loop around.
+0820 12077C           26    NEQUAL:  LCALL WTSTRING         ; If not equal, then write out "not equal".
+                      27                                    ; Write out "not equal".
+0823 0A0D5468         28                     DB    LF,CR,'The Value is Not Equal.'
+0827 65205661   
+082B 6C756520   
+082F 6973204E   
+0833 6F742045   
+0837 7175616C   
+083B 2E         
+083C 1B               29             DB    ESC
+083D 0C               30    L02:     INC   R4               ; Increment R4.
+083E 80C2             31                     SJMP  L01              ; Jump back to the beginning of the loop.    
+                      32             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP04         EXAMP04.ASM                                                                                   JUN-06-22   PAGE 2
+
+CR . . . . . . . . . . . . . . .    NUMB  000DH  
+ESC. . . . . . . . . . . . . . .    NUMB  001BH  
+L01. . . . . . . . . . . . . . .  C ADDR  0802H  
+L02. . . . . . . . . . . . . . .  C ADDR  083DH  
+LF . . . . . . . . . . . . . . .    NUMB  000AH  
+NEQUAL . . . . . . . . . . . . .  C ADDR  0820H  
+VALUE. . . . . . . . . . . . . .    NUMB  0080H  
+WTSTRING . . . . . . . . . . . .    NUMB  077CH  

@@ -1,0 +1,33 @@
+# Create a 32K ROM chip
+memory create chip rom_chip 0x8000
+
+# Create a 32K RAM chip
+memory create chip ram_chip 0x8000
+
+# --- Advanced memory decoding setup ---
+
+# Step 1: Create a ROM access decoder based on A15 and PSEN
+# This maps the ROM from 0x0000 to 0x7fff
+memory create decoder rom_access CODE[0x0000..0x7FFF] PSEN
+memory bind rom_access rom_chip 0x0000
+
+# Step 2: Create a RAM access decoder based on A15, PSEN, and RD
+# This maps the RAM to the address range 0x8000 to 0xFFFF
+# This decoder must handle both movx (RD) and movc (PSEN) reads,
+# as well as movx writes (WR).
+
+# Access for movx (read and write)
+# This maps the RAM to XRAM
+memory create decoder xram_access XRAM[0x8000..0xFFFF]
+memory bind xram_access ram_chip 0x0000
+
+# Access for movc (read)
+# This maps the RAM to CODE when PSEN is active
+# We combine this with the address range check
+memory create decoder ram_code_access CODE[0x8000..0xFFFF] PSEN
+memory bind ram_code_access ram_chip 0x0000
+
+# For more verbose output during debugging, you can add commands to see the map
+# show memory
+# show memory decoder
+

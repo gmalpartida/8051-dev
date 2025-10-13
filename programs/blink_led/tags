@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AS	Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
+ASFLAGS	Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
+FLASHER	Makefile	/^FLASHER=minipro$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+INC	Makefile	/^INC=inc$/;"	m
+LD	Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
+MAKEBIN	Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+PACKIHX	Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
+RESET	src/blink_led.asm	/^RESET:$/;"	l
+ROM	Makefile	/^ROM='AT28C16@DIP24'$/;"	m
+SRC	Makefile	/^SRC=src\/blink_led.asm$/;"	m
+TARGET	Makefile	/^TARGET=bin\/blink_led$/;"	m
+UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+VI	Makefile	/^VI=vi$/;"	m
+delay2	inc/delay.asm	/^delay2:$/;"	l
+delay3	inc/delay.asm	/^delay3:$/;"	l
+delay_1_sec	inc/delay.asm	/^delay_1_sec:$/;"	l
+exit_isr	src/blink_led.asm	/^exit_isr:$/;"	l
+main	src/blink_led.asm	/^main:$/;"	l
+timer_isr	src/blink_led.asm	/^timer_isr:$/;"	l
+wait	inc/delay.asm	/^wait:$/;"	l

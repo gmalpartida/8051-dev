@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ASEM	Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
+ASEM_FLAGS	Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
+HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXBIN_FLAGS	Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP_FLAGS	Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+MINICOM_FLAGS	Makefile	/^MINICOM_FLAGS= 8051$/;"	m
+OBJCOPY_FLAGS	Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+SRC	Makefile	/^SRC=src\/boot51.a51$/;"	m
+TARGET	Makefile	/^TARGET=bin\/boot51$/;"	m
+UCSIM_51	Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -s \/dev\/pts\/1 $(TARGET).hex$/;"	m
+VI	Makefile	/^VI=vi$/;"	m

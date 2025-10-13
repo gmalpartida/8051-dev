@@ -1,0 +1,41 @@
+EXAMP03B        EXAMP03B.ASM                                                                                  JUN-06-22   PAGE 1
+
+                       1    ; EXAMP03B.ASM - P1 - Binary Counter - Double Delay
+                       2    ; Started 06/06/2022
+                       3    ; Uses led_driver_00 connected to the P1 port.
+                       4    ; This will illuminate the eight LEDs to show the binary counter.
+                       5    ; A two countdown timers are used to add additional delay between each count.
+                       6    ;
+                       7    $MOD51
+                       8    $TITLE(EXAMP03B.ASM)
+                       9    $DATE(JUN-06-22)
+                      10    $PAGEWIDTH(132)
+                      11    $OBJECT(EXAMP03B.HEX);
+                      12    ;
+  00FF                13    CDTIM1   EQU  0FFH        ; Countdown Timer 1 Initial Value for delay. 
+                      14                              ; 0xFF is the maximum value.
+0800                  15             ORG  0800H       ; The user external rom starts at 0x0800.
+0800 7900             16             MOV  R1,#000H    ; Initialize R1 to zero.            
+0802 8990             17    LABEL1:  MOV  P1,R1       ; Set P1 to zero.     
+0804 74FF             18             MOV  A,#CDTIM1   ; Initilize the 1st countdown timer.
+0806 6003             19    LABEL2:  JZ   LABEL3      ; If A is zero then jump to the 2nd counter.
+0808 14               20             DEC  A               ; Decrement the 1st countdown timer. 
+0809 80FB             21             SJMP LABEL2      ; Loop to continue decrementing the 1st timer.
+080B 74FF             22    LABEL3:  MOV  A,#CDTIM1   ; Initilize the 2nd countdown timer.
+080D 6003             23    LABEL5:  JZ   LABEL4      ; If A is zero then incement the binary counter R1.
+080F 14               24             DEC  A               ; Decrement the 2nd countdown timer. 
+0810 80FB             25             SJMP LABEL5      ; Loop to continue decrementing the 2nd timer.
+0812 09               26    LABEL4:  INC  R1          ; Increment the binary counter in R1.
+0813 80ED             27             SJMP LABEL1      ; Repeat the loop.     
+                      28             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP03B        EXAMP03B.ASM                                                                                  JUN-06-22   PAGE 2
+
+CDTIM1 . . . . . . . . . . . . .    NUMB  00FFH  
+LABEL1 . . . . . . . . . . . . .  C ADDR  0802H  
+LABEL2 . . . . . . . . . . . . .  C ADDR  0806H  
+LABEL3 . . . . . . . . . . . . .  C ADDR  080BH  
+LABEL4 . . . . . . . . . . . . .  C ADDR  0812H  
+LABEL5 . . . . . . . . . . . . .  C ADDR  080DH  
+P1 . . . . . . . . . . . . . . .  D ADDR  0090H  PREDEFINED  

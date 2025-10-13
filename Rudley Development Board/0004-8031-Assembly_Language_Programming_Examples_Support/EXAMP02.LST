@@ -1,0 +1,42 @@
+EXAMP02         EXAMP02.ASM                                                                                   JUN-04-22   PAGE 1
+
+                       1    ; EXAMP02.ASM - Initialze the External Data Ram.
+                       2    ; Initialize all 64K of external data ram to a fixed value.
+                       3    ; Started 06/04/2022
+                       4    ;
+                       5    $MOD51
+                       6    $TITLE(EXAMP02.ASM)
+                       7    $DATE(JUN-04-22)
+                       8    $PAGEWIDTH(132)
+                       9    $OBJECT(EXAMP02.HEX);
+                      10    ;
+  00AA                11    VALUE    EQU  0AAH        ; The value to set all the external data ram.
+                      12    ;
+0800                  13             ORG  0800H       ; The user external rom starts at 0x0800.
+                      14    ;
+0800 900000           15             MOV  DPTR,#0000H ; Initially set the data pointer to 0x0000.
+0803 A983             16    LABEL03: MOV  R1,DPH      ; Determine if the DPTR is 0xFFFF to exit the main loop.
+0805 AA82             17             MOV  R2,DPL
+0807 E9               18             MOV  A,R1        ; This is some logic to determine when the DPTR is 0xFFFF.
+0808 5A               19             ANL  A,R2        ; "A" will be 0xFF only if DPTR is 0xFFFF.
+0809 F4               20             CPL  A           ; "A" will be 0x00 if DPTR is 0xFFFF.
+080A 7002             21             JNZ  LABEL01     ; Jump if not completed setting all of the RAM.
+080C 8006             22             SJMP LABEL02     ; Jump to the Monitor if completed setting all the RAM.
+080E 74AA             23    LABEL01: MOV  A,#VALUE    ; Set "A" to the VALUE to be placed in the ram.
+0810 F0               24             MOVX @DPTR,A     ; Load the VALUE in "A" to the External Data Ram. 
+0811 A3               25             INC  DPTR        ; Increment the data pointer.
+0812 80EF             26             SJMP LABEL03     ; Go back to the beginning of the main loop.
+                      27                                   ;
+                      28                                   ; Jump back to the beginning of the Monitor Program.
+0814 020000           29    LABEL02: LJMP 0000H
+                      30             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP02         EXAMP02.ASM                                                                                   JUN-04-22   PAGE 2
+
+DPH. . . . . . . . . . . . . . .  D ADDR  0083H  PREDEFINED  
+DPL. . . . . . . . . . . . . . .  D ADDR  0082H  PREDEFINED  
+LABEL01. . . . . . . . . . . . .  C ADDR  080EH  
+LABEL02. . . . . . . . . . . . .  C ADDR  0814H  
+LABEL03. . . . . . . . . . . . .  C ADDR  0803H  
+VALUE. . . . . . . . . . . . . .    NUMB  00AAH  

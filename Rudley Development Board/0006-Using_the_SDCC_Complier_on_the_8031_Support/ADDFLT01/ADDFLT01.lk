@@ -1,0 +1,18 @@
+-muwx
+-i ADDFLT01.ihx
+-M
+-b HOME = 0x0800
+-b DSEG = 0x0030
+-b XSEG = 0x0001
+-b PSEG = 0x0001
+-b ISEG = 0x0000
+-b BSEG = 0x0000
+-k C:\Program Files\SDCC\bin\..\lib\small
+-l mcs51
+-l libsdcc
+-l libint
+-l liblong
+-l libfloat
+ADDFLT01.rel
+
+-e

@@ -1,0 +1,39 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+$include	src/mem_test.asm	/^$include (delay.asm)$/;"	l
+AS	Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
+ASFLAGS	Makefile	/^ASFLAGS= -iinc\/ -v$/;"	m
+FLASHER	Makefile	/^FLASHER=minipro$/;"	m
+HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+INC	Makefile	/^INC=inc$/;"	m
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+ROM	Makefile	/^ROM='AT28C16@DIP24'$/;"	m
+SRC	Makefile	/^SRC=src\/mem_test.asm$/;"	m
+TARGET	Makefile	/^TARGET=bin\/mem_test$/;"	m
+UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+VI	Makefile	/^VI=vi$/;"	m
+blink_led	src/mem_test.asm	/^blink_led:$/;"	l
+blink_loop	src/mem_test.asm	/^blink_loop:$/;"	l
+copy_loop	src/mem_test.asm	/^copy_loop:$/;"	l
+copy_rom_to_ram	src/mem_test.asm	/^copy_rom_to_ram:$/;"	l
+cseg	src/mem_test.asm	/^cseg$/;"	l
+delay2	inc/delay.asm	/^delay2:$/;"	l
+delay3	inc/delay.asm	/^delay3:$/;"	l
+delay_1_sec	inc/delay.asm	/^delay_1_sec:$/;"	l
+dptr_high	src/mem_test.asm	/^	dptr_high: ds 1$/;"	d
+dptr_low	src/mem_test.asm	/^	dptr_low: ds 1$/;"	d
+dseg	src/mem_test.asm	/^dseg at 30h$/;"	l
+exit_blink_led	src/mem_test.asm	/^exit_blink_led:$/;"	l
+main	src/mem_test.asm	/^main:$/;"	l
+max_ram_address_high	src/mem_test.asm	/^	max_ram_address_high equ 80h$/;"	d
+max_ram_address_low	src/mem_test.asm	/^	max_ram_address_low equ 00h$/;"	d
+max_rom_address_high	src/mem_test.asm	/^	max_rom_address_high equ 80h$/;"	d
+max_rom_address_low	src/mem_test.asm	/^	max_rom_address_low equ 00h$/;"	d
+populate_loop	src/mem_test.asm	/^populate_loop:$/;"	l
+populate_ram	src/mem_test.asm	/^populate_ram:$/;"	l
+wait	inc/delay.asm	/^wait:$/;"	l

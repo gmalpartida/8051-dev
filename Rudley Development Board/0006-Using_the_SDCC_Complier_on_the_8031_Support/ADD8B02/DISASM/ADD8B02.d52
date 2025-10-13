@@ -1,0 +1,81 @@
+;
+;  D52 V3.3.6 8052 Disassembly of ADD8B02.HEX
+;  06/22/22 13:52
+;
+	org	1
+;
+X0001:	db	0ffh					; 0001 .
+;
+	org	800h
+;
+	ljmp	X0806		; 0800   02 08 06   ...
+;
+X0803:	ljmp	X086b		; 0803   02 08 6b   ..k
+;
+X0806:	mov	sp,#32h		; 0806   75 81 32   u.2
+	lcall	X0873		; 0809   12 08 73   ..s
+	mov	a,dpl		; 080c   e5 82      e.
+	jz	X0813		; 080e   60 03      `.
+	ljmp	X0803		; 0810   02 08 03   ...
+;
+X0813:	mov	r1,#0		; 0813   79 00      y.
+	mov	a,r1		; 0815   e9         i
+	orl	a,#0		; 0816   44 00      D.
+	jz	X0835		; 0818   60 1b      `.
+	mov	r2,#0		; 081a   7a 00      z.
+	mov	dptr,#X0877	; 081c   90 08 77   ..w
+	mov	r0,#1		; 081f   78 01      x.
+	mov	p2,#0		; 0821   75 a0 00   u .
+X0824:	clr	a		; 0824   e4         d
+	movc	a,@a+dptr	; 0825   93         .
+	movx	@r0,a		; 0826   f2         r
+	inc	dptr		; 0827   a3         #
+	inc	r0		; 0828   08         .
+	cjne	r0,#0,X082e	; 0829   b8 00 02   8..
+	inc	p2		; 082c   05 a0      . 
+X082e:	djnz	r1,X0824	; 082e   d9 f4      Yt
+	djnz	r2,X0824	; 0830   da f2      Zr
+	mov	p2,#0ffh	; 0832   75 a0 ff   u .
+X0835:	clr	a		; 0835   e4         d
+	mov	r0,#0ffh	; 0836   78 ff      x.
+X0838:	mov	@r0,a		; 0838   f6         v
+	djnz	r0,X0838	; 0839   d8 fd      X}
+	mov	r0,#0		; 083b   78 00      x.
+	mov	a,r0		; 083d   e8         h
+	orl	a,#0		; 083e   44 00      D.
+	jz	X084c		; 0840   60 0a      `.
+	mov	r1,#1		; 0842   79 01      y.
+	mov	p2,#0		; 0844   75 a0 00   u .
+	clr	a		; 0847   e4         d
+X0848:	movx	@r1,a		; 0848   f3         s
+	inc	r1		; 0849   09         .
+	djnz	r0,X0848	; 084a   d8 fc      X|
+X084c:	mov	r0,#0		; 084c   78 00      x.
+	mov	a,r0		; 084e   e8         h
+	orl	a,#0		; 084f   44 00      D.
+	jz	X085f		; 0851   60 0c      `.
+	mov	r1,#0		; 0853   79 00      y.
+	mov	dptr,#X0001	; 0855   90 00 01   ...
+	clr	a		; 0858   e4         d
+X0859:	movx	@dptr,a		; 0859   f0         p
+	inc	dptr		; 085a   a3         #
+	djnz	r0,X0859	; 085b   d8 fc      X|
+	djnz	r1,X0859	; 085d   d9 fa      Yz
+X085f:	mov	30h,#5		; 085f   75 30 05   u0.
+	mov	31h,#6		; 0862   75 31 06   u1.
+	mov	32h,#7		; 0865   75 32 07   u2.
+	ljmp	X0803		; 0868   02 08 03   ...
+;
+X086b:	mov	a,31h		; 086b   e5 31      e1
+	add	a,30h		; 086d   25 30      %0
+	mov	32h,a		; 086f   f5 32      u2
+	sjmp	X086b		; 0871   80 f8      .x
+;
+X0873:	mov	dpl,#0		; 0873   75 82 00   u..
+	ret			; 0876   22         "
+;
+X0877:	db	0ffh					; 0877 .
+;
+	end
+;
+

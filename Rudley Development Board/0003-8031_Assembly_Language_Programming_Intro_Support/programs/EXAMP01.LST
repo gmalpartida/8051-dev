@@ -1,0 +1,74 @@
+EXAMP01         EXAMP01.ASM                                                                                   FEB-21-21   PAGE 1
+
+                       1    ; EXAMP01.ASM - Write Numbers to RAM
+                       2    ; Started 02/21/2021
+                       3    ; Use direct addressing.
+                       4    ; Write from 0x30 to 0x3F
+                       5    $MOD51
+                       6    $TITLE(EXAMP01.ASM)
+                       7    $DATE(FEB-21-21)
+                       8    $PAGEWIDTH(132)
+                       9    $OBJECT(EXAMP01.HEX);
+                      10    ;
+0800                  11                    ORG 0800H
+                      12    ;
+0800 7430             13                    MOV A,#30H
+0802 F530             14                    MOV 30H,A
+                      15    ;
+0804 7431             16                    MOV A,#31H
+0806 F531             17                    MOV 31H,A
+                      18    ;
+0808 7431             19                    MOV A,#31H
+080A F531             20                    MOV 31H,A
+                      21    ;
+080C 7432             22                    MOV A,#32H
+080E F532             23                    MOV 32H,A
+                      24    ;
+0810 7433             25                    MOV A,#33H
+0812 F533             26                    MOV 33H,A
+                      27    ;
+0814 7434             28                    MOV A,#34H
+0816 F534             29                    MOV 34H,A
+                      30    ;
+0818 7435             31                    MOV A,#35H
+081A F535             32                    MOV 35H,A
+                      33    ;
+081C 7436             34                    MOV A,#36H
+081E F536             35                    MOV 36H,A
+                      36    ;
+0820 7437             37                    MOV A,#37H
+0822 F537             38                    MOV 37H,A
+                      39    ;
+0824 7438             40                    MOV A,#38H
+0826 F538             41                    MOV 38H,A
+                      42    ;
+0828 7439             43                    MOV A,#39H
+082A F539             44                    MOV 39H,A
+                      45    ;
+082C 743A             46                    MOV A,#3AH
+082E F53A             47                    MOV 3AH,A
+                      48    ;
+0830 743B             49                    MOV A,#3BH
+0832 F53B             50                    MOV 3BH,A
+                      51    ;
+0834 743C             52                    MOV A,#3CH
+0836 F53C             53                    MOV 3CH,A
+                      54    ;
+0838 743D             55                    MOV A,#3DH
+083A F53D             56                    MOV 3DH,A
+                      57    ;
+083C 743E             58                    MOV A,#3EH
+EXAMP01         EXAMP01.ASM                                                                                   FEB-21-21   PAGE 2
+
+083E F53E             59                    MOV 3EH,A
+                      60    ;
+0840 743F             61                    MOV A,#3FH
+0842 F53F             62                    MOV 3FH,A
+                      63    ;
+                      64    ; Jump back to the beginning.
+0844 020000           65                    LJMP 0000H
+                      66                    END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP01         EXAMP01.ASM                                                                                   FEB-21-21   PAGE 3
+

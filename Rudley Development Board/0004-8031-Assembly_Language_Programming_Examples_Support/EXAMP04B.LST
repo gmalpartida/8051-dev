@@ -1,0 +1,65 @@
+EXAMP04B        EXAMP04B.ASM                                                                                  JUN-07-22   PAGE 1
+
+                       1    ; EXAMP04B.ASM - Demonstrate a "if" statement.
+                       2    ; Started 06/07/2022
+                       3    ; Use the Monitor Program to write out a message.
+                       4    ; Write out the Value.
+                       5    ; Write out messages if less ot greater than.
+                       6    ;
+                       7    $MOD51
+                       8    $TITLE(EXAMP04B.ASM)
+                       9    $DATE(JUN-07-22)
+                      10    $PAGEWIDTH(132)
+                      11    $OBJECT(EXAMP04B.HEX);
+                      12    ;
+  0080                13    VALUE    EQU   080H             ; Compare to this Value.
+  001B                14    ESC      EQU   01BH             ; Escape Character.
+  000A                15    LF       EQU   10               ; Line Feed.
+  000D                16    CR       EQU   13               ; Carrage Return
+  077C                17    WTSTRING EQU   077CH            ; Location of subroutine that writes characters.
+  07ED                18    WRBYTE   EQU   07EDH            ; Location of subroutine that writes a Value.
+                      19    ;
+0800                  20             ORG   0800H            ; Set the ORG to 0x0800 to start in the user ROM.
+0800 7C00             21                     MOV   R4,#00000H
+0802 BC8012           22    L01:     CJNE  R4,#VALUE,NEQUAL ; IF Not Equal to the VALUE THEN Jump to NEQUAL.
+0805 12077C           23                     LCALL WTSTRING         ; ELSE
+0808 0A0D4551         24                     DB    LF,CR,'EQUAL='   ; Write out the VALUE is EQUAL.
+080C 55414C3D   
+0810 1B               25             DB    ESC
+0811 EC               26             MOV   A,R4             ; Move the variable R4 to "A".
+0812 1207ED           27             LCALL WRBYTE         ; Write out the variable when "equal".
+0815 802B             28             SJMP  L02              ; Jump to end to loop around.
+0817 4015             29    NEQUAL:  JC    L03              ; IF R4 is Greater THEN VALUE.
+0819 12077C           30                     LCALL WTSTRING         ; Write out "GREATER THAN"
+081C 0A0D4752         31                     DB    LF,CR,'GREATER THAN='
+0820 45415445   
+0824 52205448   
+0828 414E3D     
+082B 1B               32             DB    ESC
+082C 8010             33                     SJMP  L04              ; Jump around.
+082E 12077C           34    L03:     LCALL WTSTRING         ; ELSE
+                      35                                    ; Write out "LESS THAN"
+0831 0A0D4C45         36                     DB    LF,CR,'LESS THAN='  
+0835 53532054   
+0839 48414E3D   
+083D 1B               37             DB    ESC       
+083E EC               38    L04:     MOV   A,R4             ; Move the variable R4 to "A".
+083F 1207ED           39             LCALL WRBYTE           ; Write out the variable when "not equal".
+0842 0C               40    L02:     INC   R4               ; Increment R4.
+0843 80BD             41                     SJMP  L01              ; Jump back to the beginning of the loop.
+                      42             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP04B        EXAMP04B.ASM                                                                                  JUN-07-22   PAGE 2
+
+CR . . . . . . . . . . . . . . .    NUMB  000DH  
+ESC. . . . . . . . . . . . . . .    NUMB  001BH  
+L01. . . . . . . . . . . . . . .  C ADDR  0802H  
+L02. . . . . . . . . . . . . . .  C ADDR  0842H  
+L03. . . . . . . . . . . . . . .  C ADDR  082EH  
+L04. . . . . . . . . . . . . . .  C ADDR  083EH  
+LF . . . . . . . . . . . . . . .    NUMB  000AH  
+NEQUAL . . . . . . . . . . . . .  C ADDR  0817H  
+VALUE. . . . . . . . . . . . . .    NUMB  0080H  
+WRBYTE . . . . . . . . . . . . .    NUMB  07EDH  
+WTSTRING . . . . . . . . . . . .    NUMB  077CH  

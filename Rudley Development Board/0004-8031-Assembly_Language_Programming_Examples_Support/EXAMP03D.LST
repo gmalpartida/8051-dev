@@ -1,0 +1,40 @@
+EXAMP03D        EXAMP03D.ASM                                                                                  JUN-06-22   PAGE 1
+
+                       1    ; EXAMP03D.ASM - P1 - Binary Counter - More Delay - Nested Loops
+                       2    ; Started 06/06/2022
+                       3    ; Uses led_driver_00 connected to the P1 port.
+                       4    ; This will illuminate the eight LEDs to show the binary counter.
+                       5    ; A nested countdown timers are used to add some delay between each count.
+                       6    ;
+                       7    $MOD51
+                       8    $TITLE(EXAMP03D.ASM)
+                       9    $DATE(JUN-06-22)
+                      10    $PAGEWIDTH(132)
+                      11    $OBJECT(EXAMP03D.HEX);
+                      12    ;
+  00FF                13    CDTIM1   EQU  0FFH        ; Countdown Timer 1 Initial Value for delay. 
+                      14                              ; 0xFF is the maximum value.
+  0080                15    CDTIM2   EQU  080H        ; Countdown Timer 2 Initial Value for delay.
+                      16                              ; 0xFF is the maximum value.
+                      17    ;
+0800                  18             ORG  0800H       ; The user external rom starts at 0x0800.
+0800 79FF             19                     MOV  R1,#CDTIM1  ; Initialize the 1st countdown timer.
+0802 7A80             20                     MOV  R2,#CDTIM2  ; Initialize the 2nd countdown timer.
+0804 7B00             21             MOV  R3,#000H    ; Initialize R3 to zero.            
+0806 8B90             22    SETP1:   MOV  P1,R3       ; Set P1 to R3.
+0808 D9FE             23    NZERO1:  DJNZ R1,NZERO1   ; Countdown the 1st timer until zero.
+080A 79FF             24             MOV  R1,#CDTIM1  ; Initialize the 1st countdown timer.
+080C DAFA             25             DJNZ R2,NZERO1   ; Countdown the 2nd timer until zero.
+080E 7A80             26             MOV  R2,#CDTIM2  ; Initialize the 2nd countdown timer.          
+0810 0B               27             INC  R3          ; Increment the binary counter in R3.
+0811 80F3             28                 SJMP SETP1       ; Repeat the loop.
+                      29             END
+
+VERSION 1.2h ASSEMBLY COMPLETE, 0 ERRORS FOUND
+EXAMP03D        EXAMP03D.ASM                                                                                  JUN-06-22   PAGE 2
+
+CDTIM1 . . . . . . . . . . . . .    NUMB  00FFH  
+CDTIM2 . . . . . . . . . . . . .    NUMB  0080H  
+NZERO1 . . . . . . . . . . . . .  C ADDR  0808H  
+P1 . . . . . . . . . . . . . . .  D ADDR  0090H  PREDEFINED  
+SETP1. . . . . . . . . . . . . .  C ADDR  0806H  

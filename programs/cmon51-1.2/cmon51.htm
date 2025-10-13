@@ -1,0 +1,1399 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+<title>CMON51</title>
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:Arial;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.Char
+	{font-family:Arial;
+	font-weight:bold;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:26.0pt'>CMON51</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'>Copyright (c) 2005
+Jesus Calvino-Fraga</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>Introduction</h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>CMON51 is a monitor program for
+the 8051 family of microcontrollers.  With CMON51 you can:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>a)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Examine
+and modify both the internal and expanded RAM of the microcontroller.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>b)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Examine
+the program memory of the microcontroller.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>c)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Examine
+and change any register or special function register (SFR).</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>d)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Download
+a program using the Intel hex format to flash code memory.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>e)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Disassembly
+programs in flash.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>f)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Run step-by-step, trace, and execute downloaded programs.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>g)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Use
+software breakpoints.  Hardware breakpoints are also kind of supported.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>CMON51 needs the following microcontroller resources to
+operate:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>a)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The
+serial port using timer 1 for baud rate generation.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>b)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Timer
+1 interrupt for single step operation.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>c)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>256
+bytes of external RAM for variables as well as to save the user program
+internal direct memory.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>d)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Around
+8 Kbytes of code memory for the monitor itself (port dependant).</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>To communicate with CMON51 you
+need a terminal program.  If you use Microsoft’s Windows, HyperTerminal works
+just fine.  Another option is TeraTerm.  You will need to configure your
+terminal program depending on the microcontroller and crystal you are using. 
+For example, for a P89V51RD2 microcontroller with a 22MHz crystal you will need
+to configure your terminal program to 115200 baud, 8 bits, 2 stop bits, and
+parity none.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>Currently, CMON51 has been ported
+to work using the following 8051 compatible microcontrollers:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>a)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Plain
+8051/8052 (using overlapped CODE and XRAM memory)</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>b)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Philips
+P89V51RD2 (using built in Flash)</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>c)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Atmel
+AT89C51RD2/ED2 (using built in Flash)</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>d)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End
+of list <span style='font-family:Wingdings'>L</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>Building CMON51</h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>CMON51 is written mainly in C and
+compiled using the freeware SDCC compiler available at <a
+href="http://sdcc.sourceforge.net/">http://sdcc.sourceforge.net/</a>.  Make
+files are available for the microcontrollers it has been ported to.  You will
+need also the ‘make’ command for your computer platform (Windows, Linux, Unix,
+etc.) available everywhere on the internet; Google “make.exe”, for example. For
+the Microsoft Windows operating systems you may use the make available from <a
+href="http://unxutils.sourceforge.net/">http://unxutils.sourceforge.net/</a>.  If
+you use Linux, make is probably already installed.  If you have Microsoft
+Visual Studio installed in your computer, you can use nmake as well.  For
+example:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>make
+–f 8052.mak</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>or</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>make
+–f p89v51rd2.mak</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>In all my tests I used a 22.1184 MHZ
+crystal, and the code is setup to use this value.  If you have a different
+crystal frequency, you will need to recreate the file “baud.h”, or setup the
+baud rate directly in CMON51 by setting the TH1 special function register in
+function _sdcc_external_startup (defined in 8052.c, p89v51rd2.c, at89c51ed2.c,
+etc.).  To recreate “baud.h” first compile “baud.c”:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>C:\board51\cmon51&gt;cl
+baud.c</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Microsoft
+(R) 32-bit C/C++ Optimizing Compiler Version 12.00.8804 for 80x86</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(C) Microsoft Corp 1984-1998. All rights reserved.</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>baud.c</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Microsoft
+(R) Incremental Linker Version 6.00.8447</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(C) Microsoft Corp 1992-1998. All rights reserved.</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>/out:baud.exe</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>baud.obj</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>or if what you have is GCC:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>$ gcc
+baud.c -o baud.exe</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>and then run it.  For example,
+for a 12MHz crystal:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>baud
+12 &gt; baud.h</span></p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>WARNING: check the file “baud.h”
+to see what baud rates are available as 115200 is often not achievable using
+some crystal values.  If that is the case, you will need to use a different
+baud rate for CMON51.  To change to a different baud rate, look for “TH1=TIMER1_K2_115200;”
+in the corresponding microcontroller file (p89v51rd2.c, for example), and
+change it with one of the values present in “baud.h”.  Then, configure you
+terminal program to use that baud rate.</p>
+
+<h1>CMON51 commands</h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The commands of CMON51 can be classified into these groups:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>a)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Commands
+used to display and modify memory.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>b)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Commands
+used to display and change registers and SFR.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>c)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Command
+to load a hex file.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>d)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Commands
+to execute user code.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>e)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Commands
+to set and display software breakpoints.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'>f)<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Disassembly.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2>Display Memory</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>For these commands [start] is the
+beginning of the memory you want to display, and [length] is the number of
+bytes.  Both are plain hex numbers, and you neither have to add ’0’ to the
+beginning of the number nor ‘H’ to the end.  CMON51 is case insensitive.  If
+[start] is missing, the display will begin at zero, except for indirectly
+addressable internal RAM which is located at address 80H.  If length is
+missing, the default length of 80H will be used.  These are the memory display
+commands:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>X [start] [length]: </b>Displays expanded ram</p>
+
+<p class=MsoNormal><b>D [start] [length]: </b>Displays internal direct ram</p>
+
+<p class=MsoNormal><b>I [start] [length]: </b>Displays internal indirect ram<b><br>
+C [start] [length]: </b> Displays code memory<br>
+<br>
+</p>
+
+<p class=MsoNormal>Examples:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+x</span></b></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0000: 
+22 00 00 00 F0 40 22 09-05 46 55 55 55 40 00 C0    &quot;....@&quot;..FUUU@..</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0010: 
+3B 34 00 00 80 3F 10 00-0B 00 74 02 00 00 00 00    ;4...?....t.....</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0020: 
+00 00 0A 00 00 00 7A 3F-00 40 7A 44 0D 0C 00 5B    ......z?.@zD...[</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>X:0030: 
+01 E2 3E 5B 01 E2 44 27-6F 80 A3 ED E7 B2 6F 12    ..&gt;[..D'o.....o.</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>X:0040: 
+83 3A 00 77 00 40 C8 CC-4C 3D C8 CC 4C 3F 00 00    .:.w.@..L=..L?..</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>X:0050: 
+00 00 00 00 00 66 29 6F-80 07 00 01 00 00 9A 99    .....f)o........</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>X:0060: 
+D9 40 4D EB 00 3F 9E D5-62 3F 00 00 F0 40 0C 00    .@M..?..b?...@..</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>X:0070: 
+5B 01 E2 3E 00 00 F0 40-01 00 DB 0F C9 40 D2 53    [..&gt;...@.....@.S</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><b><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></b><b>
+</b><b><span style='font-size:8.0pt;font-family:"Courier New"'>x 10 20</span></b></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0010: 
+3B 34 00 00 80 3F 10 00-0B 00 74 02 00 00 00 00    ;4...?....t.....</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0020: 
+00 00 0A 00 00 00 7A 3F-00 40 7A 44 0D 0C 00 5B    ......z?.@zD...[</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><b><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+x 200 200</span></b></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0200: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0210: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0220: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0230: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0240: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0250: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0260: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0270: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0280: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0290: 
+07 47 6E 00 00 00 00 00-00 00 00 00 00 00 00 00    .Gn.............</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02A0: 
+78 20 32 30 30 20 32 30-30 00 00 00 00 00 00 00    x.200.200.......</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02B0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02C0: 
+09 AA AA AA AA AA AA AA-AA AA AA AA AA AA AA AA    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02D0: 
+55 55 55 55 55 55 55 55-55 55 55 55 55 55 55 55    UUUUUUUUUUUUUUUU</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02E0: 
+AA AA AA AA AA AA AA AA-AA AA AA AA AA AA AA AA    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:02F0: 
+55 55 55 55 55 55 55 55-55 55 55 55 55 65 56 55    UUUUUUUUUUUUUeVU</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0300: 
+FF FF FF FF FF FF FF FF-FF FF FF FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0310: 
+FF FF FF FF FF FF FF FF-FF FF FF FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0320: 
+FF FF FF FF FF FF FF FF-FF FF FF FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0330: 
+FF FF FF FF FF FF FF FF-FF FF FE FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0340: 
+FF FF FF FF FF FF FF FF-FF FF FF FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0350: 
+FF FF FF FF FF FF FF FF-FF FF FF FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0360: 
+FF FF FF FF FF FF FF FF-FF FF FE FF FF FD FE FF    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&lt;Space&gt;=line
+&lt;Enter&gt;=page &lt;ESC&gt;=stop</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+d</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>00:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>10:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>20:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:30: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:40: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:50: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:60: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:70: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+i</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:80: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:90: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:A0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:B0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:C0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:D0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:E0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>I:F0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+c e000 35</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>C:E000: 
+02 F7 4A 02 F3 4E 12 E8-5C 80 FE 02 DF 04 02 DF    ..J..N..\.......</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>C:E010: 
+00 AA 82 AB 83 AC F0 8A-82 8B 83 8C F0 12 F7 2A    ...............*</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>C:E020: 
+FD 24 FF 50 28 BD 80 00-50 23 10 99 02 80 FB 8A    .$.P(...P#......</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>C:E030: 
+82 8B 83 8C F0 12 F7 2A-FD 8D 99 BD 0A 08 10 99    .......*........</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<h2>Modify/Edit Memory</h2>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal style='text-align:justify'>To edit memory, use the commands
+below.  Start is the beginning of the memory to be modified.  The current
+memory content will be displayed followed by a dot.  At this point you may add
+a new value, or press &lt;Space&gt; to leave the value unchanged and
+display/modify the next memory location.  Press &lt;Enter&gt; to stop editing.</p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>MX [start]:  </b>Modify external RAM</p>
+
+<p class=MsoNormal><b>MD [start]:  </b>Modify internal directly addressable RAM</p>
+
+<p class=MsoNormal><b>MI [start]:  </b>Modify internal indirectly addressable
+RAM</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal>Example:</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+mx 110</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0110:
+00.11 00.22 00.33 00.44 00.55 00.66 00.77 00.88</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0118:
+00.</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+x 110 10</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>X:0110: 
+11 22 33 44 55 66 77 88-00 00 00 00 00 00 00 00    .&quot;3DUfw.........</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<h2>Fill Memory</h2>
+
+<p class=MsoNormal style='text-align:justify'>For these commands [start] is the
+beginning of the memory you want to fill, [length] is the number of bytes, and
+[value] is the hex number the memory will be set to.  For these commands, the
+three parameters are mandatory.</p>
+
+<p class=MsoNormal>  </p>
+
+<p class=MsoNormal><b>FX [start] [length] [value]:</b> fill expanded ram<br>
+<b>FD [start] [length] [value]:</b> fill direct internal ram<br>
+<b>FI [start] [length] [value]:</b> fill indirect internal ram<br>
+<br>
+</p>
+
+<p class=MsoNormal>Example:</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+fi c0 20 aa</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+i</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:80: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:90: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:A0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:B0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:C0: 
+AA AA AA AA AA AA AA AA-AA AA AA AA AA AA AA AA    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:D0: 
+AA AA AA AA AA AA AA AA-AA AA AA AA AA AA AA AA    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:E0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>I:F0: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<h2>Commands to Display and Modify Registers and SFRs</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To display registers, SFR, and bits, just type the
+corresponding name.  For example:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CMON51
+V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(c) 2005 Jesus Calvino-Fraga</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Port:
+P89V51RD2 V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>00</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+t2mod</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>FC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+r1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>00</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>FF</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+cy</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1_3</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>To change a register, SFR, or
+bit, type the corresponding name the ‘=’ and then the value.  For example:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+a=f0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>F0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>Some of the most common used
+registers can be displayed at once using command ‘R’:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+r</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =F0 
+B =00  SP=07  IE=00  DPH=00  DPL=00  PSW=00  PC=72FC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>Notice that the register bank
+displayed is indicated as well.  To see R0 to R7 for all four register banks,
+just display the directly addressable memory from address 0:</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+d</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>00:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>10:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:</span><span style='font-size:8.0pt;font-family:"Courier New"'>20:  00</span><span
+style='font-size:8.0pt;font-family:"Courier New"'> 00 00 00 00 00 00 00-00 00 00
+00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:30: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:40: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:50: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:60:
+ 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>D:70: 
+00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00    ................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'><b>Warning</b>: Since the
+internal addressable memory and registers A, B, DPTR, SP, PSW, and IE are used
+by CMON51, they are preserved in external RAM when CMON51 is running, and
+restored before the user program runs.  ALL OTHER REGISTERS ARE NOT PRESERVED,
+and changing them may crash CMON51.  If that happens, you may have to reset the
+microcontroller.  For example, altering TH1, will change the baud rate the
+microcontroller is using to communicate with the terminal program:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+th1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>FF</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+th1=fe</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>ø                           
+</span><span style='font-size:8.0pt;font-family:Wingdings'>ß</span><span
+style='font-size:8.0pt;font-family:"Courier New"'>------Wrong baud rate:
+garbage on the screen</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>                              
+</span><span style='font-size:8.0pt;font-family:Wingdings'>ß</span><span
+style='font-size:8.0pt;font-family:"Courier New"'>------Reset</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CMON51
+V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(c) 2005 Jesus Calvino-Fraga</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Port:
+P89V51RD2 V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>CMON51 is programmed so that you
+can use the SFR’s and bits proper names instead of their addresses.  The names
+are port dependant and come from the microcontroller manufacturer datasheet. For
+the P89V51RD2 port of CMON51, these are the SFRs recognized by CMON51:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>P0,  SP,  DPL,  DPH,  WDTD, 
+SPDR,  SPDAT,  PCON,  TCON,  TMOD,  TL0,  TL1,  TH0,  TH1,  AUXR,  P1,  SCON, 
+SBUF,  P2,  AUXR1,  IE,  SADDR,  SPSR,  SPCFG,  P3,  FCF,  FST,  IP0H,  IP, 
+SADEN,  WDTC,  T2CON,  T2MOD,  RCAP2L,  RCAP2H,  TL2,  TH2,  PSW,  SPCR, 
+SPCTL,  CCON,  CMOD,  CCAPM0,  CCAPM1,  CCAPM2,  CCAPM3,  CCAPM4,  ACC,  A, 
+IEN1,  CL,  CCAP0L,  CCAP1L,  CCAP2L,  CCAP3L,  CCAP4L,  B,  IP1H,  IP1,  CH, 
+CCAP0H,  CCAP1H,  CCAP2H,  CCAP3H,  CCAP4H, DPTR, and PC.</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>For the P89V51RD2, these are the
+bits recognized by CMON51:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>IT0,  IE0,  IT1,  IE1,  TR0, 
+TF0,  TR1,  TF1RI,  TI,  RB8,  TB8,  REN,  SM2,  SM1,  SM0,  EX0,  ET0,  EX1, 
+ET1,  ES,  EA,  PX0,  PT0,  PX1,  PT1, PT2, PS,  P,  F1,  OV,  RS0,  RS1,  F0, 
+AC,  CY,  CP_RL2,  C_T2,  TR2,  EXEN2,  TCLK,  RCLK,  EXF2,  TF2,  ET2,  CF, 
+CR,  CCF4,  CCF3,  CCF2,  CCF1,  CCF0,  EC,  EBO,  PPC,  and PBO.</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>CMON51 will recognize individual
+bits of any register.  Just append period (‘.’) followed by the bit number to
+the SFR name.  For example:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CMON51
+V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(c) 2005 Jesus Calvino-Fraga</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Port:
+P89V51RD2 V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1.0=0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>FE</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+p1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<h2>L: Load Intel Hex File</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>This command should behave
+differently depending on the 8051 variant you are using.  For some 8051s with
+internal flash, the flash will be erased before downloading can begin.  For
+example, for CMON51 running in a Philips P89V51RD2 this will happen:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CMON51
+V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Copyright
+(c) 2005 Jesus Calvino-Fraga</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Port:
+P89V51RD2 V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+L</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Erasing............................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Send
+file or &lt;Esc&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>The erasing of the flash memory
+will take 9 or 10 seconds for a P89V51RD2 microcontroller.  After that, you can
+send the hex file.  If you are using HyperTerminal, click  ‘Transfer’-&gt;’Send
+Text File…’, select the hex file you want to send and press ‘Open’.  The file
+will be send line by line.  CMON51 will echo a period ‘.’ for each line
+received:</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CMON51
+V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>CopyRight
+(c) 2005 Jesus Calvino-Fraga</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Port:
+P89V51RD2 V1.0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+L</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Erasing............................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Send
+file or &lt;Esc&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>................................................................................</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>.</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>Done.</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>If instead of periods you see ‘X’s,
+the hex file was received with errors.  For the P89V51RD2 microcontroller, make
+sure your terminal program is set to 115000 baud, 8 bits, 2 stop bits, and no
+parity and try again.  If you get this message:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>WARNING:
+missing Timer1 jmp</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>It means that your code did not
+reserve space for the timer 1 interrupt which CMON51 uses to implement the
+single step command.  If your program is written in assembly, make sure you
+have something like this</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>org
+0000H</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:"Courier New"'>ljmp start</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>org
+001BH</span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span style='font-size:8.0pt;
+font-family:"Courier New"'>ljmp 001BH</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>start:</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>       ;your
+code starts here</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>Of course, the actual ljmp can
+point to anything.  CMON51 will replace it with the correct address for the
+single step routine.  CMON51 will also replace the address of the first jump,
+so that when the microcontroller is reset it executes the monitor not the user
+program.  If the user code has a ljmp at address 0, CMON51 will set the default
+program counter to that particular address:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+pc</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72FC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+r</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=07  IE=00  DPH=00  DPL=00  PSW=00  PC=72FC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>Additionally, you can write the
+interrupt service routines for other interrupts as you will normally do.  If
+you are using the sdcc compiler, something like this in your main project file will
+work just fine:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>void
+dummyint3 (void) interrupt 3 _naked {}<br>
+<br>
+</span></p>
+
+<h2>Commands to Execute User Code</h2>
+
+<p class=MsoNormal>The following commands allow executing the loaded user code:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>G [start]</b></p>
+
+<p class=MsoNormal style='text-align:justify'>This command will run the user
+program from address ‘start’.  If start is zero, or not included, the ‘G’
+command will start from the current value of the program counter.  For
+instance, the command</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+g 100</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>and</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+pc=100</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+g</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>are equivalent.  Remember, the program
+counter (PC) is set to the address of the ljmp instruction found in address 0
+after you download a file using command ‘L’.   The ‘G’ command will run the
+user program at full speed, and software breakpoints will be ignored.   You can
+add hardware breakpoints to your program by calling the monitor breakpoint
+routine.  In assembly you can insert this instruction in your code</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>lcall
+01bh</span></p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>If you are programming in ‘C’
+using sdcc, you can add the same instruction using in-line assembly:</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>_asm
+lcall 0x1b _endasm;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-align:justify'>To return to the monitor from
+your code,</p>
+
+<p class=MsoNormal><br>
+<b>S [start]</b> step one assembly instruction</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This is similar to command G, except that only one
+instruction is executed at a time, then the registers and the next instruction
+to be executed are displayed in the terminal:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+s 72c0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=07  IE=80  DPH=00  DPL=00  PSW=00  PC=72C2</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72C2:
+9E        subb    a,r6</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+s</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=07  IE=80  DPH=00  DPL=00  PSW=00  PC=72C3</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72C3:
+C2 D1     clr     F1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>To see where your program is, and
+where is going, you can use the unassemble command:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+u 72c3 10</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72C3:
+C2 D1     clr     F1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72C5:
+F5 82     mov     DPL,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72C7:
+12 35 80  lcall   3580</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72CA:
+02 50 F3  ljmp    50F3</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72CD:
+AA 82     mov     r2,DPL</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72CF:
+AB 83     mov     r3,DPH</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72D1:
+A2 F7     mov     c,B_7</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72D</span><span style='font-size:8.0pt;font-family:"Courier New"'>3: 33</span><span
+style='font-size:8.0pt;font-family:"Courier New"'>        rlc     a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>72D4:
+92 D1     mov     F1,c</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72D6:
+60 02     jz      72DA</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72D8:
+D2 F7     setb    B_7</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72DA:
+F5 82     mov     DPL,a</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72DC:
+AC F0     mov     r4,B</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72DE:
+22        ret</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72DF:
+E5 82     mov     a,DPL</span></p>
+
+<p class=MsoNormal><span lang=ES-VE style='font-size:8.0pt;font-family:"Courier New"'>72E1:
+90 02 58  mov     dptr,#0258</span></p>
+
+<p class=MsoNormal>&gt;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The format of the ‘U’ command is</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>U [start] [lines]</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>[start] is where CMON51 will
+begin unassembling.   [lines] is the number of lines of assembly code to be
+displayed.  If [lines] is zero or empty, one line will be unassembled.</p>
+
+<p class=MsoNormal> <br>
+<b>T [address]</b> step until address</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>This command is similar to the
+step (‘S’) command, but single steps will be executed until the program counter
+(PC) reaches [address].  Every instruction will be displayed in the terminal as
+it is executed.  When the PC reaches [address] the registers and the next
+instruction to be executed are displayed in the screen:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+t 33bc</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33AE:
+74 F0     mov     a,#F0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33B0:
+55 89     anl     a,TMOD</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33B2:
+44 01     orl     a,#01</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33B4:
+F5 89     mov     TMOD,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33B6:
+75 8A EA  mov     TL0,#EA</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33B9:
+75 8C 03  mov     TH0,#03</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =21 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33BC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33BC:
+E4        clr     a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>If you run your code using this
+command, it will run at a fraction of its actual speed as compared to the ‘G’
+command.  Also, you can make it run forever just by setting [address] to an
+unreachable location.  For example</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>&gt; t ffff</p>
+
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+<p class=MsoNormal style='text-align:justify'>will display all the instructions
+as they are executed.  To stop the execution hit any key.</p>
+
+<p class=MsoNormal><br>
+<b>TR [address]</b> same as T but shows the registers every time</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+r</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =21 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33BC</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;
+tr 33c3</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33BC:
+E4        clr     a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33BD</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33BD:
+F5 08     mov     08,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33BF</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33BF:
+F5 09     mov     09,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33C1</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33C1:
+F5 0A     mov     0A,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>A =00 
+B =00  SP=5C  IE=80  DPH=00  DPL=00  PSW=00  PC=33C3</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>R0=00 
+R1=00  R2=00  R3=00  R4=00  R5=00  R6=00  R7=00  BANK 0</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>33C3:
+F5 0B     mov     0B,a</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&gt;</span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><b>GB [address]</b> go until a software breakpoint</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This command works similarly to the ‘T’ command, but nothing
+is sent to the terminal.  When the program counter reaches one of four possible
+breakpoint addresses, it will stop execution.  To setup the breakpoints, use
+the commands</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>BR0 = [address]</b></p>
+
+<p class=MsoNormal><b>BR1 = [address]</b></p>
+
+<p class=MsoNormal><b>BR2 = [address]</b></p>
+
+<p class=MsoNormal><b>BR3 = [address]</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To clear all software breakpoints use the command</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>BRC</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To display the software breakpoints, use</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>BR</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The execution when using GB is somehow faster than that of
+the T and TR commands.  Nevertheless, it is way slower than the G command. <br>
+<br>
+</p>
+
+<h2>Miscellaneous Commands</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>&lt;CTRL&gt;+V:</b> retypes the last command.</p>
+
+<p class=MsoNormal><b>PCR:</b> restores the PC to the value obtained when the
+file was originally downloaded.</p>
+
+</div>
+
+</body>
+
+</html>

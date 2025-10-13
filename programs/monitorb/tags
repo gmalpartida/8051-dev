@@ -1,0 +1,101 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+$MOD51	src/example01.asm	/^$MOD51$/;"	l
+$MOD51	src/monitorb.asm	/^$MOD51$/;"	l
+A2LT10	src/asc2hex.asm	/^A2LT10:  MOV    A,B$/;"	l
+AS	Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
+ASC2HEX	src/asc2hex.asm	/^ASC2HEX: CLR    CY$/;"	l
+ASFLAGS	Makefile	/^ASFLAGS= -i -v$/;"	m
+A_RUN	src/monitorb.asm	/^A_RUN:  ACALL  WT_STRING$/;"	l
+A_TEST	src/monitorb.asm	/^A_TEST: CJNE   A,#'A',X_TEST; If Not A, Then Repeat Menu$/;"	l
+BITRATE	src/monitorb.asm	/^BITRATE  equ    0FDH   ; For 9600 Baud Rate$/;"	d
+B_1	src/monitorb.asm	/^B_1:    MOV    DPL,R0   $/;"	l
+B_2	src/monitorb.asm	/^B_2:    MOV    DPL,R0$/;"	l
+B_RUN	src/monitorb.asm	/^B_RUN:  ACALL  WT_STRING$/;"	l
+B_TEST	src/monitorb.asm	/^B_TEST: CJNE   A,#'B',D_TEST; If Not B, Then Repeat Menu$/;"	l
+CKSUM	src/monitorb.asm	/^CKSUM    equ    010H$/;"	d
+CR	src/monitorb.asm	/^CR       EQU   13$/;"	d
+C_1	src/monitorb.asm	/^C_1:    ACALL  RD_CHAR$/;"	l
+C_2	src/monitorb.asm	/^C_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It$/;"	l
+C_3	src/monitorb.asm	/^C_3:    ACALL  WT_STRING   ; Write Bad Checksum$/;"	l
+C_4	src/monitorb.asm	/^C_4:    SJMP   C_X$/;"	l
+C_RUN	src/monitorb.asm	/^C_RUN:  ACALL  WT_STRING$/;"	l
+C_TEST	src/monitorb.asm	/^C_TEST: CJNE   A,#'C',J_TEST; If Not C, Then Repeat Menu$/;"	l
+C_X	src/monitorb.asm	/^C_X:    ACALL  LFCR$/;"	l
+C_Y	src/monitorb.asm	/^C_Y:    ACALL  READHEX$/;"	l
+C_Z	src/monitorb.asm	/^C_Z:    ACALL  WT_STRING$/;"	l
+D_1	src/monitorb.asm	/^D_1:    MOV    A,@R0$/;"	l
+D_2	src/monitorb.asm	/^D_2:    ACALL  LFCR$/;"	l
+D_RUN	src/monitorb.asm	/^D_RUN:  ACALL  WT_STRING$/;"	l
+D_TEST	src/monitorb.asm	/^D_TEST: CJNE   A,#'D',H_TEST; If Not D, Then Repeat Menu$/;"	l
+ESC	src/monitorb.asm	/^ESC      equ    01BH$/;"	d
+E_1	src/monitorb.asm	/^E_1:    ACALL  RD_CHAR$/;"	l
+E_2	src/monitorb.asm	/^E_2:    ACALL  READHEX    ; Read Data$/;"	l
+E_RUN	src/monitorb.asm	/^E_RUN:  ACALL  WT_STRING$/;"	l
+E_TEST	src/monitorb.asm	/^E_TEST: CJNE   A,#'E',K_TEST; If Not E, Then Repeat Menu$/;"	l
+E_X	src/monitorb.asm	/^E_X:    ACALL  LFCR$/;"	l
+E_Y	src/monitorb.asm	/^E_Y:    ACALL  READHEX$/;"	l
+FLASHER	Makefile	/^FLASHER=minipro$/;"	m
+GETSEL	src/monitorb.asm	/^GETSEL: LCALL  WT_STRING$/;"	l
+H2LT10	src/hex2asc.asm	/^H2LT10:   ADD    A,#'0'$/;"	l
+HEX2ASC	src/hex2asc.asm	/^HEX2ASC:  ANL    A,#00FH$/;"	l
+HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
+H_1	src/monitorb.asm	/^H_1:    ACALL  RD_CHAR$/;"	l
+H_2	src/monitorb.asm	/^H_2:    ACALL  READHEX    ; Read Data$/;"	l
+H_RUN	src/monitorb.asm	/^H_RUN:  ACALL  WT_STRING$/;"	l
+H_TEST	src/monitorb.asm	/^H_TEST: CJNE   A,#'H',C_TEST; If Not H, Then Repeat Menu$/;"	l
+H_X	src/monitorb.asm	/^H_X:    ACALL  LFCR$/;"	l
+H_Y	src/monitorb.asm	/^H_Y:    ACALL  READHEX$/;"	l
+INC	Makefile	/^INC=inc$/;"	m
+J_MENU	src/monitorb.asm	/^J_MENU: ACALL  WAIT         ; Wait then show menu$/;"	l
+J_RUN	src/monitorb.asm	/^J_RUN:  LJMP   NEWPROG$/;"	l
+J_TEST	src/monitorb.asm	/^J_TEST: CJNE   A,#'J',E_TEST; If Not J, Then Repeat Menu$/;"	l
+K_1	src/monitorb.asm	/^K_1:    ACALL  RD_CHAR$/;"	l
+K_2	src/monitorb.asm	/^K_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It$/;"	l
+K_3	src/monitorb.asm	/^K_3:    ACALL  WT_STRING   ; Write Bad Checksum$/;"	l
+K_4	src/monitorb.asm	/^K_4:    SJMP   K_X$/;"	l
+K_RUN	src/monitorb.asm	/^K_RUN:  ACALL  WT_STRING$/;"	l
+K_TEST	src/monitorb.asm	/^K_TEST: CJNE   A,#'K',N_TEST; If Not K, Then Repeat Menu$/;"	l
+K_X	src/monitorb.asm	/^K_X:    ACALL  LFCR$/;"	l
+K_Y	src/monitorb.asm	/^K_Y:    ACALL  READHEX$/;"	l
+K_Z	src/monitorb.asm	/^K_Z:    ACALL  WT_STRING$/;"	l
+LF	src/monitorb.asm	/^LF       EQU   10$/;"	d
+LFCR	src/lfcr.asm	/^LFCR:   MOV    A,#00AH$/;"	l
+MENU	src/monitorb.asm	/^MENU:   LCALL  WT_STRING$/;"	l
+MEN_1	src/wt_string.asm	/^MEN_1:     JNB    TI,MEN_1     ; Wait until transmitter ready$/;"	l
+MINICOM	Makefile	/^MINICOM=minicom$/;"	m
+M_RUN	src/monitorb.asm	/^M_RUN:  ACALL  WT_STRING$/;"	l
+M_TEST	src/monitorb.asm	/^M_TEST: CJNE   A,#'M',S_TEST; If Not M, Then Repeat Menu$/;"	l
+NEWPROG	src/monitorb.asm	/^NEWPROG  equ   8000H$/;"	d
+N_RUN	src/monitorb.asm	/^N_RUN:  ACALL  WT_STRING$/;"	l
+N_TEST	src/monitorb.asm	/^N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu$/;"	l
+O_RUN	src/monitorb.asm	/^O_RUN:  ACALL  WT_STRING$/;"	l
+O_TEST	src/monitorb.asm	/^O_TEST: CJNE   A,#'O',M_TEST; If Not O, Then Repeat Menu$/;"	l
+RD_CHAR	src/rd_char.asm	/^RD_CHAR:  JNB    RI,RD_CHAR$/;"	l
+READHEX	src/readhex.asm	/^READHEX:$/;"	l
+ROM	Makefile	/^ROM='AT28C16@DIP24'$/;"	m
+R_RUN	src/monitorb.asm	/^R_RUN:  ACALL  WT_STRING$/;"	l
+R_TEST	src/monitorb.asm	/^R_TEST: CJNE   A,#'R',W_TEST; If Not R, Then Repeat Menu$/;"	l
+SRC	Makefile	/^SRC=src\/monitorb.asm$/;"	m
+S_RUN	src/monitorb.asm	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
+S_TEST	src/monitorb.asm	/^S_TEST: CJNE   A,#'S',B_TEST; If Not S, Then Repeat Menu$/;"	l
+TARGET	Makefile	/^TARGET=bin\/monitorb$/;"	m
+UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+VI	Makefile	/^VI=vi$/;"	m
+WAIT	src/wait.asm	/^WAIT:   MOV    A,#10$/;"	l
+WAIT1	src/wait.asm	/^WAIT1:  MOV    B,#0FFH$/;"	l
+WAIT2	src/wait.asm	/^WAIT2:  DJNZ   B,WAIT2$/;"	l
+WRBYTE	src/wrbyte.asm	/^WRBYTE: MOV    R2,A$/;"	l
+WT_CHAR	src/wt_char.asm	/^WT_CHAR:  JNB    TI,WT_CHAR$/;"	l
+WT_STRING	src/wt_string.asm	/^WT_STRING: POP    DPH          ; Load DPTR with First Character$/;"	l
+W_RUN	src/monitorb.asm	/^W_RUN:  ACALL  WT_STRING$/;"	l
+W_TEST	src/monitorb.asm	/^W_TEST: CJNE   A,#'W',O_TEST; If Not W, Then Repeat Menu$/;"	l
+X_1	src/monitorb.asm	/^X_1:    MOV    DPL,R0   $/;"	l
+X_2	src/monitorb.asm	/^X_2:    MOV    DPL,R0$/;"	l
+X_RUN	src/monitorb.asm	/^X_RUN:  ACALL  WT_STRING$/;"	l
+X_TEST	src/monitorb.asm	/^X_TEST: CJNE   A,#'X',J_MENU; If Not X, Then Repeat Menu$/;"	l

@@ -1,0 +1,1324 @@
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+	Source File:	src/monitorb.asm
+	Object File:	bin/monitorb.hex
+	List File:	bin/monitorb.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:				; MONITORA.ASM - Rev A Started 01/02/94
+    2:				; MONITORB.ASM - Rev B Started 01/31/21 - Same as MONITORA
+    3:				;
+    4:				; 8031 System #6
+    5:				;
+    6:				; This program helps to develop a Monitor for the 8031 system.
+    7:				; Runs at 9600 Baud
+    8:				;
+    9:				; Allows the reading and writing to internal RAM. (R and W functions).
+   10:				; Allows you to read and write to ROM stuff. (O and M functions)
+   11:				; It also displays SFRs. (S funtion)
+   12:				; It writes 256 byte blocks of ROM. (B Function)
+   13:				; It write all internal Ram (D Function)
+   14:				; Allow Upload of HEX file for Monitor Program Devel (H Function)
+   15:				; Do Checksum between load memory and HEX file (C Function)
+   16:				; Do a Jump to 0800h to run other programs. (J Function)
+   17:				; Allow Upload of HEX File for Running at 0800h Memory (E Function)
+   18:				; Do Checksum between load memory and HEX file at 0800 Mem (K Function)
+   19:				;
+   20:				; Give a list of functions (Menu) (N Function)
+   21:				;
+   22:				;
+   23:				$MOD51
+   24:				$TITLE(MONITORB.ASM)
+   25:				$DATE(JAN-31-21)
+   26:		N      0084	$PAGEWIDTH(132)
+   27:				;$OBJECT(MONITORB.HEX)
+   28:				;
+   29:		N      00FD	BITRATE  equ    0FDH   ; For 9600 Baud Rate
+   30:		N      001B	ESC      equ    01BH
+   31:		N      0010	CKSUM    equ    010H
+   32:		N      8000	NEWPROG  equ   8000H
+   33:		N      000A	LF       EQU   10
+   34:		N      000D	CR       EQU   13
+   35:				;
+   36:				;
+   37:
+   38:				; Setup Serial Stuff
+   39:				;
+   40:	  0000	75 89 20	        MOV    TMOD,#00100000b ; T1 Mode Auto Reload Mode
+   41:	  0003	75 8D FD	        MOV    TH1,#BITRATE
+   42:	  0006	75 8B FD	        MOV    TL1,#BITRATE
+   43:				;
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   44:				; Serial in Mode 1, Enable Serial reception, Set TI
+   45:				;
+   46:	  0009	75 98 52	        MOV    SCON,#01010010b
+   47:	  000C	D2 8E		        SETB   TR1  ; Start Timer for Serial Port
+   48:				;
+   49:	  000E	12 07 7C	MENU:   LCALL  WT_STRING
+   50:	  0011	0A 0D		        DB     LF,CR
+   51:	  0013	38 30 33 31	        DB     '8031 MONITOR Rev B by Frank Rudley',LF,CR
+	  0017	20 4D 4F 4E
+	  001B	49 54 4F 52
+	  001F	20 52 65 76
+	  0023	20 42 20 62
+	  0027	79 20 46 72
+	  002B	61 6E 6B 20
+	  002F	52 75 64 6C
+	  0033	65 79 0A 0D
+   52:	  0037	0A 0A 0A 0A	        DB     LF,LF,LF,LF
+   53:	  003B	1B		        DB     ESC
+   54:				;
+   55:	  003C	12 07 7C	GETSEL: LCALL  WT_STRING
+   56:	  003F	0A 38 30 33	        DB     LF,'8031>'     ; Prompt
+	  0043	31 3E
+   57:	  0045	1B		        DB     ESC
+   58:				;
+   59:	  0046	12 07 92	        LCALL  RD_CHAR
+   60:				;
+   61:	  0049	54 5F		        ANL    A,#05FH      ; Upcase, Stip Parity
+   62:				;
+   63:	  004B	B4 52 02	R_TEST: CJNE   A,#'R',W_TEST; If Not R, Then Repeat Menu
+   64:	  004E	01 9B		        AJMP   R_RUN        ; R, So Run Read Internal RAM
+   65:				;
+   66:	  0050	B4 57 02	W_TEST: CJNE   A,#'W',O_TEST; If Not W, Then Repeat Menu
+   67:	  0053	01 B2		        AJMP   W_RUN        ; W, So Run Write Internal RAM
+   68:				;
+   69:	  0055	B4 4F 02	O_TEST: CJNE   A,#'O',M_TEST; If Not O, Then Repeat Menu
+   70:	  0058	01 C9		        AJMP   O_RUN        ; O, So Run Read ROM
+   71:				;
+   72:	  005A	B4 4D 02	M_TEST: CJNE   A,#'M',S_TEST; If Not M, Then Repeat Menu
+   73:	  005D	01 E6		        AJMP   M_RUN        ; M, So Run Write ROM
+   74:				;
+   75:	  005F	B4 53 02	S_TEST: CJNE   A,#'S',B_TEST; If Not S, Then Repeat Menu
+   76:	  0062	21 04		        AJMP   S_RUN        ; S, So Display SFRs
+   77:				;
+   78:	  0064	B4 42 02	B_TEST: CJNE   A,#'B',D_TEST; If Not B, Then Repeat Menu
+   79:	  0067	21 F3		        AJMP   B_RUN        ; B, Display 256 byte Block of Rom
+   80:				;
+   81:	  0069	B4 44 02	D_TEST: CJNE   A,#'D',H_TEST; If Not D, Then Repeat Menu
+   82:	  006C	41 86		        AJMP   D_RUN        ; D, Display 128 byte Block of internal Ram
+   83:				;
+   84:	  006E	B4 48 02	H_TEST: CJNE   A,#'H',C_TEST; If Not H, Then Repeat Menu
+   85:	  0071	61 08		        AJMP   H_RUN        ; H, Allow Upload of Hex File
+   86:				;
+   87:	  0073	B4 43 02	C_TEST: CJNE   A,#'C',J_TEST; If Not C, Then Repeat Menu
+   88:	  0076	61 5B		        AJMP   C_RUN        ; C, Then DO Checksum Verify
+   89:				;
+   90:	  0078	B4 4A 02	J_TEST: CJNE   A,#'J',E_TEST; If Not J, Then Repeat Menu
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+   91:	  007B	81 2E		        AJMP   J_RUN        ; J, Then Jump to New Program at 0800h
+   92:				;
+   93:	  007D	B4 45 02	E_TEST: CJNE   A,#'E',K_TEST; If Not E, Then Repeat Menu
+   94:	  0080	81 31		        AJMP   E_RUN        ; E, Allow Upload of Hex File
+   95:				;
+   96:	  0082	B4 4B 02	K_TEST: CJNE   A,#'K',N_TEST; If Not K, Then Repeat Menu
+   97:	  0085	81 83		        AJMP   K_RUN        ; K, Then DO Checksum Verify
+   98:				;
+   99:	  0087	B4 4E 02	N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu
+  100:	  008A	A1 53		        AJMP   N_RUN        ; N, Then List Menu
+  101:				;
+  102:	  008C	B4 41 02	A_TEST: CJNE   A,#'A',X_TEST; If Not A, Then Repeat Menu
+  103:	  008F	C1 C6		        AJMP   A_RUN        ; A, Then Read External RAM
+  104:				;
+  105:	  0091	B4 58 02	X_TEST: CJNE   A,#'X',J_MENU; If Not X, Then Repeat Menu
+  106:	  0094	C1 E5		        AJMP   X_RUN        ; X, Then Dump 256 byte block of Ext Ram
+  107:				;
+  108:	  0096	F1 D5		J_MENU: ACALL  WAIT         ; Wait then show menu
+  109:	  0098	02 00 0E	        LJMP   MENU
+  110:				;
+  111:	  009B	F1 7C		R_RUN:  ACALL  WT_STRING
+  112:	  009D	2D 52 41 4D	        DB     '-RAM>'
+	  00A1	3E
+  113:	  00A2	1B		        DB     ESC
+  114:	  00A3	F1 E1		        ACALL  READHEX
+  115:	  00A5	F8		        MOV    R0,A
+  116:	  00A6	74 3A		        MOV    A,#':'
+  117:	  00A8	F1 9E		        ACALL  WT_CHAR
+  118:	  00AA	E6		        MOV    A,@R0
+  119:	  00AB	F1 ED		        ACALL  WRBYTE
+  120:	  00AD	F1 CC		        ACALL  LFCR
+  121:	  00AF	02 00 3C	        LJMP   GETSEL
+  122:				;
+  123:	  00B2	F1 7C		W_RUN:  ACALL  WT_STRING
+  124:	  00B4	2D 52 41 4D	        DB     '-RAM>'
+	  00B8	3E
+  125:	  00B9	1B		        DB     ESC
+  126:	  00BA	F1 E1		        ACALL  READHEX
+  127:	  00BC	F8		        MOV    R0,A
+  128:	  00BD	74 3A		        MOV    A,#':'
+  129:	  00BF	F1 9E		        ACALL  WT_CHAR
+  130:	  00C1	F1 E1		        ACALL  READHEX
+  131:	  00C3	F6		        MOV    @R0,A
+  132:	  00C4	F1 CC		        ACALL  LFCR
+  133:	  00C6	02 00 3C	        LJMP   GETSEL
+  134:				;
+  135:	  00C9	F1 7C		O_RUN:  ACALL  WT_STRING
+  136:	  00CB	2D 52 4F 4D	        DB     '-ROM>'
+	  00CF	3E
+  137:	  00D0	1B		        DB     ESC
+  138:	  00D1	F1 E1		        ACALL  READHEX
+  139:	  00D3	F5 83		        MOV    DPH,A
+  140:	  00D5	F1 E1		        ACALL  READHEX
+  141:	  00D7	F5 82		        MOV    DPL,A
+  142:	  00D9	74 3A		        MOV    A,#':'
+  143:	  00DB	F1 9E		        ACALL  WT_CHAR
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 4
+
+
+
+ Line  I  Addr  Code            Source
+
+  144:	  00DD	E4		        CLR    A
+  145:	  00DE	93		        MOVC   A,@A+DPTR
+  146:	  00DF	F1 ED		        ACALL  WRBYTE
+  147:	  00E1	F1 CC		        ACALL  LFCR
+  148:	  00E3	02 00 3C	        LJMP   GETSEL
+  149:				;
+  150:	  00E6	F1 7C		M_RUN:  ACALL  WT_STRING
+  151:	  00E8	2D 52 4F 4D	        DB     '-ROM>'
+	  00EC	3E
+  152:	  00ED	1B		        DB     ESC
+  153:	  00EE	F1 E1		        ACALL  READHEX
+  154:	  00F0	F5 83		        MOV    DPH,A
+  155:	  00F2	F1 E1		        ACALL  READHEX
+  156:	  00F4	F5 82		        MOV    DPL,A
+  157:	  00F6	74 3A		        MOV    A,#':'
+  158:	  00F8	F1 9E		        ACALL  WT_CHAR
+  159:	  00FA	F1 E1		        ACALL  READHEX
+  160:	  00FC	F0		        MOVX   @DPTR,A
+  161:	  00FD	F1 D5		        ACALL  WAIT     ; Wait for Burn in Time
+  162:	  00FF	F1 CC		        ACALL  LFCR
+  163:	  0101	02 00 3C	        LJMP   GETSEL
+  164:				;
+  165:				;
+  166:				; Display P0
+  167:				;
+  168:	  0104	F1 7C		S_RUN:  ACALL  WT_STRING  ; Display SFR Routine
+  169:	  0106	53 46 52 73	        DB     'SFRs',LF,LF,LF,CR
+	  010A	0A 0A 0A 0D
+  170:	  010E	50 30 20 20	        DB     'P0   = '
+	  0112	20 3D 20
+  171:	  0115	1B		        DB     ESC
+  172:	  0116	E5 80		        MOV    A,P0
+  173:	  0118	F1 ED		        ACALL  WRBYTE
+  174:				;
+  175:				; Display P1
+  176:				;
+  177:	  011A	F1 7C		        ACALL  WT_STRING
+  178:	  011C	20 20 20 20	        DB     '    P1   = '
+	  0120	50 31 20 20
+	  0124	20 3D 20
+  179:	  0127	1B		        DB     ESC
+  180:	  0128	E5 90		        MOV    A,P1
+  181:	  012A	F1 ED		        ACALL  WRBYTE
+  182:				;
+  183:				; Display P2
+  184:				;
+  185:	  012C	F1 7C		        ACALL  WT_STRING
+  186:	  012E	20 20 20 20	        DB     '    P2   = '
+	  0132	50 32 20 20
+	  0136	20 3D 20
+  187:	  0139	1B		        DB     ESC
+  188:	  013A	E5 A0		        MOV    A,P2
+  189:	  013C	F1 ED		        ACALL  WRBYTE
+  190:				;
+  191:				; Display P3
+  192:				;
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 5
+
+
+
+ Line  I  Addr  Code            Source
+
+  193:	  013E	F1 7C		        ACALL  WT_STRING
+  194:	  0140	20 20 20 20	        DB     '    P3   = '
+	  0144	50 33 20 20
+	  0148	20 3D 20
+  195:	  014B	1B		        DB     ESC
+  196:	  014C	E5 B0		        MOV    A,P3
+  197:	  014E	F1 ED		        ACALL  WRBYTE
+  198:				;
+  199:				; Display TMOD
+  200:				;
+  201:	  0150	F1 7C		        ACALL  WT_STRING
+  202:	  0152	0A 0D 54 4D	        DB     LF,CR,'TMOD = '
+	  0156	4F 44 20 3D
+	  015A	20
+  203:	  015B	1B		        DB     ESC
+  204:	  015C	E5 89		        MOV    A,TMOD
+  205:	  015E	F1 ED		        ACALL  WRBYTE
+  206:				;
+  207:				; Display TCON
+  208:				;
+  209:	  0160	F1 7C		        ACALL  WT_STRING
+  210:	  0162	20 20 20 20	        DB     '    TCON = '
+	  0166	54 43 4F 4E
+	  016A	20 3D 20
+  211:	  016D	1B		        DB     ESC
+  212:	  016E	E5 88		        MOV    A,TCON
+  213:	  0170	F1 ED		        ACALL  WRBYTE
+  214:				;
+  215:				; Display SCON
+  216:				;
+  217:	  0172	F1 7C		        ACALL  WT_STRING
+  218:	  0174	20 20 20 20	        DB     '    SCON = '
+	  0178	53 43 4F 4E
+	  017C	20 3D 20
+  219:	  017F	1B		        DB     ESC
+  220:	  0180	E5 98		        MOV    A,SCON
+  221:	  0182	F1 ED		        ACALL  WRBYTE
+  222:				;
+  223:				; Display PSW
+  224:				;
+  225:	  0184	F1 7C		        ACALL  WT_STRING
+  226:	  0186	20 20 20 20	        DB     '    PSW  = '
+	  018A	50 53 57 20
+	  018E	20 3D 20
+  227:	  0191	1B		        DB     ESC
+  228:	  0192	E5 D0		        MOV    A,PSW
+  229:	  0194	F1 ED		        ACALL  WRBYTE
+  230:				;
+  231:				; Display PCON
+  232:				;
+  233:	  0196	F1 7C		        ACALL  WT_STRING
+  234:	  0198	0A 0D 50 43	        DB     LF,CR,'PCON = '
+	  019C	4F 4E 20 3D
+	  01A0	20
+  235:	  01A1	1B		        DB     ESC
+  236:	  01A2	E5 87		        MOV    A,PCON
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 6
+
+
+
+ Line  I  Addr  Code            Source
+
+  237:	  01A4	F1 ED		        ACALL  WRBYTE
+  238:				;
+  239:				; Display TH0
+  240:				;
+  241:	  01A6	F1 7C		        ACALL  WT_STRING
+  242:	  01A8	20 20 20 20	        DB     '    TH0  = '
+	  01AC	54 48 30 20
+	  01B0	20 3D 20
+  243:	  01B3	1B		        DB     ESC
+  244:	  01B4	E5 8C		        MOV    A,TH0
+  245:	  01B6	F1 ED		        ACALL  WRBYTE
+  246:				;
+  247:				; Display TL0
+  248:				;
+  249:	  01B8	F1 7C		        ACALL  WT_STRING
+  250:	  01BA	20 20 20 20	        DB     '    TL0  = '
+	  01BE	54 4C 30 20
+	  01C2	20 3D 20
+  251:	  01C5	1B		        DB     ESC
+  252:	  01C6	E5 8A		        MOV    A,TL0
+  253:	  01C8	F1 ED		        ACALL  WRBYTE
+  254:				;
+  255:				; Display TH1
+  256:				;
+  257:	  01CA	F1 7C		        ACALL  WT_STRING
+  258:	  01CC	20 20 20 20	        DB     '    TH1  = '
+	  01D0	54 48 31 20
+	  01D4	20 3D 20
+  259:	  01D7	1B		        DB     ESC
+  260:	  01D8	E5 8D		        MOV    A,TH1
+  261:	  01DA	F1 ED		        ACALL  WRBYTE
+  262:				;
+  263:				; Display TL1
+  264:				;
+  265:	  01DC	F1 7C		        ACALL  WT_STRING
+  266:	  01DE	20 20 20 20	        DB     '    TL1  = '
+	  01E2	54 4C 31 20
+	  01E6	20 3D 20
+  267:	  01E9	1B		        DB     ESC
+  268:	  01EA	E5 8B		        MOV    A,TL1
+  269:	  01EC	F1 ED		        ACALL  WRBYTE
+  270:	  01EE	F1 CC		        ACALL  LFCR
+  271:	  01F0	02 00 3C	        LJMP   GETSEL
+  272:				;
+  273:	  01F3	F1 7C		B_RUN:  ACALL  WT_STRING
+  274:	  01F5	2D 41 20 32	        DB     '-A 256 Byte Block of Rom',LF,LF,CR
+	  01F9	35 36 20 42
+	  01FD	79 74 65 20
+	  0201	42 6C 6F 63
+	  0205	6B 20 6F 66
+	  0209	20 52 6F 6D
+	  020D	0A 0A 0D
+  275:	  0210	42 6C 6F 63	        DB     'Block>'
+	  0214	6B 3E
+  276:	  0216	1B		        DB     ESC
+  277:	  0217	F1 E1		        ACALL  READHEX
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 7
+
+
+
+ Line  I  Addr  Code            Source
+
+  278:	  0219	F9		        MOV    R1,A
+  279:	  021A	F1 7C		        ACALL  WT_STRING
+  280:	  021C	0A 0D 20 20	        DB     LF,CR,'      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F',LF,LF,CR
+	  0220	20 20 20 20
+	  0224	30 30 20 30
+	  0228	31 20 30 32
+	  022C	20 30 33 20
+	  0230	30 34 20 30
+	  0234	35 20 30 36
+	  0238	20 30 37 20
+	  023C	30 38 20 30
+	  0240	39 20 30 41
+	  0244	20 30 42 20
+	  0248	30 43 20 30
+	  024C	44 20 30 45
+	  0250	20 30 46 0A
+	  0254	0A 0D
+  281:	  0256	1B		        DB     ESC
+  282:	  0257	89 83		        MOV    DPH,R1
+  283:	  0259	78 00		        MOV    R0,#00H
+  284:	  025B	88 82		B_2:    MOV    DPL,R0
+  285:	  025D	F1 CC		        ACALL  LFCR
+  286:	  025F	E5 83		        MOV    A,DPH
+  287:	  0261	F1 ED		        ACALL  WRBYTE
+  288:	  0263	E5 82		        MOV    A,DPL
+  289:	  0265	F1 ED		        ACALL  WRBYTE
+  290:	  0267	74 20		        MOV    A,#' '
+  291:	  0269	F1 9E		        ACALL  WT_CHAR
+  292:	  026B	F1 9E		        ACALL  WT_CHAR
+  293:	  026D	88 82		B_1:    MOV    DPL,R0
+  294:	  026F	E4		        CLR    A
+  295:	  0270	93		        MOVC   A,@A+DPTR
+  296:	  0271	F1 ED		        ACALL  WRBYTE
+  297:	  0273	74 20		        MOV    A,#' '
+  298:	  0275	F1 9E		        ACALL  WT_CHAR
+  299:	  0277	08		        INC    R0
+  300:	  0278	E8		        MOV    A,R0
+  301:	  0279	54 0F		        ANL    A,#00FH
+  302:	  027B	B4 00 EF	        CJNE   A,#000H,B_1
+  303:	  027E	B8 00 DA	        CJNE   R0,#000H,B_2
+  304:	  0281	F1 CC		        ACALL  LFCR
+  305:	  0283	02 00 3C	        LJMP   GETSEL
+  306:				;
+  307:	  0286	F1 7C		D_RUN:  ACALL  WT_STRING
+  308:	  0288	2D 41 20 31	        DB     '-A 128 Byte Block of Internal Ram',LF,LF,CR
+	  028C	32 38 20 42
+	  0290	79 74 65 20
+	  0294	42 6C 6F 63
+	  0298	6B 20 6F 66
+	  029C	20 49 6E 74
+	  02A0	65 72 6E 61
+	  02A4	6C 20 52 61
+	  02A8	6D 0A 0A 0D
+  309:	  02AC	0A 0D 20 20	        DB     LF,CR,'    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F',LF,LF,CR
+	  02B0	20 20 30 30
+	  02B4	20 30 31 20
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 8
+
+
+
+ Line  I  Addr  Code            Source
+
+	  02B8	30 32 20 30
+	  02BC	33 20 30 34
+	  02C0	20 30 35 20
+	  02C4	30 36 20 30
+	  02C8	37 20 30 38
+	  02CC	20 30 39 20
+	  02D0	30 41 20 30
+	  02D4	42 20 30 43
+	  02D8	20 30 44 20
+	  02DC	30 45 20 30
+	  02E0	46 0A 0A 0D
+  310:	  02E4	1B		        DB     ESC
+  311:	  02E5	78 00		        MOV    R0,#00H
+  312:	  02E7	F1 CC		D_2:    ACALL  LFCR
+  313:	  02E9	E8		        MOV    A,R0
+  314:	  02EA	F1 ED		        ACALL  WRBYTE
+  315:	  02EC	74 20		        MOV    A,#' '
+  316:	  02EE	F1 9E		        ACALL  WT_CHAR
+  317:	  02F0	F1 9E		        ACALL  WT_CHAR
+  318:	  02F2	E6		D_1:    MOV    A,@R0
+  319:	  02F3	F1 ED		        ACALL  WRBYTE
+  320:	  02F5	74 20		        MOV    A,#' '
+  321:	  02F7	F1 9E		        ACALL  WT_CHAR
+  322:	  02F9	08		        INC    R0
+  323:	  02FA	E8		        MOV    A,R0
+  324:	  02FB	54 0F		        ANL    A,#00FH
+  325:	  02FD	B4 00 F2	        CJNE   A,#000H,D_1
+  326:	  0300	B8 80 E4	        CJNE   R0,#080H,D_2
+  327:	  0303	F1 CC		        ACALL  LFCR
+  328:	  0305	02 00 3C	        LJMP   GETSEL
+  329:				;
+  330:	  0308	F1 7C		H_RUN:  ACALL  WT_STRING
+  331:	  030A	2D 55 70 6C	        DB     '-Upload Hex File',LF,CR
+	  030E	6F 61 64 20
+	  0312	48 65 78 20
+	  0316	46 69 6C 65
+	  031A	0A 0D
+  332:	  031C	1B		        DB     ESC
+  333:				;
+  334:	  031D	F1 92		H_1:    ACALL  RD_CHAR
+  335:	  031F	B4 3A 34	        CJNE   A,#':',H_X ; Exit if not a ":"
+  336:				;
+  337:	  0322	F1 E1		        ACALL  READHEX    ; Get Word Count
+  338:	  0324	F9		        MOV    R1,A       ; Load Word Count to R1
+  339:				;
+  340:	  0325	F1 E1		        ACALL  READHEX    ; Read Address and put into Data Pointer
+  341:	  0327	24 80		        ADD    A,#080H    ; Add offset in address
+  342:	  0329	F5 83		        MOV    DPH,A      ; Upper Byte
+  343:				;
+  344:	  032B	F1 E1		        ACALL  READHEX    ; Lower Byte
+  345:	  032D	F5 82		        MOV    DPL,A
+  346:				;
+  347:	  032F	F1 E1		        ACALL  READHEX    ; Read Record Type
+  348:	  0331	B4 00 0E	        CJNE   A,#0,H_Y   ; Done and Exit
+  349:				;
+  350:	  0334	F1 E1		H_2:    ACALL  READHEX    ; Read Data
+
+ASEM-51 V1.3                                             MONITORB.ASM                                              JAN-31-21  PAGE 9
+
+
+
+ Line  I  Addr  Code            Source
+
+  351:	  0336	F0		        MOVX   @DPTR,A    ; Burn ROM
+  352:	  0337	F1 D5		        ACALL  WAIT       ; Wait for Burn Time
+  353:	  0339	A3		        INC    DPTR       ; Increment Data Pointer
+  354:	  033A	D9 F8		        DJNZ   R1,H_2     ; Loop Till Out of Words
+  355:	  033C	F1 E1		        ACALL  READHEX    ; Read Checksum but don't do anything with it
+  356:	  033E	F1 CC		        ACALL  LFCR
+  357:	  0340	80 DB		        SJMP   H_1
+  358:				;
+  359:				; Done and Exit Read Last Byte
+  360:				;
+  361:	  0342	F1 E1		H_Y:    ACALL  READHEX
+  362:	  0344	F1 7C		        ACALL  WT_STRING
+  363:	  0346	0A 0D 44 4F	        DB     LF,CR,'DONE LOAD!!',LF,CR
+	  034A	4E 45 20 4C
+	  034E	4F 41 44 21
+	  0352	21 0A 0D
+  364:	  0355	1B		        DB     ESC
+  365:	  0356	F1 CC		H_X:    ACALL  LFCR
+  366:	  0358	02 00 3C	        LJMP   GETSEL
+  367:				;
+  368:	  035B	F1 7C		C_RUN:  ACALL  WT_STRING
+  369:	  035D	2D 55 70 6C	        DB     '-Upload Hex File For Ckecksum Check',LF,CR
+	  0361	6F 61 64 20
+	  0365	48 65 78 20
+	  0369	46 69 6C 65
+	  036D	20 46 6F 72
+	  0371	20 43 6B 65
+	  0375	63 6B 73 75
+	  0379	6D 20 43 68
+	  037D	65 63 6B 0A
+	  0381	0D
+  370:	  0382	1B		        DB     ESC
+  371:	  0383	7B 00		        MOV    R3,#0      ; Initialize to Good Load Use R3 for Flag
+  372:				;
+  373:	  0385	F1 92		C_1:    ACALL  RD_CHAR
+  374:	  0387	B4 3A 5F	        CJNE   A,#':',C_4 ; Exit if not a ":"
+  375:	  038A	78 00		        MOV    R0,#000H   ; Clear Resister for Checksum
+  376:				;
+  377:	  038C	F1 E1		        ACALL  READHEX    ; Get Word Count
+  378:	  038E	F9		        MOV    R1,A       ; Load Word Count to R1
+  379:	  038F	F8		        MOV    R0,A       ; Initial Value for Checksum
+  380:				;
+  381:	  0390	F1 E1		        ACALL  READHEX    ; Read Address and put into Data Pointer
+  382:	  0392	FA		        MOV    R2,A
+  383:	  0393	28		        ADD    A,R0       ; Add Upper Address Byte to Checksum
+  384:	  0394	F8		        MOV    R0,A
+  385:	  0395	EA		        MOV    A,R2
+  386:	  0396	24 80		        ADD    A,#080H    ; Add offset in address
+  387:	  0398	F5 83		        MOV    DPH,A      ; Upper Byte
+  388:				;
+  389:	  039A	F1 E1		        ACALL  READHEX    ; Lower Byte
+  390:	  039C	F5 82		        MOV    DPL,A
+  391:	  039E	28		        ADD    A,R0       ; Add Lower Address Byte to Checksum
+  392:	  039F	F8		        MOV    R0,A
+  393:				;
+  394:	  03A0	F1 E1		        ACALL  READHEX    ; Read Record Type
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 10
+
+
+
+ Line  I  Addr  Code            Source
+
+  395:	  03A2	B4 00 46	        CJNE   A,#0,C_Y   ; Done and Exit
+  396:				;
+  397:	  03A5	F1 E1		C_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It
+  398:	  03A7	E4		        CLR    A
+  399:	  03A8	93		        MOVC   A,@A+DPTR  ; Read ROM
+  400:	  03A9	28		        ADD    A,R0       ; Add for Checksum
+  401:	  03AA	F8		        MOV    R0,A
+  402:	  03AB	A3		        INC    DPTR       ; Increment Data Pointer
+  403:	  03AC	D9 F7		        DJNZ   R1,C_2     ; Loop Till Out of Words
+  404:				;
+  405:				; Write out if Checksum Good or Bad
+  406:				;
+  407:	  03AE	88 10		        MOV    CKSUM,R0
+  408:	  03B0	F1 E1		        ACALL  READHEX     ; Read Checksum of Line
+  409:	  03B2	F4		        CPL    A           ; Complement Checksum
+  410:	  03B3	24 01		        ADD    A,#1        ; Add 1
+  411:	  03B5	B5 10 18	        CJNE   A,CKSUM,C_3 ; Jump if Bad Checksum
+  412:	  03B8	F1 7C		        ACALL  WT_STRING   ; Write Good Checksum
+  413:	  03BA	0A 0D 20 47	        DB     LF,CR,' Good Checksum ',LF,CR
+	  03BE	6F 6F 64 20
+	  03C2	43 68 65 63
+	  03C6	6B 73 75 6D
+	  03CA	20 0A 0D
+  414:	  03CD	1B		        DB     ESC
+  415:	  03CE	80 B5		        SJMP   C_1
+  416:	  03D0	F1 7C		C_3:    ACALL  WT_STRING   ; Write Bad Checksum
+  417:	  03D2	0A 0D 20 42	        DB     LF,CR,' Bad Checksum ',LF,CR
+	  03D6	61 64 20 43
+	  03DA	68 65 63 6B
+	  03DE	73 75 6D 20
+	  03E2	0A 0D
+  418:	  03E4	1B		        DB     ESC
+  419:	  03E5	7B 01		        MOV    R3,#       1 ; Set Flag for Bad Load
+  420:	  03E7	80 9C		        SJMP   C_1        ; Loop Back for Next Line
+  421:	  03E9	80 3E		C_4:    SJMP   C_X
+  422:				;
+  423:				; Done and Exit Read Last Byte
+  424:				;
+  425:	  03EB	F1 E1		C_Y:    ACALL  READHEX
+  426:	  03ED	BB 00 1E	        CJNE   R3,#0,C_Z
+  427:	  03F0	F1 7C		        ACALL  WT_STRING
+  428:	  03F2	0A 0D 47 4F	        DB     LF,CR,'GOOD CHECKSUM DONE!! ',LF,CR
+	  03F6	4F 44 20 43
+	  03FA	48 45 43 4B
+	  03FE	53 55 4D 20
+	  0402	44 4F 4E 45
+	  0406	21 21 20 0A
+	  040A	0D
+  429:	  040B	1B		        DB     ESC
+  430:	  040C	80 1B		        SJMP   C_X
+  431:	  040E	F1 7C		C_Z:    ACALL  WT_STRING
+  432:	  0410	0A 0D 42 41	        DB     LF,CR,'BAD CHECKSUM DONE!! ',LF,CR
+	  0414	44 20 43 48
+	  0418	45 43 4B 53
+	  041C	55 4D 20 44
+	  0420	4F 4E 45 21
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 11
+
+
+
+ Line  I  Addr  Code            Source
+
+	  0424	21 20 0A 0D
+  433:	  0428	1B		        DB     ESC
+  434:	  0429	F1 CC		C_X:    ACALL  LFCR
+  435:	  042B	02 00 3C	        LJMP   GETSEL
+  436:				;
+  437:	  042E	02 80 00	J_RUN:  LJMP   NEWPROG
+  438:				;
+  439:	  0431	F1 7C		E_RUN:  ACALL  WT_STRING
+  440:	  0433	2D 55 70 6C	        DB     '-Upload Hex File',LF,CR
+	  0437	6F 61 64 20
+	  043B	48 65 78 20
+	  043F	46 69 6C 65
+	  0443	0A 0D
+  441:	  0445	1B		        DB     ESC
+  442:				;
+  443:	  0446	F1 92		E_1:    ACALL  RD_CHAR
+  444:	  0448	B4 3A 33	        CJNE   A,#':',E_X ; Exit if not a ":"
+  445:				;
+  446:	  044B	F1 E1		        ACALL  READHEX    ; Get Word Count
+  447:	  044D	F9		        MOV    R1,A       ; Load Word Count to R1
+  448:				;
+  449:	  044E	F1 E1		        ACALL  READHEX    ; Read Address and put into Data Pointer
+  450:	  0450	F5 83		        MOV    DPH,A      ; Upper Byte
+  451:				;
+  452:	  0452	F1 E1		        ACALL  READHEX    ; Lower Byte
+  453:	  0454	F5 82		        MOV    DPL,A
+  454:				;
+  455:	  0456	F1 E1		        ACALL  READHEX    ; Read Record Type
+  456:	  0458	B4 00 0E	        CJNE   A,#0,E_Y   ; Done and Exit
+  457:				;
+  458:	  045B	F1 E1		E_2:    ACALL  READHEX    ; Read Data
+  459:	  045D	F0		        MOVX   @DPTR,A    ; Burn ROM
+  460:	  045E	F1 D5		        ACALL  WAIT       ; Wait for Burn Time
+  461:	  0460	A3		        INC    DPTR       ; Increment Data Pointer
+  462:	  0461	D9 F8		        DJNZ   R1,E_2     ; Loop Till Out of Words
+  463:	  0463	F1 E1		        ACALL  READHEX    ; Read Checksum but don't do anything with it
+  464:	  0465	F1 CC		        ACALL  LFCR
+  465:	  0467	80 DD		        SJMP   E_1
+  466:				;
+  467:				; Done and Exit Read Last Byte
+  468:				;
+  469:	  0469	F1 E1		E_Y:    ACALL  READHEX
+  470:	  046B	F1 7C		        ACALL  WT_STRING
+  471:	  046D	0A 0D 44 4F	        DB     LF,CR,'DONE LOAD!! ',LF,CR
+	  0471	4E 45 20 4C
+	  0475	4F 41 44 21
+	  0479	21 20 0A 0D
+  472:	  047D	1B		        DB     ESC
+  473:	  047E	F1 CC		E_X:    ACALL  LFCR
+  474:	  0480	02 00 3C	        LJMP   GETSEL
+  475:				;
+  476:	  0483	F1 7C		K_RUN:  ACALL  WT_STRING
+  477:	  0485	2D 55 70 6C	        DB     '-Upload Hex File For Ckecksum Check',LF,CR
+	  0489	6F 61 64 20
+	  048D	48 65 78 20
+	  0491	46 69 6C 65
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 12
+
+
+
+ Line  I  Addr  Code            Source
+
+	  0495	20 46 6F 72
+	  0499	20 43 6B 65
+	  049D	63 6B 73 75
+	  04A1	6D 20 43 68
+	  04A5	65 63 6B 0A
+	  04A9	0D
+  478:	  04AA	1B		        DB     ESC
+  479:	  04AB	7B 00		        MOV    R3,#0      ; Initialize to Good Load Use R3 for Flag
+  480:				;
+  481:	  04AD	F1 92		K_1:    ACALL  RD_CHAR
+  482:	  04AF	B4 3A 5D	        CJNE   A,#':',K_4 ; Exit if not a ":"
+  483:	  04B2	78 00		        MOV    R0,#000H   ; Clear Resister for Checksum
+  484:				;
+  485:	  04B4	F1 E1		        ACALL  READHEX    ; Get Word Count
+  486:	  04B6	F9		        MOV    R1,A       ; Load Word Count to R1
+  487:	  04B7	F8		        MOV    R0,A       ; Initial Value for Checksum
+  488:				;
+  489:	  04B8	F1 E1		        ACALL  READHEX    ; Read Address and put into Data Pointer
+  490:	  04BA	FA		        MOV    R2,A
+  491:	  04BB	28		        ADD    A,R0       ; Add Upper Address Byte to Checksum
+  492:	  04BC	F8		        MOV    R0,A
+  493:	  04BD	EA		        MOV    A,R2
+  494:	  04BE	F5 83		        MOV    DPH,A      ; Upper Byte
+  495:				;
+  496:	  04C0	F1 E1		        ACALL  READHEX    ; Lower Byte
+  497:	  04C2	F5 82		        MOV    DPL,A
+  498:	  04C4	28		        ADD    A,R0       ; Add Lower Address Byte to Checksum
+  499:	  04C5	F8		        MOV    R0,A
+  500:				;
+  501:	  04C6	F1 E1		        ACALL  READHEX    ; Read Record Type
+  502:	  04C8	B4 00 46	        CJNE   A,#0,K_Y   ; Done and Exit
+  503:				;
+  504:	  04CB	F1 E1		K_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It
+  505:	  04CD	E4		        CLR    A
+  506:	  04CE	93		        MOVC   A,@A+DPTR  ; Read ROM
+  507:	  04CF	28		        ADD    A,R0       ; Add for Checksum
+  508:	  04D0	F8		        MOV    R0,A
+  509:	  04D1	A3		        INC    DPTR       ; Increment Data Pointer
+  510:	  04D2	D9 F7		        DJNZ   R1,K_2     ; Loop Till Out of Words
+  511:				;
+  512:				; Write out if Checksum Good or Bad
+  513:				;
+  514:	  04D4	88 10		        MOV    CKSUM,R0
+  515:	  04D6	F1 E1		        ACALL  READHEX     ; Read Checksum of Line
+  516:	  04D8	F4		        CPL    A           ; Complement Checksum
+  517:	  04D9	24 01		        ADD    A,#1        ; Add 1
+  518:	  04DB	B5 10 18	        CJNE   A,CKSUM,K_3 ; Jump if Bad Checksum
+  519:	  04DE	F1 7C		        ACALL  WT_STRING   ; Write Good Checksum
+  520:	  04E0	0A 0D 20 47	        DB     LF,CR,' Good Checksum ',LF,CR
+	  04E4	6F 6F 64 20
+	  04E8	43 68 65 63
+	  04EC	6B 73 75 6D
+	  04F0	20 0A 0D
+  521:	  04F3	1B		        DB     ESC
+  522:	  04F4	80 B7		        SJMP   K_1
+  523:	  04F6	F1 7C		K_3:    ACALL  WT_STRING   ; Write Bad Checksum
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 13
+
+
+
+ Line  I  Addr  Code            Source
+
+  524:	  04F8	0A 0D 20 42	        DB     LF,CR,' Bad Checksum ',LF,CR
+	  04FC	61 64 20 43
+	  0500	68 65 63 6B
+	  0504	73 75 6D 20
+	  0508	0A 0D
+  525:	  050A	1B		        DB     ESC
+  526:	  050B	7B 01		        MOV    R3,#       1 ; Set Flag for Bad Load
+  527:	  050D	80 9E		        SJMP   K_1        ; Loop Back for Next Line
+  528:	  050F	80 3D		K_4:    SJMP   K_X
+  529:				;
+  530:				; Done and Exit Read Last Byte
+  531:				;
+  532:	  0511	F1 E1		K_Y:    ACALL  READHEX
+  533:	  0513	BB 00 1D	        CJNE   R3,#0,K_Z
+  534:	  0516	F1 7C		        ACALL  WT_STRING
+  535:	  0518	0A 0D 47 4F	        DB     LF,CR,'GOOD CHECKSUM DONE!!',LF,CR
+	  051C	4F 44 20 43
+	  0520	48 45 43 4B
+	  0524	53 55 4D 20
+	  0528	44 4F 4E 45
+	  052C	21 21 0A 0D
+  536:	  0530	1B		        DB     ESC
+  537:	  0531	80 1B		        SJMP   K_X
+  538:	  0533	F1 7C		K_Z:    ACALL  WT_STRING
+  539:	  0535	0A 0D 42 41	        DB     LF,CR,'BAD CHECKSUM DONE!! ',LF,CR
+	  0539	44 20 43 48
+	  053D	45 43 4B 53
+	  0541	55 4D 20 44
+	  0545	4F 4E 45 21
+	  0549	21 20 0A 0D
+  540:	  054D	1B		        DB     ESC
+  541:	  054E	F1 CC		K_X:    ACALL  LFCR
+  542:	  0550	02 00 3C	        LJMP   GETSEL
+  543:				;
+  544:				; List Out The Menu
+  545:				;
+  546:	  0553	F1 7C		N_RUN:  ACALL  WT_STRING
+  547:	  0555	0A 0D 52 20	        DB     LF,CR,'R = Read Int RAM',LF,CR
+	  0559	3D 20 52 65
+	  055D	61 64 20 49
+	  0561	6E 74 20 52
+	  0565	41 4D 0A 0D
+  548:	  0569	57 20 3D 20	        DB           'W = Write to Int RAM',LF,CR
+	  056D	57 72 69 74
+	  0571	65 20 74 6F
+	  0575	20 49 6E 74
+	  0579	20 52 41 4D
+	  057D	0A 0D
+  549:	  057F	4F 20 3D 20	        DB           'O = Read ROM',LF,CR
+	  0583	52 65 61 64
+	  0587	20 52 4F 4D
+	  058B	0A 0D
+  550:	  058D	4D 20 3D 20	        DB           'M = Write ROM and Ext Ram',LF,CR
+	  0591	57 72 69 74
+	  0595	65 20 52 4F
+	  0599	4D 20 61 6E
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 14
+
+
+
+ Line  I  Addr  Code            Source
+
+	  059D	64 20 45 78
+	  05A1	74 20 52 61
+	  05A5	6D 0A 0D
+  551:	  05A8	53 20 3D 20	        DB           'S = Display SFRs',LF,CR
+	  05AC	44 69 73 70
+	  05B0	6C 61 79 20
+	  05B4	53 46 52 73
+	  05B8	0A 0D
+  552:	  05BA	42 20 3D 20	        DB           'B = 256 bytes of ROM',LF,CR
+	  05BE	32 35 36 20
+	  05C2	62 79 74 65
+	  05C6	73 20 6F 66
+	  05CA	20 52 4F 4D
+	  05CE	0A 0D
+  553:	  05D0	44 20 3D 20	        DB           'D = 128 bytes of Int RAM',LF,CR
+	  05D4	31 32 38 20
+	  05D8	62 79 74 65
+	  05DC	73 20 6F 66
+	  05E0	20 49 6E 74
+	  05E4	20 52 41 4D
+	  05E8	0A 0D
+  554:	  05EA	48 20 3D 20	        DB           'H = Load HEX File for MONITOR Progs',LF,CR
+	  05EE	4C 6F 61 64
+	  05F2	20 48 45 58
+	  05F6	20 46 69 6C
+	  05FA	65 20 66 6F
+	  05FE	72 20 4D 4F
+	  0602	4E 49 54 4F
+	  0606	52 20 50 72
+	  060A	6F 67 73 0A
+	  060E	0D
+  555:	  060F	43 20 3D 20	        DB           'C = Verify Checksums MONITOR Progs',LF,CR
+	  0613	56 65 72 69
+	  0617	66 79 20 43
+	  061B	68 65 63 6B
+	  061F	73 75 6D 73
+	  0623	20 4D 4F 4E
+	  0627	49 54 4F 52
+	  062B	20 50 72 6F
+	  062F	67 73 0A 0D
+  556:	  0633	4A 20 3D 20	        DB           'J = Jump to run Progs',LF,CR
+	  0637	4A 75 6D 70
+	  063B	20 74 6F 20
+	  063F	72 75 6E 20
+	  0643	50 72 6F 67
+	  0647	73 0A 0D
+  557:	  064A	45 20 3D 20	        DB           'E = Load HEX File for Progs',LF,CR
+	  064E	4C 6F 61 64
+	  0652	20 48 45 58
+	  0656	20 46 69 6C
+	  065A	65 20 66 6F
+	  065E	72 20 50 72
+	  0662	6F 67 73 0A
+	  0666	0D
+  558:	  0667	4B 20 3D 20	        DB           'K = Verify Checksums for Progs',LF,CR
+	  066B	56 65 72 69
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 15
+
+
+
+ Line  I  Addr  Code            Source
+
+	  066F	66 79 20 43
+	  0673	68 65 63 6B
+	  0677	73 75 6D 73
+	  067B	20 66 6F 72
+	  067F	20 50 72 6F
+	  0683	67 73 0A 0D
+  559:	  0687	4E 20 3D 20	        DB           'N = This Menu',LF,CR
+	  068B	54 68 69 73
+	  068F	20 4D 65 6E
+	  0693	75 0A 0D
+  560:	  0696	41 20 3D 20	        DB           'A = Read Ext RAM',LF,CR
+	  069A	52 65 61 64
+	  069E	20 45 78 74
+	  06A2	20 52 41 4D
+	  06A6	0A 0D
+  561:	  06A8	58 20 3D 20	        DB           'X = 256 bytes of Ext RAM',LF,CR
+	  06AC	32 35 36 20
+	  06B0	62 79 74 65
+	  06B4	73 20 6F 66
+	  06B8	20 45 78 74
+	  06BC	20 52 41 4D
+	  06C0	0A 0D
+  562:	  06C2	1B		        DB     ESC
+  563:	  06C3	02 00 3C	        LJMP   GETSEL
+  564:				;
+  565:				; Read External Ram Part
+  566:				;
+  567:	  06C6	F1 7C		A_RUN:  ACALL  WT_STRING
+  568:	  06C8	2D 45 58 52	        DB     '-EXRAM>'
+	  06CC	41 4D 3E
+  569:	  06CF	1B		        DB     ESC
+  570:	  06D0	F1 E1		        ACALL  READHEX
+  571:	  06D2	F5 83		        MOV    DPH,A
+  572:	  06D4	F1 E1		        ACALL  READHEX
+  573:	  06D6	F5 82		        MOV    DPL,A
+  574:	  06D8	74 3A		        MOV    A,#':'
+  575:	  06DA	F1 9E		        ACALL  WT_CHAR
+  576:	  06DC	E4		        CLR    A
+  577:	  06DD	E0		        MOVX   A,@DPTR
+  578:	  06DE	F1 ED		        ACALL  WRBYTE
+  579:	  06E0	F1 CC		        ACALL  LFCR
+  580:	  06E2	02 00 3C	        LJMP   GETSEL
+  581:				;
+  582:				; Dump 256 byte Block of Ext Ram
+  583:				;
+  584:	  06E5	F1 7C		X_RUN:  ACALL  WT_STRING
+  585:	  06E7	2D 41 20 32	        DB     '-A 256 Byte Block of Ext Ram',LF,LF,CR
+	  06EB	35 36 20 42
+	  06EF	79 74 65 20
+	  06F3	42 6C 6F 63
+	  06F7	6B 20 6F 66
+	  06FB	20 45 78 74
+	  06FF	20 52 61 6D
+	  0703	0A 0A 0D
+  586:	  0706	42 6C 6F 63	        DB     'Block>'
+	  070A	6B 3E
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 16
+
+
+
+ Line  I  Addr  Code            Source
+
+  587:	  070C	1B		        DB     ESC
+  588:	  070D	F1 E1		        ACALL  READHEX
+  589:	  070F	F9		        MOV    R1,A
+  590:	  0710	F1 7C		        ACALL  WT_STRING
+  591:	  0712	0A 0D 20 20	        DB     LF,CR,'      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F',LF,LF,CR
+	  0716	20 20 20 20
+	  071A	30 30 20 30
+	  071E	31 20 30 32
+	  0722	20 30 33 20
+	  0726	30 34 20 30
+	  072A	35 20 30 36
+	  072E	20 30 37 20
+	  0732	30 38 20 30
+	  0736	39 20 30 41
+	  073A	20 30 42 20
+	  073E	30 43 20 30
+	  0742	44 20 30 45
+	  0746	20 30 46 0A
+	  074A	0A 0D
+  592:	  074C	1B		        DB     ESC
+  593:	  074D	89 83		        MOV    DPH,R1
+  594:	  074F	78 00		        MOV    R0,#00H
+  595:	  0751	88 82		X_2:    MOV    DPL,R0
+  596:	  0753	F1 CC		        ACALL  LFCR
+  597:	  0755	E5 83		        MOV    A,DPH
+  598:	  0757	F1 ED		        ACALL  WRBYTE
+  599:	  0759	E5 82		        MOV    A,DPL
+  600:	  075B	F1 ED		        ACALL  WRBYTE
+  601:	  075D	74 20		        MOV    A,#' '
+  602:	  075F	F1 9E		        ACALL  WT_CHAR
+  603:	  0761	F1 9E		        ACALL  WT_CHAR
+  604:	  0763	88 82		X_1:    MOV    DPL,R0
+  605:	  0765	E4		        CLR    A
+  606:	  0766	E0		        MOVX   A,@DPTR
+  607:	  0767	F1 ED		        ACALL  WRBYTE
+  608:	  0769	74 20		        MOV    A,#' '
+  609:	  076B	F1 9E		        ACALL  WT_CHAR
+  610:	  076D	08		        INC    R0
+  611:	  076E	E8		        MOV    A,R0
+  612:	  076F	54 0F		        ANL    A,#00FH
+  613:	  0771	B4 00 EF	        CJNE   A,#000H,X_1
+  614:	  0774	B8 00 DA	        CJNE   R0,#000H,X_2
+  615:	  0777	F1 CC		        ACALL  LFCR
+  616:	  0779	02 00 3C	        LJMP   GETSEL
+  617:				;
+  618:				$INCLUDE(src/wt_string.asm)
+  619: 1			;
+  620: 1			; This Subroutine Writes Out A String Through RS232
+  621: 1			;
+  622: 1  077C	D0 83		WT_STRING: POP    DPH          ; Load DPTR with First Character
+  623: 1  077E	D0 82		           POP    DPL
+  624: 1  0780	E4		           CLR    A            ; Zero Offset
+  625: 1  0781	93		           MOVC   A,@A+DPTR    ; Get First Character in String
+  626: 1  0782	30 99 FD	MEN_1:     JNB    TI,MEN_1     ; Wait until transmitter ready
+  627: 1  0785	C2 99		           CLR    TI           ; Set Not Ready
+  628: 1  0787	F5 99		           MOV    SBUF,A       ; Output Character
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 17
+
+
+
+ Line  I  Addr  Code            Source
+
+  629: 1  0789	A3		           INC    DPTR         ; Increment Data Pointer
+  630: 1  078A	E4		           CLR    A            ; Zero Offset
+  631: 1  078B	93		           MOVC   A,@A+DPTR    ; Get Next Character
+  632: 1  078C	B4 1B F3	           CJNE   A,#ESC,MEN_1 ; Loop until read ESC
+  633: 1  078F	74 01		           MOV    A,#1
+  634: 1  0791	73		           JMP    @A+DPTR      ; Return After read ESC
+  635:				$INCLUDE(src/rd_char.asm)
+  636: 1			;
+  637: 1			; This Subroutine Reads a Character and Echos it back.
+  638: 1			;
+  639: 1  0792	30 98 FD	RD_CHAR:  JNB    RI,RD_CHAR
+  640: 1  0795	C2 98		          CLR    RI
+  641: 1  0797	E5 99		          MOV    A,SBUF
+  642: 1  0799	54 7F		          ANL    A,#07FH
+  643: 1  079B	F1 9E		          ACALL  WT_CHAR
+  644: 1  079D	22		          RET
+  645: 1
+  646:				$INCLUDE(src/wt_char.asm)
+  647: 1			;
+  648: 1			; This Subroutine Writes out a Character
+  649: 1			;
+  650: 1  079E	30 99 FD	WT_CHAR:  JNB    TI,WT_CHAR
+  651: 1  07A1	C2 99		          CLR    TI
+  652: 1  07A3	F5 99		          MOV    SBUF,A
+  653: 1  07A5	22		          RET
+  654: 1
+  655:				$INCLUDE(src/asc2hex.asm)
+  656: 1			;
+  657: 1			; This Subroutine converts Hex to ASCII
+  658: 1			;
+  659: 1  07A6	C2 D7		ASC2HEX: CLR    CY
+  660: 1  07A8	94 30		         SUBB   A,#'0'
+  661: 1  07AA	F5 F0		         MOV    B,A
+  662: 1  07AC	94 0A		         SUBB   A,#10
+  663: 1  07AE	20 D7 06	         JB     CY,A2LT10
+  664: 1  07B1	E5 F0		         MOV    A,B
+  665: 1  07B3	94 07		         SUBB   A,#7
+  666: 1  07B5	F5 F0		         MOV    B,A
+  667: 1  07B7	E5 F0		A2LT10:  MOV    A,B
+  668: 1  07B9	22		         RET
+  669: 1
+  670:				$INCLUDE(src/hex2asc.asm)
+  671: 1			;
+  672: 1			; This Subroutine Converts Hex to ASCII
+  673: 1			;
+  674: 1  07BA	54 0F		HEX2ASC:  ANL    A,#00FH
+  675: 1  07BC	C2 D7		          CLR    CY
+  676: 1  07BE	F5 F0		          MOV    B,A
+  677: 1  07C0	94 0A		          SUBB   A,#10
+  678: 1  07C2	E5 F0		          MOV    A,B
+  679: 1  07C4	20 D7 02	          JB     CY,H2LT10
+  680: 1  07C7	24 07		          ADD    A,#7
+  681: 1  07C9	24 30		H2LT10:   ADD    A,#'0'
+  682: 1  07CB	22		          RET
+  683: 1
+  684:				$INCLUDE(src/lfcr.asm)
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 18
+
+
+
+ Line  I  Addr  Code            Source
+
+  685: 1			;
+  686: 1			; This Subroutine Does a Line-Feed Cariage Return
+  687: 1			;
+  688: 1  07CC	74 0A		LFCR:   MOV    A,#00AH
+  689: 1  07CE	F1 9E		        ACALL  WT_CHAR
+  690: 1  07D0	74 0D		        MOV    A,#00DH
+  691: 1  07D2	F1 9E		        ACALL  WT_CHAR
+  692: 1  07D4	22		        RET
+  693: 1
+  694:				$INCLUDE(src/wait.asm)
+  695: 1			;
+  696: 1			; This Subroutine Causes a Pause for a Fraction of a Second
+  697: 1			;
+  698: 1  07D5	74 0A		WAIT:   MOV    A,#10
+  699: 1  07D7	75 F0 FF	WAIT1:  MOV    B,#0FFH
+  700: 1  07DA	D5 F0 FD	WAIT2:  DJNZ   B,WAIT2
+  701: 1  07DD	14		        DEC    A
+  702: 1  07DE	70 F7		        JNZ    WAIT1
+  703: 1  07E0	22		        RET
+  704: 1
+  705:				$INCLUDE(src/readhex.asm)
+  706: 1			;
+  707: 1			; This Subroutine Reads a Hex Byte and Puts it in A
+  708: 1			;
+  709: 1  07E1			READHEX:
+  710: 1  07E1	F1 92		        ACALL  RD_CHAR
+  711: 1  07E3	F1 A6		        ACALL  ASC2HEX
+  712: 1  07E5	C4		        SWAP   A
+  713: 1  07E6	FA		        MOV    R2,A
+  714: 1  07E7	F1 92		        ACALL  RD_CHAR
+  715: 1  07E9	F1 A6		        ACALL  ASC2HEX
+  716: 1  07EB	4A		        ORL    A,R2
+  717: 1  07EC	22		        RET
+  718: 1
+  719:				$INCLUDE(src/wrbyte.asm)
+  720: 1			;
+  721: 1			; This Subroutine Writes a BYTE
+  722: 1			;
+  723: 1  07ED	FA		WRBYTE: MOV    R2,A
+  724: 1  07EE	C4		        SWAP   A
+  725: 1  07EF	F1 BA		        ACALL  HEX2ASC
+  726: 1  07F1	F1 9E		        ACALL  WT_CHAR
+  727: 1  07F3	EA		        MOV    A,R2
+  728: 1  07F4	F1 BA		        ACALL  HEX2ASC
+  729: 1  07F6	F1 9E		        ACALL  WT_CHAR
+  730: 1  07F8	22		        RET
+  731: 1
+  732:				;
+  733:				        END
+  734:
+  735:
+
+
+
+
+
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 19
+
+
+
+                     register banks used:  ---
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 20
+
+
+
+
+
+	       L I S T   O F   S Y M B O L S
+	       =============================
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+??ASEM_51			  NUMBER    8051
+??VERSION			  NUMBER    0130
+A2LT10				  CODE	    07B7	 667
+AC				  BIT	      D6
+ACC				  DATA	      E0
+ASC2HEX				  CODE	    07A6	 659
+A_RUN				  CODE	    06C6	 567
+A_TEST				  CODE	    008C	 102
+B				  DATA	      F0
+BITRATE				  NUMBER    00FD	  29
+B_1				  CODE	    026D	 293
+B_2				  CODE	    025B	 284
+B_RUN				  CODE	    01F3	 273
+B_TEST				  CODE	    0064	  78
+CKSUM				  NUMBER    0010	  31
+CR				  NUMBER    000D	  34
+CY				  BIT	      D7
+C_1				  CODE	    0385	 373
+C_2				  CODE	    03A5	 397
+C_3				  CODE	    03D0	 416
+C_4				  CODE	    03E9	 421
+C_RUN				  CODE	    035B	 368
+C_TEST				  CODE	    0073	  87
+C_X				  CODE	    0429	 434
+C_Y				  CODE	    03EB	 425
+C_Z				  CODE	    040E	 431
+DPH				  DATA	      83
+DPL				  DATA	      82
+D_1				  CODE	    02F2	 318
+D_2				  CODE	    02E7	 312
+D_RUN				  CODE	    0286	 307
+D_TEST				  CODE	    0069	  81
+EA				  BIT	      AF
+ES				  BIT	      AC
+ESC				  NUMBER    001B	  30
+ET0				  BIT	      A9
+ET1				  BIT	      AB
+EX0				  BIT	      A8
+EX1				  BIT	      AA
+EXTI0				  CODE	    0003
+EXTI1				  CODE	    0013
+E_1				  CODE	    0446	 443
+E_2				  CODE	    045B	 458
+E_RUN				  CODE	    0431	 439
+E_TEST				  CODE	    007D	  93
+E_X				  CODE	    047E	 473
+E_Y				  CODE	    0469	 469
+F0				  BIT	      D5
+GETSEL				  CODE	    003C	  55
+H2LT10				  CODE	    07C9	 681
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 21
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+HEX2ASC				  CODE	    07BA	 674
+H_1				  CODE	    031D	 334
+H_2				  CODE	    0334	 350
+H_RUN				  CODE	    0308	 330
+H_TEST				  CODE	    006E	  84
+H_X				  CODE	    0356	 365
+H_Y				  CODE	    0342	 361
+IE				  DATA	      A8
+IE0				  BIT	      89
+IE1				  BIT	      8B
+INT0				  BIT	      B2
+INT1				  BIT	      B3
+IP				  DATA	      B8
+IT0				  BIT	      88
+IT1				  BIT	      8A
+J_MENU				  CODE	    0096	 108
+J_RUN				  CODE	    042E	 437
+J_TEST				  CODE	    0078	  90
+K_1				  CODE	    04AD	 481
+K_2				  CODE	    04CB	 504
+K_3				  CODE	    04F6	 523
+K_4				  CODE	    050F	 528
+K_RUN				  CODE	    0483	 476
+K_TEST				  CODE	    0082	  96
+K_X				  CODE	    054E	 541
+K_Y				  CODE	    0511	 532
+K_Z				  CODE	    0533	 538
+LF				  NUMBER    000A	  33
+LFCR				  CODE	    07CC	 688
+MENU				  CODE	    000E	  49
+MEN_1				  CODE	    0782	 626
+M_RUN				  CODE	    00E6	 150
+M_TEST				  CODE	    005A	  72
+NEWPROG				  NUMBER    8000	  32
+N_RUN				  CODE	    0553	 546
+N_TEST				  CODE	    0087	  99
+OV				  BIT	      D2
+O_RUN				  CODE	    00C9	 135
+O_TEST				  CODE	    0055	  69
+P				  BIT	      D0
+P0				  DATA	      80
+P1				  DATA	      90
+P2				  DATA	      A0
+P3				  DATA	      B0
+PCON				  DATA	      87
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PX0				  BIT	      B8
+PX1				  BIT	      BA
+RB8				  BIT	      9A
+RD				  BIT	      B7
+RD_CHAR				  CODE	    0792	 639
+READHEX				  CODE	    07E1	 709
+REN				  BIT	      9C
+
+ASEM-51 V1.3                                             MONITORB.ASM                                             JAN-31-21  PAGE 22
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+RESET				  CODE	    0000
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RXD				  BIT	      B0
+R_RUN				  CODE	    009B	 111
+R_TEST				  CODE	    004B	  63
+SBUF				  DATA	      99
+SCON				  DATA	      98
+SINT				  CODE	    0023
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SP				  DATA	      81
+S_RUN				  CODE	    0104	 168
+S_TEST				  CODE	    005F	  75
+T0				  BIT	      B4
+T1				  BIT	      B5
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TF0				  BIT	      8D
+TF1				  BIT	      8F
+TH0				  DATA	      8C
+TH1				  DATA	      8D
+TI				  BIT	      99
+TIMER0				  CODE	    000B
+TIMER1				  CODE	    001B
+TL0				  DATA	      8A
+TL1				  DATA	      8B
+TMOD				  DATA	      89
+TR0				  BIT	      8C
+TR1				  BIT	      8E
+TXD				  BIT	      B1
+WAIT				  CODE	    07D5	 698
+WAIT1				  CODE	    07D7	 699
+WAIT2				  CODE	    07DA	 700
+WR				  BIT	      B6
+WRBYTE				  CODE	    07ED	 723
+WT_CHAR				  CODE	    079E	 650
+WT_STRING			  CODE	    077C	 622
+W_RUN				  CODE	    00B2	 123
+W_TEST				  CODE	    0050	  66
+X_1				  CODE	    0763	 604
+X_2				  CODE	    0751	 595
+X_RUN				  CODE	    06E5	 584
+X_TEST				  CODE	    0091	 105

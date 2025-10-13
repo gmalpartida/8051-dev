@@ -1,0 +1,1004 @@
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+	Source File:	src/boot51.a51
+	Object File:	bin/boot51.hex
+	List File:	bin/boot51.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:				;                *************************
+    2:				;                *     B O O T - 5 1     *
+    3:				;                *************************
+    4:				;
+    5:				; A Bootstrap Program for the MCS-51 Microcontroller Family
+    6:				;
+    7:				;   Version 1.1        by  W.W. Heinz        15. 12. 2002
+    8:				;
+    9:				;-----------------------------------------------------------------------
+   10:				; File boot51.inc contains the customization data for the target system:
+   11:
+   12:				$INCLUDE(boot51.inc)     ; (must be generated with the CUSTOMIZ program)
+   13: 1				; BOOT-51 Customization Header
+   14: 1				; ============================
+   15: 1				; generated with CUSTOMIZ V1.1
+   16: 1
+   17: 1	N      0000		STARTADDR CODE 0	;start address of bootstrap program
+   18: 1	N      8000		USERPROGS CODE 08000H	;start address of user programs
+   19: 1
+   20: 1				; Baudrate Generation
+   21: 1				; -------------------
+   22: 1				; system clock frequency:  11.0592 MHz
+   23: 1				; baudrate generator:      timer 1
+   24: 1				; nominal baudrate:        1200.0 Baud
+   25: 1				; required accuracy:       1.00 %
+   26: 1				;
+   27: 1				; resulting baudrate:      1200.0 Baud
+   28: 1
+   29: 1	N      0000		INTEL8051  EQU 0
+   30: 1	N      00E8		RELOAD     EQU 0E8H
+   31: 1	N      0000		SMOD       EQU 0
+   32: 1
+   33: 1	N      02CD		TIMEBASE   EQU 02CDH
+   34: 1	N      010A		CHARTIME   EQU 010AH
+   35:
+   36:				        ;ASCII characters:
+   37:		N      0007	        BEL     EQU 7         ;beep
+   38:		N      0008	        BS      EQU 8         ;backspace
+   39:		N      000D	        CR      EQU 13        ;carriage return
+   40:		N      000A	        LF      EQU 10        ;line feed
+   41:		N      007F	        DEL     EQU 07FH      ;delete
+   42:
+   43:		N      003E	        CPROMPT EQU '>'       ;command line prompt
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   44:		N      003A	        UPROMPT EQU ':'       ;upload prompt
+   45:
+   46:		N	 08	        DSEG AT 8       ;only register bank 0 is in use
+   47:
+   48:	    08	N	 28	STACK:  DS 28H          ;stack starts right behind bank 0
+   49:	    30	N	 47	CMDLIN: DS 47H          ;command line buffer
+   50:	    77	N	 01	CMDMAX: DS 1            ;(last byte)
+   51:
+   52:		C      0000	        CSEG AT STARTADDR
+   53:
+   54:				        ;on boards, where the EPROM doesn't start at address 0000H,
+   55:				        ;first of all a long jump into the EPROM area may be required
+   56:				        ;to remap memory:
+   57:
+   58:	  0000	02 00 E2	        LJMP START
+   59:
+   60:				        ;on boards where the EPROM starts at address 0000H, the
+   61:				        ;interrupt addresses should better be redirected to the
+   62:				        ;area in extended RAM, where user programs start:
+   63:
+   64:		N      0014	        REPT 20
+   65:				        LJMP $-STARTADDR+USERPROGS
+   66:				        DS 5
+   67:				        ENDM
+   68+ 1  0003	02 80 03	        LJMP $-STARTADDR+USERPROGS
+   69+ 1  0006	N      0005	        DS 5
+   70+ 1  000B	02 80 0B	        LJMP $-STARTADDR+USERPROGS
+   71+ 1  000E	N      0005	        DS 5
+   72+ 1  0013	02 80 13	        LJMP $-STARTADDR+USERPROGS
+   73+ 1  0016	N      0005	        DS 5
+   74+ 1  001B	02 80 1B	        LJMP $-STARTADDR+USERPROGS
+   75+ 1  001E	N      0005	        DS 5
+   76+ 1  0023	02 80 23	        LJMP $-STARTADDR+USERPROGS
+   77+ 1  0026	N      0005	        DS 5
+   78+ 1  002B	02 80 2B	        LJMP $-STARTADDR+USERPROGS
+   79+ 1  002E	N      0005	        DS 5
+   80+ 1  0033	02 80 33	        LJMP $-STARTADDR+USERPROGS
+   81+ 1  0036	N      0005	        DS 5
+   82+ 1  003B	02 80 3B	        LJMP $-STARTADDR+USERPROGS
+   83+ 1  003E	N      0005	        DS 5
+   84+ 1  0043	02 80 43	        LJMP $-STARTADDR+USERPROGS
+   85+ 1  0046	N      0005	        DS 5
+   86+ 1  004B	02 80 4B	        LJMP $-STARTADDR+USERPROGS
+   87+ 1  004E	N      0005	        DS 5
+   88+ 1  0053	02 80 53	        LJMP $-STARTADDR+USERPROGS
+   89+ 1  0056	N      0005	        DS 5
+   90+ 1  005B	02 80 5B	        LJMP $-STARTADDR+USERPROGS
+   91+ 1  005E	N      0005	        DS 5
+   92+ 1  0063	02 80 63	        LJMP $-STARTADDR+USERPROGS
+   93+ 1  0066	N      0005	        DS 5
+   94+ 1  006B	02 80 6B	        LJMP $-STARTADDR+USERPROGS
+   95+ 1  006E	N      0005	        DS 5
+   96+ 1  0073	02 80 73	        LJMP $-STARTADDR+USERPROGS
+   97+ 1  0076	N      0005	        DS 5
+   98+ 1  007B	02 80 7B	        LJMP $-STARTADDR+USERPROGS
+   99+ 1  007E	N      0005	        DS 5
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+  100+ 1  0083	02 80 83	        LJMP $-STARTADDR+USERPROGS
+  101+ 1  0086	N      0005	        DS 5
+  102+ 1  008B	02 80 8B	        LJMP $-STARTADDR+USERPROGS
+  103+ 1  008E	N      0005	        DS 5
+  104+ 1  0093	02 80 93	        LJMP $-STARTADDR+USERPROGS
+  105+ 1  0096	N      0005	        DS 5
+  106+ 1  009B	02 80 9B	        LJMP $-STARTADDR+USERPROGS
+  107+ 1  009E	N      0005	        DS 5
+  108:
+  109:				        ;Normally, 20 interrupt addresses should be enough.
+  110:				        ;(The SIEMENS C517A has 17.)
+  111:				        ;But you may insert some more, if required.
+  112:				        ;(The Infineon C508 uses 20, but wastes 9 more!)
+  113:
+  114:				        ;this sign-on message is output after reset:
+  115:	  00A3	0D 0A 0D 0A	SIGNON: DB CR,LF,CR,LF
+  116:	  00A7	42 4F 4F 54	        DB 'BOOT-51  V1.1'
+	  00AB	2D 35 31 20
+	  00AF	20 56 31 2E
+	  00B3	31
+  117:	  00B4	20 20 20 20	        DB '           '
+	  00B8	20 20 20 20
+	  00BC	20 20 20
+  118:	  00BF	43 6F 70 79	        DB 'Copyright (c) 2002 by W.W. Heinz'
+	  00C3	72 69 67 68
+	  00C7	74 20 28 63
+	  00CB	29 20 32 30
+	  00CF	30 32 20 62
+	  00D3	79 20 57 2E
+	  00D7	57 2E 20 48
+	  00DB	65 69 6E 7A
+  119:	  00DF	0D 0A 00	        DB CR,LF,0
+  120:
+  121:	  00E2			START:  ;start of bootstrap program
+  122:	  00E2	12 03 9C	        CALL INITBG             ;initialize baudrate generator
+  123:	  00E5	75 98 72	        MOV SCON,#072H          ;UART mode 1, 8 bit, ignore garbage
+  124:	  00E8	12 03 91	        CALL DELAY              ;let the UART have some clocks ...
+  125:	  00EB	90 00 A3	        MOV DPTR,#SIGNON        ;display sign-on message
+  126:	  00EE	12 03 54	        CALL STRING
+  127:	  00F1	12 01 11	        CALL INTERP             ;call command line interpreter
+  128:	  00F4	75 81 07	        MOV SP,#7               ;better set to reset value
+  129:	  00F7	C0 82		        PUSH DPL                ;save start address of user program
+  130:	  00F9	C0 83		        PUSH DPH                ;on stack
+  131:	  00FB	12 03 74	WARTEN: CALL CONOST             ;wait until the UART is ready
+  132:	  00FE	60 FB		        JZ WARTEN               ;for the next character to send,
+  133:	  0100	12 03 91	        CALL DELAY              ;and the last bits have left the UART
+  134:	  0103	12 03 AE	        CALL STOPBG             ;stop baudrate generator
+  135:	  0106	90 00 00	        MOV DPTR,#0             ;set modified SFR to reset values:
+  136:	  0109	E4		        CLR A                   ;(if possible)
+  137:	  010A	F5 98		        MOV SCON,A
+  138:	  010C	F5 F0		        MOV B,A
+  139:	  010E	F5 D0		        MOV PSW,A
+  140:	  0110	22		        RET                     ;up'n away  (and SP --> 7)
+  141:
+  142:	  0111			INTERP: ;command line interpreter
+  143:	  0111	12 01 52	        CALL RDCOMM             ;read command
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
+
+
+
+ Line  I  Addr  Code            Source
+
+  144:	  0114	78 30		        MOV R0,#CMDLIN          ;command line start address
+  145:	  0116	E6		INTER1: MOV A,@R0               ;end of command line reached ?
+  146:	  0117	60 F8		        JZ INTERP               ;then read a new command
+  147:	  0119	12 03 35	        CALL UPCASE             ;convert character to upper case
+  148:	  011C	08		        INC R0                  ;point to next character
+  149:	  011D	B4 20 02	        CJNE A,#' ',INTER2      ;is it a blank ?
+  150:	  0120	80 F4		        JMP INTER1              ;then ignore it
+  151:	  0122	FF		INTER2: MOV R7,A                ;save character
+  152:	  0123	12 03 49	        CALL NEWLIN             ;new line
+  153:	  0126	EF		        MOV A,R7                ;command character
+  154:	  0127	B4 55 0A	        CJNE A,#'U',INTER3      ;UPLOAD ?
+  155:	  012A	12 01 48	        CALL NIXMER             ;check for end of line
+  156:	  012D	70 0D		        JNZ INTER4              ;if no: input error
+  157:	  012F	12 01 9D	        CALL LDHEXF             ;read Intel-HEX file
+  158:	  0132	80 DD		        JMP INTERP              ;read a new command
+  159:	  0134	B4 47 05	INTER3: CJNE A,#'G',INTER4      ;GOTO ?
+  160:	  0137	12 02 D9	        CALL EIN16              ;then read start address
+  161:	  013A	60 07		        JZ INTER5               ;continue if o.k.
+  162:	  013C	7F 00		INTER4: MOV R7,#ILLEGAL_COMMAND ;output error message otherwise
+  163:	  013E	12 01 CB	        CALL ERROUT             ;ausgeben
+  164:	  0141	80 CE		        JMP INTERP              ;and wait for a new command
+  165:	  0143	8D 82		INTER5: MOV DPL,R5              ;load GOTO address into DPTR
+  166:	  0145	8C 83		        MOV DPH,R4              ;and return
+  167:	  0147	22		        RET
+  168:
+  169:	  0148			NIXMER: ;checks, whether there are only trailing blanks in
+  170:				        ;the command line buffer starting from position R0.
+  171:				        ;When this is the case, zero is returned in A, the next
+  172:				        ;non-blank character otherwise with its position in R0.
+  173:	  0148	E6		        MOV A,@R0       ;load next character
+  174:	  0149	60 06		        JZ NIXME1       ;if 0, end of line
+  175:	  014B	B4 20 03	        CJNE A,#' ',NIXME1
+  176:	  014E	08		        INC R0          ;if blank, next character
+  177:	  014F	80 F7		        JMP NIXMER
+  178:	  0151	22		NIXME1: RET
+  179:
+  180:	  0152			RDCOMM: ;reads a command from the UART and stores it in the
+  181:				        ;command line buffer at address CMDLIN in the internal
+  182:				        ;RAM. The command line is terminated with a 0.
+  183:	  0152	12 03 49	        CALL NEWLIN             ;new line
+  184:	  0155	74 3E		        MOV A,#CPROMPT          ;output prompt
+  185:	  0157	12 03 62	        CALL CONOUT
+  186:	  015A	78 30		        MOV R0,#CMDLIN          ;address of command line buffer
+  187:	  015C	76 00		RDCOM1: MOV @R0,#0              ;always terminate buffer with a 0
+  188:	  015E	12 03 6A	        CALL CONIN              ;read character
+  189:	  0161	B4 0D 01	        CJNE A,#CR,RDCOM2       ;if a CR has been input,
+  190:	  0164	22		        RET                     ;the command is complete
+  191:	  0165	B4 08 0E	RDCOM2: CJNE A,#BS,RDCOM5       ;backspace ?
+  192:	  0168	B8 30 02	RDCOM3: CJNE R0,#CMDLIN,RDCOM4  ;buffer empty ?
+  193:	  016B	80 EF		        JMP RDCOM1              ;then continue reading characters
+  194:	  016D	90 01 99	RDCOM4: MOV DPTR,#BACKSP        ;otherwise delete last character
+  195:	  0170	12 03 54	        CALL STRING
+  196:	  0173	18		        DEC R0
+  197:	  0174	80 E6		        JMP RDCOM1
+  198:	  0176	B4 7F 02	RDCOM5: CJNE A,#DEL,RDCOM6      ;delete ?
+  199:	  0179	80 ED		        JMP RDCOM3              ;then delete last character, too
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
+
+
+
+ Line  I  Addr  Code            Source
+
+  200:	  017B	FA		RDCOM6: MOV R2,A                ;save character
+  201:	  017C	C3		        CLR C                   ;is it a control character ?
+  202:	  017D	94 20		        SUBB A,#' '
+  203:	  017F	40 DB		        JC RDCOM1               ;then better ignore it
+  204:	  0181	EA		        MOV A,R2
+  205:	  0182	94 7F		        SUBB A,#DEL             ;is character >= 7F ?
+  206:	  0184	50 D6		        JNC RDCOM1              ;then ignore it too
+  207:	  0186	B8 77 07	        CJNE R0,#CMDMAX,RDCOM7  ;is buffer full ?
+  208:	  0189	74 07		        MOV A,#BEL              ;then beep
+  209:	  018B	12 03 62	        CALL CONOUT
+  210:	  018E	80 CC		        JMP RDCOM1              ;and wait for further characters
+  211:	  0190	EA		RDCOM7: MOV A,R2                ;echo character
+  212:	  0191	12 03 62	        CALL CONOUT
+  213:	  0194	EA		        MOV A,R2                ;and append character to buffer
+  214:	  0195	F6		        MOV @R0,A
+  215:	  0196	08		        INC R0                  ;now its one more character
+  216:	  0197	80 C3		        JMP RDCOM1              ;wait for input characters
+  217:
+  218:	  0199	08 20 08 00	BACKSP: DB BS,' ',BS,0          ;string to delete a character
+  219:
+  220:	  019D			LDHEXF: ;reads an Intel-Hex file from the UART and loads it
+  221:				        ;to its start address in the external RAM.
+  222:				        ;When something has gone wrong, LDHEXF continues
+  223:				        ;reading characters until it has received nothing
+  224:				        ;for about 5 seconds (depending on clock frequency),
+  225:				        ;and sends a corresponding error message.
+  226:	  019D	74 3A		        MOV A,#UPROMPT   ;output upload prompt
+  227:	  019F	12 03 62	        CALL CONOUT
+  228:	  01A2	12 02 5B	        CALL UPLOAD      ;load Intel-Hex file into external RAM
+  229:	  01A5	FF		        MOV R7,A         ;save error code
+  230:	  01A6	60 17		        JZ LDHEXM        ;if no error, continue
+  231:	  01A8	78 02		LDHEX1: MOV R0,#HIGH(TIMEBASE)  ;otherwise wait for some seconds,
+  232:	  01AA	79 CD		        MOV R1,#LOW(TIMEBASE)   ;until no more characters are received
+  233:	  01AC	7A 00		        MOV R2,#0
+  234:	  01AE	12 03 7A	LDHEX2: CALL CONIST      ;character received ?
+  235:	  01B1	60 05		        JZ LDHEX3        ;if not, continue
+  236:	  01B3	12 03 6A	        CALL CONIN       ;otherwise read character,
+  237:	  01B6	80 F0		        JMP LDHEX1       ;and start from the beginning
+  238:	  01B8	00		LDHEX3: NOP
+  239:	  01B9	DA F3		        DJNZ R2,LDHEX2
+  240:	  01BB	D9 F1		        DJNZ R1,LDHEX2
+  241:	  01BD	D8 EF		        DJNZ R0,LDHEX2
+  242:	  01BF	EF		LDHEXM: MOV A,R7         ;error code
+  243:	  01C0	60 03		        JZ LDHEX4        ;if no error, continue
+  244:	  01C2	12 01 C6	        CALL ERRONL      ;error message otherwise (code in R7)
+  245:	  01C5	22		LDHEX4: RET
+  246:
+  247:	  01C6			ERRONL: ;outputs a new line and error message number R7.
+  248:	  01C6	90 02 4B	        MOV DPTR,#ERRSTN
+  249:	  01C9	80 03		        SJMP ERROU1
+  250:
+  251:	  01CB			ERROUT: ;outputs an error message with its number in R7.
+  252:	  01CB	90 02 4D	        MOV DPTR,#ERRSTL
+  253:	  01CE	12 03 54	ERROU1: CALL STRING
+  254:	  01D1	90 01 E9	        MOV DPTR,#ERRTAB ;address of table of error messages
+  255:	  01D4	EF		        MOV A,R7         ;error code
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
+
+
+
+ Line  I  Addr  Code            Source
+
+  256:	  01D5	23		        RL A             ;calculate address of error message
+  257:	  01D6	93		        MOVC A,@A+DPTR
+  258:	  01D7	CF		        XCH A,R7
+  259:	  01D8	23		        RL A
+  260:	  01D9	04		        INC A
+  261:	  01DA	93		        MOVC A,@A+DPTR
+  262:	  01DB	F5 82		        MOV DPL,A
+  263:	  01DD	8F 83		        MOV DPH,R7
+  264:	  01DF	12 03 54	        CALL STRING      ;output message
+  265:	  01E2	90 02 54	        MOV DPTR,#ERRSTR
+  266:	  01E5	12 03 54	        CALL STRING
+  267:	  01E8	22		        RET
+  268:
+  269:				        ;error codes:
+  270:		N      0000	        ILLEGAL_COMMAND  EQU 0
+  271:		N      0001	        ILLEGAL_HEXDIGIT EQU 1
+  272:		N      0002	        CHECKSUM_ERROR   EQU 2
+  273:		N      0003	        UNEXPECTED_CHAR  EQU 3
+  274:		N      0004	        ILLEGAL_RECORDID EQU 4
+  275:
+  276:	  01E9			ERRTAB: ;Table of error messages
+  277:	  01E9	01 F3		        DW ILLCOM
+  278:	  01EB	02 03		        DW ILLHEX
+  279:	  01ED	02 15		        DW CKSERR
+  280:	  01EF	02 24		        DW UNXCHR
+  281:	  01F1	02 39		        DW ILLRID
+  282:
+  283:				        ;error messages:
+  284:	  01F3	69 6C 6C 65	ILLCOM: DB 'illegal command',0
+	  01F7	67 61 6C 20
+	  01FB	63 6F 6D 6D
+	  01FF	61 6E 64 00
+  285:	  0203	69 6C 6C 65	ILLHEX: DB 'illegal hex digit',0
+	  0207	67 61 6C 20
+	  020B	68 65 78 20
+	  020F	64 69 67 69
+	  0213	74 00
+  286:	  0215	63 68 65 63	CKSERR: DB 'checksum error',0
+	  0219	6B 73 75 6D
+	  021D	20 65 72 72
+	  0221	6F 72 00
+  287:	  0224	75 6E 65 78	UNXCHR: DB 'unexpected character',0
+	  0228	70 65 63 74
+	  022C	65 64 20 63
+	  0230	68 61 72 61
+	  0234	63 74 65 72
+	  0238	00
+  288:	  0239	69 6C 6C 65	ILLRID: DB 'illegal record ID',0
+	  023D	67 61 6C 20
+	  0241	72 65 63 6F
+	  0245	72 64 20 49
+	  0249	44 00
+  289:
+  290:	  024B	0D 0A		ERRSTN: DB CR,LF
+  291:	  024D	40 40 40 40	ERRSTL: DB '@@@@@ ',0
+	  0251	40 20 00
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 7
+
+
+
+ Line  I  Addr  Code            Source
+
+  292:	  0254	20 40 40 40	ERRSTR: DB ' @@@@@',0
+	  0258	40 40 00
+  293:
+  294:	  025B			UPLOAD: ;reads an Intel-Hex file from the UART and loads
+  295:				        ;it to its start address in the external RAM.
+  296:				        ;UPLOAD returns the following error codes in A:
+  297:				        ;
+  298:				        ; A = 0                     hex file loaded correctly
+  299:				        ; A = ILLEGAL_HEXDIGIT      illegal hex digit
+  300:				        ; A = CHECKSUM_ERROR        checksum error
+  301:				        ; A = UNEXPECTED_CHAR       unexpected character
+  302:				        ; A = ILLEGAL_RECORDID      illegal record ID
+  303:				        ;
+  304:				        ;UPLOAD only changes registers A,B,DPTR,R0,R1,R2, and R7.
+  305:	  025B	12 03 6A	        CALL CONIN         ;read characters
+  306:	  025E	B4 3A FA	        CJNE A,#':',UPLOAD ;until a ":" is received
+  307:	  0261	79 00		UPLOA0: MOV R1,#0          ;initialize checksum
+  308:	  0263	12 02 C1	        CALL NEXTB         ;convert next two characters to a byte
+  309:	  0266	40 4D		        JC UPLOA4          ;if they are no hex digits, error
+  310:	  0268	F8		        MOV R0,A           ;save number of data bytes
+  311:	  0269	12 02 C1	        CALL NEXTB         ;record address, HI byte
+  312:	  026C	40 47		        JC UPLOA4          ;if no hex digits: error
+  313:	  026E	F5 83		        MOV DPH,A          ;save HI byte
+  314:	  0270	12 02 C1	        CALL NEXTB         ;record address, LO byte
+  315:	  0273	40 40		        JC UPLOA4          ;if no hex digits: error
+  316:	  0275	F5 82		        MOV DPL,A          ;save LO byte
+  317:	  0277	12 02 C1	        CALL NEXTB         ;record ID
+  318:	  027A	40 39		        JC UPLOA4          ;if no hex digits: error
+  319:	  027C	FA		        MOV R2,A           ;save record ID
+  320:	  027D	E8		        MOV A,R0           ;number of data bytes
+  321:	  027E	60 09		        JZ UPLOA2          ;if 0, probably EOF record
+  322:	  0280	12 02 C1	UPLOA1: CALL NEXTB         ;next data byte
+  323:	  0283	40 30		        JC UPLOA4          ;if no hex digits: error
+  324:	  0285	F0		        MOVX @DPTR,A       ;load it into external RAM
+  325:	  0286	A3		        INC DPTR           ;next byte
+  326:	  0287	D8 F7		        DJNZ R0,UPLOA1     ;until all data bytes are loaded
+  327:	  0289	12 02 C1	UPLOA2: CALL NEXTB         ;checksum
+  328:	  028C	40 27		        JC UPLOA4          ;if no hex digits: error
+  329:	  028E	E9		        MOV A,R1           ;checksum = 0 ?
+  330:	  028F	70 27		        JNZ UPLOA5         ;if no, checksum error
+  331:	  0291	EA		        MOV A,R2           ;record ID
+  332:	  0292	70 19		        JNZ UPLOA3         ;if <> 0, probably EOF record
+  333:	  0294	12 03 6A	        CALL CONIN         ;read character
+  334:	  0297	B4 0D 0E	        CJNE A,#CR,UPLOAU  ;if no CR, may be UNIX style ASCII file
+  335:	  029A	12 03 6A	        CALL CONIN         ;read next character
+  336:	  029D	B4 0A 03	        CJNE A,#LF,UPLOA9  ;if no LF, may be ASCII upload with LF stripped
+  337:	  02A0	12 03 6A	UPLOA8: CALL CONIN         ;read next character
+  338:	  02A3	B4 3A 15	UPLOA9: CJNE A,#':',UPLOA6 ;if no ":", unexpected character
+  339:	  02A6	80 B9		        JMP UPLOA0         ;read next HEX record
+  340:	  02A8	B4 0A 10	UPLOAU: CJNE A,#LF,UPLOA6  ;if no LF, unexpected character
+  341:	  02AB	80 F3		        JMP UPLOA8
+  342:	  02AD	B4 01 0E	UPLOA3: CJNE A,#1,UPLOA7   ;if <> 1, illegal record ID
+  343:	  02B0	12 03 6A	        CALL CONIN         ;read only final CR (RDCOMM ignores LF)
+  344:	  02B3	E4		        CLR A              ;hex file loaded, o.k.
+  345:	  02B4	22		        RET
+  346:	  02B5	74 01		UPLOA4: MOV A,#ILLEGAL_HEXDIGIT ;illegal hex digit
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 8
+
+
+
+ Line  I  Addr  Code            Source
+
+  347:	  02B7	22		        RET
+  348:	  02B8	74 02		UPLOA5: MOV A,#CHECKSUM_ERROR   ;checksum error
+  349:	  02BA	22		        RET
+  350:	  02BB	74 03		UPLOA6: MOV A,#UNEXPECTED_CHAR  ;unexpected character
+  351:	  02BD	22		        RET
+  352:	  02BE	74 04		UPLOA7: MOV A,#ILLEGAL_RECORDID ;illegal record ID
+  353:	  02C0	22		        RET
+  354:
+  355:	  02C1			NEXTB:  ;reads one byte in ASCII-hex representation from
+  356:				        ;the UART and returns the binary value in A.
+  357:				        ;The checksum in R1 is updated accordingly.
+  358:				        ;(In case of error the carry flag is set.)
+  359:				        ;NEXTB changes only registers A, B, R1 and R7.
+  360:	  02C1	12 03 6A	        CALL CONIN      ;read first hex digit
+  361:	  02C4	12 03 0B	        CALL NIBBLE     ;convert it to 4-bit binary
+  362:	  02C7	40 0F		        JC NEXTBR       ;stop, if error
+  363:	  02C9	C4		        SWAP A          ;otherwise move it to high order nibble
+  364:	  02CA	FF		        MOV R7,A        ;and save it
+  365:	  02CB	12 03 6A	        CALL CONIN      ;read second hex digit
+  366:	  02CE	12 03 0B	        CALL NIBBLE     ;convert it to 4-bit binary
+  367:	  02D1	40 05		        JC NEXTBR       ;stop, if error
+  368:	  02D3	4F		        ORL A,R7        ;join both nibbles
+  369:	  02D4	C9		        XCH A,R1        ;add the whole byte
+  370:	  02D5	29		        ADD A,R1        ;to the checksum
+  371:	  02D6	C9		        XCH A,R1
+  372:	  02D7	C3		        CLR C           ;no error
+  373:	  02D8	22		NEXTBR: RET             ;finished, carry set if error
+  374:
+  375:	  02D9			EIN16:  ;starting from the current line position R0, a 16-bit
+  376:				        ;hex number is read from the command line buffer, and
+  377:				        ;converted to a binary number which is returned in R4/R5.
+  378:				        ;If no error was detected A=0 on return, A<>0 otherwise.
+  379:	  02D9	7E 04		        MOV R6,#4       ;up to 4 digits
+  380:	  02DB	12 02 E3	        CALL HEX16      ;convert to binary
+  381:	  02DE	70 02		        JNZ EIN16F      ;error, if garbage
+  382:	  02E0	31 48		        CALL NIXMER     ;check for end of line
+  383:	  02E2	22		EIN16F: RET             ;if garbage, error: A<>0
+  384:
+  385:	  02E3			HEX16:  ;starting from the current line position R0, a 16-bit
+  386:				        ;hex number with up to R6 digits is read from the line
+  387:				        ;buffer and converted to a binary number which is
+  388:				        ;returned in R4/R5.
+  389:				        ;If no error was detected A=0 on return, A<>0 otherwise.
+  390:	  02E3	E6		        MOV A,@R0       ;read character
+  391:	  02E4	60 22		        JZ HEX16F       ;error, if 0
+  392:	  02E6	B4 20 03	        CJNE A,#' ',HEX161
+  393:	  02E9	08		        INC R0          ;skip leading blanks
+  394:	  02EA	80 F7		        JMP HEX16
+  395:	  02EC	7C 00		HEX161: MOV R4,#0       ;R4/R5 = 0
+  396:	  02EE	7D 00		        MOV R5,#0
+  397:	  02F0	12 03 0B	        CALL NIBBLE     ;convert hex digit
+  398:	  02F3	40 13		        JC HEX16F       ;error, when failed
+  399:	  02F5	12 03 2B	        CALL SHIFT4     ;shift 4 bits into R4/R5 from the right side
+  400:	  02F8	08		        INC R0          ;next character
+  401:	  02F9	1E		        DEC R6
+  402:	  02FA	E6		HEX162: MOV A,@R0       ;read character
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 9
+
+
+
+ Line  I  Addr  Code            Source
+
+  403:	  02FB	12 03 0B	        CALL NIBBLE     ;convert to hex digit
+  404:	  02FE	40 06		        JC HEX16R       ;when failed, finished
+  405:	  0300	12 03 2B	        CALL SHIFT4     ;shift 4 bits into R4/R5 from the right side
+  406:	  0303	08		        INC R0          ;next character
+  407:	  0304	DE F4		        DJNZ R6,HEX162  ;convert up to 4 hex digits
+  408:	  0306	E4		HEX16R: CLR A           ;o.k., number in R4/R5
+  409:	  0307	22		        RET
+  410:	  0308	74 FF		HEX16F: MOV A,#0FFH     ;conversion error
+  411:	  030A	22		        RET
+  412:
+  413:	  030B			NIBBLE: ;converts the hex digit in A into a 4-bit binary number
+  414:				        ;which is returned in A. When the character is no hex
+  415:				        ;digit, the carry flag is set on return.
+  416:				        ;NIBBLE only changes registers A and B.
+  417:	  030B	12 03 35	        CALL UPCASE     ;convert character to upper case
+  418:	  030E	F5 F0		        MOV B,A         ;and save it
+  419:	  0310	C3		        CLR C           ;is character < 0 ?
+  420:	  0311	94 30		        SUBB A,#'0'
+  421:	  0313	40 15		        JC NIBBLR       ;then error
+  422:	  0315	74 46		        MOV A,#'F'      ;is character > F ?
+  423:	  0317	95 F0		        SUBB A,B
+  424:	  0319	40 0F		        JC NIBBLR       ;then error, too
+  425:	  031B	E5 F0		        MOV A,B         ;is character <= 9 ?
+  426:	  031D	94 3A		        SUBB A,#('9'+1)
+  427:	  031F	40 06		        JC NIBBL1       ;then decimal digit
+  428:	  0321	E5 F0		        MOV A,B         ;is character >= A ?
+  429:	  0323	94 41		        SUBB A,#'A'
+  430:	  0325	40 03		        JC NIBBLR       ;if not, error
+  431:	  0327	24 0A		NIBBL1: ADD A,#10       ;calculate binary number
+  432:	  0329	C3		        CLR C           ;digit converted correctly
+  433:	  032A	22		NIBBLR: RET
+  434:
+  435:	  032B			SHIFT4: ;shifts a 4-bit binary number in A into register
+  436:				        ;pair R4/R5 (HI/LO) from the right side.
+  437:	  032B	C4		        SWAP A          ;transfer nibble 4 bits to the left
+  438:	  032C	7F 06		        MOV R7,#6       ;Please do not ask for explaining THIS!
+  439:	  032E	33		SHIFT0: RLC A           ;                                 ====
+  440:	  032F	CD		        XCH A,R5
+  441:	  0330	33		        RLC A
+  442:	  0331	CC		        XCH A,R4
+  443:	  0332	DF FA		        DJNZ R7,SHIFT0
+  444:	  0334	22		        RET
+  445:
+  446:	  0335			UPCASE: ;If the character in A is a lower case letter, it
+  447:				        ;is converted to upper case and returned in A again.
+  448:				        ;Otherwise it will be left unchanged.
+  449:				        ;UPCASE only changes registers A and B.
+  450:	  0335	F5 F0		        MOV B,A
+  451:	  0337	C3		        CLR C
+  452:	  0338	94 61		        SUBB A,#'a'     ;is character < a ?
+  453:	  033A	40 0A		        JC UPCRET       ;then leave it unchanged
+  454:	  033C	E5 F0		        MOV A,B
+  455:	  033E	94 7B		        SUBB A,#('z'+1) ;is character > z ?
+  456:	  0340	50 04		        JNC UPCRET      ;then leave it unchanged, too
+  457:	  0342	34 5A		        ADDC A,#'Z'     ;otherwise convert it to upper case
+  458:	  0344	F5 F0		        MOV B,A
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 10
+
+
+
+ Line  I  Addr  Code            Source
+
+  459:	  0346	E5 F0		UPCRET: MOV A,B
+  460:	  0348	22		        RET
+  461:
+  462:	  0349			NEWLIN: ;outputs a new line.
+  463:	  0349	74 0D		        MOV A,#CR
+  464:	  034B	12 03 62	        CALL CONOUT
+  465:	  034E	74 0A		        MOV A,#LF
+  466:	  0350	12 03 62	        CALL CONOUT
+  467:	  0353	22		        RET
+  468:
+  469:	  0354			STRING: ;String output: start address in DPTR, terminated with 0.
+  470:				        ;STRING only changes registers DPTR and A.
+  471:	  0354	E4		        CLR A
+  472:	  0355	93		        MOVC A,@A+DPTR
+  473:	  0356	60 09		        JZ STRRET
+  474:	  0358	12 03 62	        CALL CONOUT
+  475:	  035B	12 03 80	        CALL WMSEC      ;Slow down output speed to about 9600 Baud!
+  476:	  035E	A3		        INC DPTR
+  477:	  035F	80 F3		        JMP STRING
+  478:	  0361	22		STRRET: RET
+  479:
+  480:	  0362			CONOUT: ;output character in A.
+  481:	  0362	30 99 FD	        JNB TI,CONOUT   ;wait for UART output buffer to become clear
+  482:	  0365	C2 99		        CLR TI
+  483:	  0367	F5 99		        MOV SBUF,A      ;output character
+  484:	  0369	22		        RET
+  485:
+  486:	  036A			CONIN:  ;read character and return it in A.
+  487:	  036A	30 98 FD	        JNB RI,CONIN
+  488:	  036D	E5 99		        MOV A,SBUF
+  489:	  036F	C2 98		        CLR RI
+  490:	  0371	54 7F		        ANL A,#07FH     ;mask parity (if any)
+  491:	  0373	22		        RET
+  492:
+  493:	  0374			CONOST: ;output status: A=FF if ready, A=0 if not ready
+  494:	  0374	E4		        CLR A
+  495:	  0375	30 99 01	        JNB TI,OSTRET   ;wait for UART output buffer to become clear
+  496:	  0378	14		        DEC A
+  497:	  0379	22		OSTRET: RET
+  498:
+  499:	  037A			CONIST: ;input status: A=FF if character received, A=0 if not
+  500:	  037A	E4		        CLR A
+  501:	  037B	30 98 01	        JNB RI,ISTRET   ;no character received
+  502:	  037E	14		        DEC A
+  503:	  037F	22		ISTRET: RET
+  504:
+  505:	  0380			WMSEC:  ;about 1 ms delay
+  506:	  0380	C0 06		        PUSH AR6
+  507:	  0382	C0 07		        PUSH AR7
+  508:	  0384	7E 02		        MOV R6,#HIGH(TIMEBASE)
+  509:	  0386	7F CD		        MOV R7,#LOW(TIMEBASE)
+  510:	  0388	DF FE		WMSEC1: DJNZ R7,WMSEC1
+  511:	  038A	DE FC		        DJNZ R6,WMSEC1
+  512:	  038C	D0 07		        POP AR7
+  513:	  038E	D0 06		        POP AR6
+  514:	  0390	22		        RET
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 11
+
+
+
+ Line  I  Addr  Code            Source
+
+  515:
+  516:	  0391			DELAY:  ;wait for CHARTIME ms!
+  517:				        ;CHARTIME is calculated to last for one byte sent by the UART.
+  518:				        ;DELAY changes registers R6 and R7.
+  519:	  0391	7E 01		        MOV R6,#HIGH(CHARTIME)
+  520:	  0393	7F 0A		        MOV R7,#LOW(CHARTIME)
+  521:	  0395	71 80		DELAY1: CALL WMSEC              ;1 ms
+  522:	  0397	DF FC		        DJNZ R7,DELAY1
+  523:	  0399	DE FA		        DJNZ R6,DELAY1
+  524:	  039B	22		        RET
+  525:
+  526:
+  527:				        IFDEF INTEL8051
+  528:				        ;baudrate generator timer 1
+  529:
+  530:	  039C			INITBG: ;start baudrate generator timer 1
+  531:	  039C	75 88 00	        MOV  TCON,#0
+  532:	  039F	75 89 20	        MOV  TMOD,#020H
+  533:	  03A2	75 8D E8	        MOV  TH1,#RELOAD
+  534:	  03A5	53 87 7F	        ANL  PCON,#07FH
+  535:	  03A8	43 87 00	        ORL  PCON,#SMOD
+  536:	  03AB	D2 8E		        SETB TR1
+  537:	  03AD	22		        RET
+  538:
+  539:	  03AE			STOPBG: ;stop baudrate generator timer 1
+  540:	  03AE	E4		        CLR  A
+  541:	  03AF	F5 88		        MOV  TCON,A
+  542:	  03B1	F5 89		        MOV  TMOD,A
+  543:	  03B3	F5 8D		        MOV  TH1,A
+  544:	  03B5	F5 8B		        MOV  TL1,A
+  545:	  03B7	53 87 7F	        ANL  PCON,#07FH
+  546:	  03BA	22		        RET
+  547:
+  548:				        ENDIF
+  549:
+  550:
+  551:				        IFDEF INTEL8052
+  552:				        ;baudrate generator timer 2
+  553:
+  554:				        T2CON   DATA 0C8H
+  555:				        RCAP2L  DATA 0CAH
+  556:				        RCAP2H  DATA 0CBH
+  557:				        TR2     BIT 0CAH
+  558:
+  559:				INITBG: ;start baudrate generator timer 2
+  560:				        MOV  T2CON,#030H
+  561:				        MOV  RCAP2H,#HIGH(RELOAD)
+  562:				        MOV  RCAP2L,#LOW(RELOAD)
+  563:				        SETB TR2
+  564:				        RET
+  565:
+  566:				STOPBG: ;stop baudrate generator timer 2
+  567:				        CLR  A
+  568:				        MOV  T2CON,A
+  569:				        MOV  RCAP2H,A
+  570:				        MOV  RCAP2L,A
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 12
+
+
+
+ Line  I  Addr  Code            Source
+
+  571:				        RET
+  572:
+  573:				        ENDIF
+  574:
+  575:
+  576:				        IFDEF SAB80535
+  577:				        ;internal 80535 baudrate generator
+  578:
+  579:				        BD   BIT 0DFH
+  580:
+  581:				INITBG: ;start internal 80535 baudrate generator
+  582:				        ANL  PCON,#07FH
+  583:				        ORL  PCON,#SMOD
+  584:				        SETB BD
+  585:				        RET
+  586:
+  587:				STOPBG: ;stop internal 80535 baudrate generator
+  588:				        CLR  BD
+  589:				        ANL  PCON,#07FH
+  590:				        RET
+  591:
+  592:				        ENDIF
+  593:
+  594:
+  595:				        IFDEF SAB80C515A
+  596:				        ;internal 80C535A baudrate generator
+  597:
+  598:				        SRELH   DATA 0BAH
+  599:				        SRELL   DATA 0AAH
+  600:				        BD      BIT  0DFH
+  601:
+  602:				INITBG: ;start internal 80C515A baudrate generator
+  603:				        ANL  PCON,#07FH
+  604:				        ORL  PCON,#SMOD
+  605:				        MOV  SRELH,#HIGH(RELOAD)
+  606:				        MOV  SRELL,#LOW(RELOAD)
+  607:				        SETB BD
+  608:				        RET
+  609:
+  610:				STOPBG: ;stop internal 80C515A baudrate generator
+  611:				        CLR  BD
+  612:				        MOV  SRELH,#3
+  613:				        MOV  SRELL,#0D9H
+  614:				        ANL  PCON,#07FH
+  615:				        RET
+  616:
+  617:				        ENDIF
+  618:
+  619:
+  620:				        IFDEF DS80C320
+  621:				        ;Dallas 80C320 timer 1 with clock/12 or clock/4 prescaler
+  622:
+  623:				        CKCON   DATA 08EH
+  624:
+  625:				INITBG: ;start 80C320 baudrate generator timer 1
+  626:				        MOV  CKCON,#PRESCALE
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 13
+
+
+
+ Line  I  Addr  Code            Source
+
+  627:				        MOV  TCON,#0
+  628:				        MOV  TMOD,#020H
+  629:				        MOV  TH1,#RELOAD
+  630:				        ANL  PCON,#07FH
+  631:				        ORL  PCON,#SMOD
+  632:				        SETB TR1
+  633:				        RET
+  634:
+  635:				STOPBG: ;stop 80C320 baudrate generator timer 1
+  636:				        CLR  A
+  637:				        MOV  TCON,A
+  638:				        MOV  TMOD,A
+  639:				        MOV  TH1,A
+  640:				        MOV  TL1,A
+  641:				        ANL  PCON,#07FH
+  642:				        MOV  CKCON,#1
+  643:				        RET
+  644:
+  645:				        ENDIF
+  646:
+  647:
+  648:				        END
+
+
+
+
+
+                     register banks used:  0
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 14
+
+
+
+
+
+	       L I S T   O F   S Y M B O L S
+	       =============================
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+??ASEM_51			  NUMBER    8051
+??VERSION			  NUMBER    0130
+AC				  BIT	      D6
+ACC				  DATA	      E0
+B				  DATA	      F0
+BACKSP				  CODE	    0199	 218
+BEL				  NUMBER    0007	  37
+BS				  NUMBER    0008	  38
+CHARTIME			  NUMBER    010A	  34
+CHECKSUM_ERROR			  NUMBER    0002	 272
+CKSERR				  CODE	    0215	 286
+CMDLIN				  DATA	      30	  49
+CMDMAX				  DATA	      77	  50
+CONIN				  CODE	    036A	 486
+CONIST				  CODE	    037A	 499
+CONOST				  CODE	    0374	 493
+CONOUT				  CODE	    0362	 480
+CPROMPT				  NUMBER    003E	  43
+CR				  NUMBER    000D	  39
+CY				  BIT	      D7
+DEL				  NUMBER    007F	  41
+DELAY				  CODE	    0391	 516
+DELAY1				  CODE	    0395	 521
+DPH				  DATA	      83
+DPL				  DATA	      82
+EA				  BIT	      AF
+EIN16				  CODE	    02D9	 375
+EIN16F				  CODE	    02E2	 383
+ERRONL				  CODE	    01C6	 247
+ERROU1				  CODE	    01CE	 253
+ERROUT				  CODE	    01CB	 251
+ERRSTL				  CODE	    024D	 291
+ERRSTN				  CODE	    024B	 290
+ERRSTR				  CODE	    0254	 292
+ERRTAB				  CODE	    01E9	 276
+ES				  BIT	      AC
+ET0				  BIT	      A9
+ET1				  BIT	      AB
+EX0				  BIT	      A8
+EX1				  BIT	      AA
+EXTI0				  CODE	    0003
+EXTI1				  CODE	    0013
+F0				  BIT	      D5
+HEX16				  CODE	    02E3	 385
+HEX161				  CODE	    02EC	 395
+HEX162				  CODE	    02FA	 402
+HEX16F				  CODE	    0308	 410
+HEX16R				  CODE	    0306	 408
+IE				  DATA	      A8
+IE0				  BIT	      89
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 15
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+IE1				  BIT	      8B
+ILLCOM				  CODE	    01F3	 284
+ILLEGAL_COMMAND			  NUMBER    0000	 270
+ILLEGAL_HEXDIGIT		  NUMBER    0001	 271
+ILLEGAL_RECORDID		  NUMBER    0004	 274
+ILLHEX				  CODE	    0203	 285
+ILLRID				  CODE	    0239	 288
+INITBG				  CODE	    039C	 530
+INT0				  BIT	      B2
+INT1				  BIT	      B3
+INTEL8051			  NUMBER    0000	  29
+INTER1				  CODE	    0116	 145
+INTER2				  CODE	    0122	 151
+INTER3				  CODE	    0134	 159
+INTER4				  CODE	    013C	 162
+INTER5				  CODE	    0143	 165
+INTERP				  CODE	    0111	 142
+IP				  DATA	      B8
+ISTRET				  CODE	    037F	 503
+IT0				  BIT	      88
+IT1				  BIT	      8A
+LDHEX1				  CODE	    01A8	 231
+LDHEX2				  CODE	    01AE	 234
+LDHEX3				  CODE	    01B8	 238
+LDHEX4				  CODE	    01C5	 245
+LDHEXF				  CODE	    019D	 220
+LDHEXM				  CODE	    01BF	 242
+LF				  NUMBER    000A	  40
+NEWLIN				  CODE	    0349	 462
+NEXTB				  CODE	    02C1	 355
+NEXTBR				  CODE	    02D8	 373
+NIBBL1				  CODE	    0327	 431
+NIBBLE				  CODE	    030B	 413
+NIBBLR				  CODE	    032A	 433
+NIXME1				  CODE	    0151	 178
+NIXMER				  CODE	    0148	 169
+OSTRET				  CODE	    0379	 497
+OV				  BIT	      D2
+P				  BIT	      D0
+P0				  DATA	      80
+P1				  DATA	      90
+P2				  DATA	      A0
+P3				  DATA	      B0
+PCON				  DATA	      87
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PX0				  BIT	      B8
+PX1				  BIT	      BA
+RB8				  BIT	      9A
+RD				  BIT	      B7
+RDCOM1				  CODE	    015C	 187
+RDCOM2				  CODE	    0165	 191
+RDCOM3				  CODE	    0168	 192
+RDCOM4				  CODE	    016D	 194
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 16
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+RDCOM5				  CODE	    0176	 198
+RDCOM6				  CODE	    017B	 200
+RDCOM7				  CODE	    0190	 211
+RDCOMM				  CODE	    0152	 180
+RELOAD				  NUMBER    00E8	  30
+REN				  BIT	      9C
+RESET				  CODE	    0000
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RXD				  BIT	      B0
+SBUF				  DATA	      99
+SCON				  DATA	      98
+SHIFT0				  CODE	    032E	 439
+SHIFT4				  CODE	    032B	 435
+SIGNON				  CODE	    00A3	 115
+SINT				  CODE	    0023
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SMOD				  NUMBER    0000	  31
+SP				  DATA	      81
+STACK				  DATA	      08	  48
+START				  CODE	    00E2	 121
+STARTADDR			  CODE	    0000	  17
+STOPBG				  CODE	    03AE	 539
+STRING				  CODE	    0354	 469
+STRRET				  CODE	    0361	 478
+T0				  BIT	      B4
+T1				  BIT	      B5
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TF0				  BIT	      8D
+TF1				  BIT	      8F
+TH0				  DATA	      8C
+TH1				  DATA	      8D
+TI				  BIT	      99
+TIMEBASE			  NUMBER    02CD	  33
+TIMER0				  CODE	    000B
+TIMER1				  CODE	    001B
+TL0				  DATA	      8A
+TL1				  DATA	      8B
+TMOD				  DATA	      89
+TR0				  BIT	      8C
+TR1				  BIT	      8E
+TXD				  BIT	      B1
+UNEXPECTED_CHAR			  NUMBER    0003	 273
+UNXCHR				  CODE	    0224	 287
+UPCASE				  CODE	    0335	 446
+UPCRET				  CODE	    0346	 459
+UPLOA0				  CODE	    0261	 307
+UPLOA1				  CODE	    0280	 322
+UPLOA2				  CODE	    0289	 327
+UPLOA3				  CODE	    02AD	 342
+UPLOA4				  CODE	    02B5	 346
+UPLOA5				  CODE	    02B8	 348
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 17
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+UPLOA6				  CODE	    02BB	 350
+UPLOA7				  CODE	    02BE	 352
+UPLOA8				  CODE	    02A0	 337
+UPLOA9				  CODE	    02A3	 338
+UPLOAD				  CODE	    025B	 294
+UPLOAU				  CODE	    02A8	 340
+UPROMPT				  NUMBER    003A	  44
+USERPROGS			  CODE	    8000	  18
+WARTEN				  CODE	    00FB	 131
+WMSEC				  CODE	    0380	 505
+WMSEC1				  CODE	    0388	 510
+WR				  BIT	      B6

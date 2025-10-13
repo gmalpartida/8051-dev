@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "8051 Board_d3532395d287466c8b79d09d2c83deb9")(type "KiCad")(uri "$(KIPRJMOD)/8051 Development Board.pretty")(options "")(descr ""))
+)

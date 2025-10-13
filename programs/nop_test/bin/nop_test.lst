@@ -1,0 +1,22 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 1
+Hexadecimal [24-Bits]
+
+
+
+                                      1 .module nop_test
+                                      2 
+                                      3 .area INTV (ABS)
+                                      4 
+                                      5 
+      000000                          6 RESET:
+      000000 02 00 00         [24]    7 	ljmp main
+                                      8 
+                                      9 .area CSEG (ABS, CODE)
+                                     10 
+      000000                         11 main:
+      000000 00               [12]   12 	nop
+      000001 80 FD            [24]   13 	sjmp	main
+                                     14 
+                                     15 
+                                     16 
+                                     17 
