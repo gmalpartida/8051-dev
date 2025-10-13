@@ -41,26 +41,26 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
    21:	  0026	N      0005		ds 5
    22:
    23:	  002B			main:
-   24:	  002B	11 35			acall uart_init_baud_gen
+   24:	  002B	11 39			acall uart_init_baud_gen
    25:
    26:	  002D			loop_echo:
-   27:
-   28:	  002D	11 41			acall uart_rx_char
-   29:	  002F	F5 99		 	mov sbuf, a
-   30:	  0031	11 4F			acall uart_tx_char
-   31:
-   32:	  0033	80 F8		  	sjmp loop_echo ; jump back to the beginning of the loop
-   33:
-   34:				; initializes timer 1 as standard uart baud rate generator
-   35:				; <-- timer 1: 9600bps, mode 2, 8-bit auto-reload
-   36:				; <-- serial port: mode 1, 8-bit
-   37:	  0035			uart_init_baud_gen:
-   38:	  0035	75 89 20		mov tmod, #20h
-   39:	  0038	75 8D FD		mov th1, #0fdh
-   40:	  003B	D2 8E			setb tr1
-   41:
-   42:	  003D	75 98 50		mov scon, #50h
-   43:
+   27:	  002D	90 00 10		mov dptr, #0010h
+   28:	  0030	11 4D			acall uart_rx_string
+   29:	  0032	90 00 10		mov dptr, #0010h
+   30:	  0035	11 65			acall uart_tx_string
+   31:	  0037	80 FE			sjmp $
+   32:
+   33:				; initializes timer 1 as standard uart baud rate generator
+   34:				; <-- timer 1: 9600bps, mode 2, 8-bit auto-reload
+   35:				; <-- serial port: mode 1, 8-bit
+   36:	  0039			uart_init_baud_gen:
+   37:	  0039	75 89 20		mov tmod, #20h
+   38:	  003C	75 8D FD		mov th1, #0fdh
+   39:	  003F	D2 8E			setb tr1
+   40:
+   41:	  0041	75 98 50		mov scon, #50h
+   42:
+   43:	  0044	22			ret
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
 
@@ -68,36 +68,53 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-   44:	  0040	22			ret
-   45:
-   46:				; receives a character from serial port
-   47:				; <-- a: character received
-   48:	  0041			uart_rx_char:
-   49:	  0041	30 98 FD		jnb ri, $
-   50:	  0044	C2 98			clr ri
-   51:	  0046	E5 99			mov a, sbuf
-   52:	  0048	22			ret
-   53:
-   54:				; receives a string from the serial port
-   55:				; --> dptr: location of string that was received
-   56:	  0049			uart_rx_string:
-   57:	  0049			loop_rx_string:
-   58:	  0049	11 41			acall uart_rx_char
-   59:
-   60:	  004B	B4 0D FB		cjne a, #CR, loop_rx_string
-   61:
-   62:	  004E	22			ret
-   63:
-   64:				; transmits character via serial port
-   65:				; --> a: character to be sent
-   66:	  004F			uart_tx_char:
-   67:	  004F	30 99 FD		jnb ti, $
-   68:	  0052	C2 99			clr ti
-   69:
-   70:	  0054	22			ret
-   71:				end
-   72:
-   73:
+   44:
+   45:				; receives a character from serial port
+   46:				; <-- a: character received
+   47:	  0045			uart_rx_char:
+   48:	  0045	30 98 FD		jnb ri, $
+   49:	  0048	C2 98			clr ri
+   50:	  004A	E5 99			mov a, sbuf
+   51:	  004C	22			ret
+   52:
+   53:				; receives a string from the serial port
+   54:				; <-- dptr: location of string that was received
+   55:	  004D			uart_rx_string:
+   56:	  004D			loop_rx_string:
+   57:	  004D	11 45			acall uart_rx_char
+   58:	  004F	F0			movx @dptr, a
+   59:	  0050	B4 0D 06		cjne a, #CR, uart_rx_string_not_cr
+   60:	  0053	74 00			mov a, #00h
+   61:	  0055	F0			movx @dptr, a
+   62:	  0056	02 00 5C		jmp exit_uart_rx_string
+   63:	  0059			uart_rx_string_not_cr:
+   64:	  0059	A3			inc dptr
+   65:	  005A	80 F1			jmp loop_rx_string
+   66:	  005C			exit_uart_rx_string:
+   67:	  005C	22			ret
+   68:
+   69:				; transmits character via serial port
+   70:				; --> a: character to be transmitted
+   71:	  005D			uart_tx_char:
+   72:	  005D	30 99 FD		jnb ti, $
+   73:	  0060	C2 99			clr ti
+   74:	  0062	F5 99			mov sbuf, a
+   75:	  0064	22			ret
+   76:
+   77:				; transmits a string via serial port
+   78:				; --> dptr: location of string to be transmitted
+   79:	  0065			uart_tx_string:
+   80:	  0065	E0			movx a, @dptr
+   81:	  0066	60 05			jz exit_uart_tx_string
+   82:	  0068	11 5D			acall uart_tx_char
+   83:	  006A	A3			inc dptr
+   84:	  006B	80 F8			jmp uart_tx_string
+   85:
+   86:	  006D			exit_uart_tx_string:
+   87:	  006D	22			ret
+   88:				end
+   89:
+   90:
 
 
 
@@ -107,10 +124,15 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
                      no errors
 
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+
+
+
 
 
 
-ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
 
 
 
@@ -137,6 +159,8 @@ ET0				  BIT	      A9
 ET1				  BIT	      AB
 EX0				  BIT	      A8
 EX1				  BIT	      AA
+EXIT_UART_RX_STRING		  CODE	    005C	  66
+EXIT_UART_TX_STRING		  CODE	    006D	  86
 EXTI0				  CODE	    0003
 EXTI1				  CODE	    0013
 F0				  BIT	      D5
@@ -151,7 +175,7 @@ IP				  DATA	      B8
 IT0				  BIT	      88
 IT1				  BIT	      8A
 LOOP_ECHO			  CODE	    002D	  26
-LOOP_RX_STRING			  CODE	    0049	  57
+LOOP_RX_STRING			  CODE	    004D	  56
 MAIN				  CODE	    002B	  23
 OV				  BIT	      D2
 P				  BIT	      D0
@@ -170,15 +194,15 @@ RB8				  BIT	      9A
 RD				  BIT	      B7
 REN				  BIT	      9C
 RESET				  CODE	    0000
-RI				  BIT	      98
-RS0				  BIT	      D3
 
-ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
 
 
 
 SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
+RI				  BIT	      98
+RS0				  BIT	      D3
 RS1				  BIT	      D4
 RXD				  BIT	      B0
 SBUF				  DATA	      99
@@ -208,8 +232,10 @@ TMOD				  DATA	      89
 TR0				  BIT	      8C
 TR1				  BIT	      8E
 TXD				  BIT	      B1
-UART_INIT_BAUD_GEN		  CODE	    0035	  37
-UART_RX_CHAR			  CODE	    0041	  48
-UART_RX_STRING			  CODE	    0049	  56
-UART_TX_CHAR			  CODE	    004F	  66
+UART_INIT_BAUD_GEN		  CODE	    0039	  36
+UART_RX_CHAR			  CODE	    0045	  47
+UART_RX_STRING			  CODE	    004D	  55
+UART_RX_STRING_NOT_CR		  CODE	    0059	  63
+UART_TX_CHAR			  CODE	    005D	  71
+UART_TX_STRING			  CODE	    0065	  79
 WR				  BIT	      B6

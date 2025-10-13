@@ -13,7 +13,7 @@ MINICOM_FLAGS= 8051
 OBJCOPY_FLAGS= -C
 HEXDUMP_FLAGS=-C 
 HEXBIN_FLAGS=--fill=ff --length=8000
-UCSIM_51_FLAGS= -s /dev/pts/1 $(TARGET).hex
+UCSIM_51_FLAGS= -S uart=0,port=10000, raw $(TARGET).hex
 
 .PHONY: all, build, clean, uart, edit, dump, bin
 
@@ -34,7 +34,7 @@ dump: bin
 bin: build
 	$(HEXBIN) $(HEXBIN_FLAGS) $(TARGET).hex $(TARGET).bin
 
-sim:
+sim: build
 	$(UCSIM_51) $(UCSIM_51_FLAGS)
 
 clean:
