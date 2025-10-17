@@ -2,7 +2,7 @@
 ; --> uart_rx_buffer: contains command received
 ; <-- a: HELP_CMD, LS_CMD, PEEK_CMD or POKE_CMD if valid, otherwise INVALID_CMD
 get_cmd:
-	mov b, #00h
+	mov b, #INVALID_CMD
 	mov dptr, #uart_rx_buffer
 	acall uart_rx_string
 

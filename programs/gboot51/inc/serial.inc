@@ -25,11 +25,17 @@ uart_rx_string:
 loop_rx_string:
 	acall uart_rx_char
 	movx @dptr, a
-	cjne a, #CR, uart_rx_string_not_cr
+	cjne a, #CR, uart_rx_string_is_lf
+	mov a, #00h
+	movx @dptr, a
+	inc dptr
+	jmp loop_rx_string
+uart_rx_string_is_lf:
+	cjne a, #LF, uart_rx_string_not_lf
 	mov a, #00h
 	movx @dptr, a
 	jmp exit_uart_rx_string
-uart_rx_string_not_cr:
+uart_rx_string_not_lf:
 	inc dptr
 	jmp loop_rx_string
 exit_uart_rx_string:
