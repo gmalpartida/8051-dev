@@ -1,42 +1,41 @@
-AS=/opt/asem51/asem
-FLASHER=minipro
-HEXDUMP=hexdump
+ASEM=/opt/asem51/asem
 MINICOM=minicom
 VI=vi
+HEXDUMP=hexdump
 HEXBIN=/opt/asem51/hexbin
-UCSIM=/opt/sdcc/bin/ucsim_51
+UCSIM_51=/opt/sdcc/bin/ucsim_51
 
-ROM='AT28C16@DIP24'
-
-INC=inc
 SRC=src/mem_test.asm
 TARGET=bin/mem_test
-ASFLAGS= -iinc/ -v
 
-.PHONY: all build flash dump uart clean edit bin sim
+ASEM_FLAGS= -i inc -v
+MINICOM_FLAGS= 8051
+OBJCOPY_FLAGS= -C
+HEXDUMP_FLAGS=-C 
+HEXBIN_FLAGS=--fill=ff --length=8000
+UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex
+
+.PHONY: all, build, clean, uart, edit, dump, bin, sim
 
 all: build
 
 build:
-	$(AS) $(ASFLAGS) $(SRC) $(TARGET).hex
-
-flash: build
-	$(FLASHER) -p $(ROM) -w $(TARGET).hex
-
-dump: bin
-	$(HEXDUMP) -C $(TARGET).bin
+	$(ASEM) $(ASEM_FLAGS) $(SRC) $(TARGET).hex
 
 uart:
-	sudo $(MINICOM) 8051
+	sudo $(MINICOM) $(MINICOM_FLAGS) 
 
 edit:
 	$(VI) $(SRC)
 
+dump: bin
+	$(HEXDUMP) $(HEXDUMP_FLAGS) $(TARGET).bin
+
 bin: build
-	$(HEXBIN) $(TARGET).hex $(TARGET).bin
+	$(HEXBIN) $(HEXBIN_FLAGS) $(TARGET).hex $(TARGET).bin
 
 sim: build
-	$(UCSIM) $(TARGET).hex
+	$(UCSIM_51) $(UCSIM_51_FLAGS)
 
 clean:
 	rm -f bin/*
