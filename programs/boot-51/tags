@@ -16,5 +16,5 @@ OBJCOPY_FLAGS	Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 SRC	Makefile	/^SRC=src\/boot51.a51$/;"	m
 TARGET	Makefile	/^TARGET=bin\/boot51$/;"	m
 UCSIM_51	Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
-UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -s \/dev\/pts\/1 $(TARGET).hex$/;"	m
+UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000, $(TARGET).hex$/;"	m
 VI	Makefile	/^VI=vi$/;"	m
