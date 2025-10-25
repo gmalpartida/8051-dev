@@ -5,19 +5,17 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 $include	src/mem_test.asm	/^$include (delay.asm)$/;"	l
-ASEM	Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
-ASEM_FLAGS	Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
+AS	Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
+ASFLAGS	Makefile	/^ASFLAGS= -iinc\/ -v$/;"	m
+FLASHER	Makefile	/^FLASHER=minipro$/;"	m
 HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
-HEXBIN_FLAGS	Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
-HEXDUMP_FLAGS	Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+INC	Makefile	/^INC=inc$/;"	m
 MINICOM	Makefile	/^MINICOM=minicom$/;"	m
-MINICOM_FLAGS	Makefile	/^MINICOM_FLAGS= 8051$/;"	m
-OBJCOPY_FLAGS	Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+ROM	Makefile	/^ROM='AT28C16@DIP24'$/;"	m
 SRC	Makefile	/^SRC=src\/mem_test.asm$/;"	m
 TARGET	Makefile	/^TARGET=bin\/mem_test$/;"	m
-UCSIM_51	Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
-UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
+UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 VI	Makefile	/^VI=vi$/;"	m
 blink_led	src/mem_test.asm	/^blink_led:$/;"	l
 blink_loop	src/mem_test.asm	/^blink_loop:$/;"	l

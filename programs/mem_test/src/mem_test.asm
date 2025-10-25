@@ -1,12 +1,3 @@
-	max_rom_address_low equ 00h
-	max_rom_address_high equ 80h
-	max_ram_address_high equ 80h
-	max_ram_address_low equ 00h
-
-dseg at 30h
-	dptr_high: ds 1
-	dptr_low: ds 1
-
 cseg
 
 	ljmp main
@@ -17,96 +8,58 @@ cseg
 	endm
 
 main:
+	mov dph, #00h
+	mov dpl, #00h
+	mov a, #0ffh
+	mov b, #'a'
+	acall fill_xram
 
-	mov b, #00h
-
+	mov dptr, #a_short_text
 	mov r0, #00h
-	mov r1, #00h
-	acall copy_rom_to_ram
+	mov r1, #80h
+	acall copy_text_from_rom_to_ram
 
-	;acall populate_ram
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #90h
+	acall copy_text_from_rom_to_ram
 
-blink_loop:
-	acall blink_led
-	acall delay_1_sec
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0a0h
+	acall copy_text_from_rom_to_ram
 
-	jmp blink_loop
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0b0h
+	acall copy_text_from_rom_to_ram
 
-	jmp 0000h
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0c0h
+	acall copy_text_from_rom_to_ram
 
-copy_rom_to_ram:
-	mov dptr_high, r1
-	mov dptr_low, r0
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0d0h
+	acall copy_text_from_rom_to_ram
 
-copy_loop:
-	mov dph, dptr_high
-	mov dpl, dptr_low
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0e0h
+	acall copy_text_from_rom_to_ram
 
-	mov a, #00h
-	movc a, @a + dptr
-	movx @dptr, a
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #0f0h
+	acall copy_text_from_rom_to_ram
 
-	inc dptr_low
-	mov a, dptr_low
-	cjne a, #max_rom_address_low, copy_loop
+	mov dptr, #a_short_text
+	mov r0, #00h
+	mov r1, #80h
+	acall verify_copy_text_from_rom_to_ram
 
-	inc dptr_high
-	
-	mov a, dptr_high
+	jmp $
 
-	cjne a, #max_rom_address_high, copy_loop
-
-	mov b, #01h
-
-	ret
-
-
-blink_led:
-	
-    cpl p1.0
-	cpl p1.1
-	cpl p1.2
-	cpl p1.3
-	cpl p1.4
-	cpl p1.5
-	cpl p1.6
-	cpl p1.7
-
-exit_blink_led:
-	ret
-
-
-populate_ram:
-	mov dptr_high, #00h
-	mov dptr_low, #00h
-
-	mov b, #00h
-
-populate_loop:
-
-	mov dph, dptr_high
-	mov dpl, dptr_low
-
-	mov a, #00h
-	
-	mov a, b
-	movx @dptr, a
-	inc b
-
-	inc dptr_low
-	mov a, dptr_low
-
-	cjne a, #max_ram_address_low, populate_loop
-	inc dptr_high
-	mov a, dptr_high
-
-	cjne a, #max_ram_address_high, populate_loop
-
-	mov b, #02h
-
-	ret
-
-$include (delay.asm)
-
-end
+$include(mem_diag.asm)
 

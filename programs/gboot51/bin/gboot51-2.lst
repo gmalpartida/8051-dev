@@ -220,36 +220,36 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
    56:		N      0030	cseg at 0030h
    57:
    58:	  0030			main:
-   59:	  0030	11 91			acall uart_init_baud_gen
+   59:	  0030	11 FD			acall uart_init_baud_gen
    60:
    61:	  0032	90 02 30		mov dptr, #newline_str
-   62:	  0035	11 CF			acall uart_tx_string_from_cseg
+   62:	  0035	31 3B			acall uart_tx_string_from_cseg
    63:	  0037	90 02 00		mov dptr, #title_str
-   64:	  003A	11 CF			acall uart_tx_string_from_cseg
+   64:	  003A	31 3B			acall uart_tx_string_from_cseg
    65:	  003C	90 02 30		mov dptr, #newline_str
-   66:	  003F	11 CF			acall uart_tx_string_from_cseg
+   66:	  003F	31 3B			acall uart_tx_string_from_cseg
    67:	  0041	90 02 30		mov dptr, #newline_str
-   68:	  0044	11 CF			acall uart_tx_string_from_cseg
+   68:	  0044	31 3B			acall uart_tx_string_from_cseg
    69:
    70:
    71:	  0046			command_prompt_loop:
    72:	  0046	90 02 33		mov dptr, #command_prompt_str
-   73:	  0049	11 CF			acall uart_tx_string_from_cseg
+   73:	  0049	31 3B			acall uart_tx_string_from_cseg
    74:
    75:
-   76:	  004B	11 D9			acall get_cmd
+   76:	  004B	31 45			acall get_cmd
    77:
    78:	  004D	B4 01 07		cjne a, #HELP_CMD, process_ls_cmd
    79:	  0050	90 02 3C		mov dptr, #help_str
-   80:	  0053	11 CF			acall uart_tx_string_from_cseg
+   80:	  0053	31 3B			acall uart_tx_string_from_cseg
    81:	  0055	80 EF			jmp command_prompt_loop
-   82:	  0057			process_ls_cmd:
-   83:	  0057	B4 02 04		cjne a, #LS_CMD, process_peek_cmd
-   84:	  005A	11 70			acall do_process_ls_cmd
-   85:	  005C	80 E8			jmp command_prompt_loop
-   86:
-   87:	  005E			process_peek_cmd:
-   88:	  005E	B4 04 04		cjne a, #PEEK_CMD, process_poke_cmd
+   82:
+   83:	  0057			process_ls_cmd:
+   84:	  0057	B4 02 04		cjne a, #LS_CMD, process_peek_cmd
+   85:	  005A	11 71			acall do_process_ls_cmd
+   86:	  005C	80 E8			jmp command_prompt_loop
+   87:
+   88:	  005E			process_peek_cmd:
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
 
@@ -257,62 +257,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-   89:	  0061	11 76			acall do_process_peek_cmd
-   90:	  0063	80 E1			jmp command_prompt_loop
-   91:	  0065			process_poke_cmd:
-   92:	  0065	B4 08 04		cjne a, #POKE_CMD, process_invalid_cmd
-   93:	  0068	11 7C			acall do_process_poke_cmd
-   94:	  006A	80 DA			jmp command_prompt_loop
-   95:	  006C			process_invalid_cmd:
-   96:	  006C	80 D8			jmp command_prompt_loop
-   97:	  006E			show_help:
-   98:
-   99:	  006E	80 FE			jmp $
-  100:
-  101:	  0070			do_process_ls_cmd:
-  102:	  0070	90 02 C4		mov dptr, #ls_str
-  103:	  0073	11 CF			acall uart_tx_string_from_cseg
-  104:
-  105:	  0075	22			ret
-  106:
-  107:	  0076			do_process_peek_cmd:
-  108:					;mov dptr, #peek_cmd_txt
-  109:					;acall uart_tx_string_from_cseg
-  110:	  0076	90 00 00		mov dptr, #uart_rx_buffer
-  111:	  0079	11 8A			acall parse_mem_address
+   89:	  005E	B4 04 05		cjne a, #PEEK_CMD, process_poke_cmd
+   90:	  0061	A3			inc dptr
+   91:	  0062	11 77			acall do_process_peek_cmd
+   92:	  0064	80 E0			jmp command_prompt_loop
+   93:	  0066			process_poke_cmd:
+   94:	  0066	B4 08 04		cjne a, #POKE_CMD, process_invalid_cmd
+   95:	  0069	11 7A			acall do_process_poke_cmd
+   96:	  006B	80 D9			jmp command_prompt_loop
+   97:	  006D			process_invalid_cmd:
+   98:	  006D	80 D7			jmp command_prompt_loop
+   99:
+  100:	  006F			show_help:
+  101:
+  102:	  006F	80 FE			jmp $
+  103:
+  104:	  0071			do_process_ls_cmd:
+  105:	  0071	90 02 C4		mov dptr, #ls_str
+  106:	  0074	31 3B			acall uart_tx_string_from_cseg
+  107:
+  108:	  0076	22			ret
+  109:
+  110:	  0077			do_process_peek_cmd:
+  111:	  0077	11 88			acall parse_mem_address
   112:
-  113:	  007B	22			ret
+  113:	  0079	22			ret
   114:
-  115:	  007C			do_process_poke_cmd:
-  116:	  007C	90 03 F6		mov dptr, #poke_cmd_txt
-  117:	  007F	11 CF			acall uart_tx_string_from_cseg
-  118:	  0081	22			ret
+  115:	  007A			do_process_poke_cmd:
+  116:	  007A	90 03 F6		mov dptr, #poke_cmd_txt
+  117:	  007D	31 3B			acall uart_tx_string_from_cseg
+  118:	  007F	22			ret
   119:
-  120:	  0082			fill_xmem:
-  121:	  0082	E4			clr a
-  122:	  0083			fill_xmem_loop:
-  123:	  0083	F0			movx @dptr, a
-  124:	  0084	A3			inc dptr
-  125:	  0085	04			inc a
-  126:	  0086	B4 00 FA		cjne a, #00h, fill_xmem_loop
-  127:	  0089	22			ret
+  120:	  0080			fill_xmem:
+  121:	  0080	E4			clr a
+  122:	  0081			fill_xmem_loop:
+  123:	  0081	F0			movx @dptr, a
+  124:	  0082	A3			inc dptr
+  125:	  0083	04			inc a
+  126:	  0084	B4 00 FA		cjne a, #00h, fill_xmem_loop
+  127:	  0087	22			ret
   128:
-  129:	  008A			parse_mem_address:
-  130:	  008A	E0			movx a, @dptr
-  131:	  008B	60 03			jz exit_parse_mem_address
-  132:	  008D	31 48			acall skip_blanks
-  133:	  008F	E0			movx a, @dptr
-  134:
-  135:	  0090			parse_mem_address_loop:
+  129:	  0088			parse_mem_address:
+  130:	  0088	E0			movx a, @dptr
+  131:	  0089	60 05			jz exit_parse_mem_address
+  132:	  008B	31 B4			acall skip_blanks
+  133:	  008D	E0			movx a, @dptr
+  134:	  008E			parse_mem_address_loop:
+  135:	  008E	31 2A			acall uart_tx_char
   136:
-  137:
-  138:	  0090			exit_parse_mem_address:
-  139:	  0090	22			ret
-  140:
-  141:				$include(boot51.inc)
-  142: 1				; BOOT-51 Customization Header
-  143: 1				; ============================
-  144: 1				; generated with CUSTOMIZ V1.1
+  137:	  0090			exit_parse_mem_address:
+  138:	  0090	22			ret
+  139:
+  140:				; convert an ascci hex charactor into its binary value
+  141:				; --> a: ascii hex character to be converted
+  142:				; <-- a: binary representation of ascii character
+  143:	  0091			ascii_to_binary:
+  144:	  0091	B4 61 03		cjne a, #'a', is_b
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
 
@@ -320,62 +320,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  145: 1
-  146: 1	N      0000		STARTADDR CODE 0	;start address of bootstrap program
-  147: 1	N      8000		USERPROGS CODE 08000H	;start address of user programs
-  148: 1
-  149: 1				; Baudrate Generation
-  150: 1				; -------------------
-  151: 1				; system clock frequency:  11.0592 MHz
-  152: 1				; baudrate generator:      timer 1
-  153: 1				; nominal baudrate:        9600.0 Baud
-  154: 1				; required accuracy:       1.00 %
-  155: 1				;
-  156: 1				; resulting baudrate:      9600.0 Baud
-  157: 1
-  158: 1	N      0000		INTEL8051  EQU 0
-  159: 1	N      00FD		RELOAD     EQU 0FDH
-  160: 1	N      0000		SMOD       EQU 0
-  161: 1
-  162: 1	N      02CD		TIMEBASE   EQU 02CDH
-  163: 1	N      0202		CHARTIME   EQU 0202H
-  164:				$include(serial.inc)
-  165: 1
-  166: 1			; initializes timer 1 as standard uart baud rate generator
-  167: 1			; <-- timer 1: , mode 2, 8-bit auto-reload
-  168: 1			; <-- serial port: mode 1, 8-bit, 9600 bps
-  169: 1  0091			uart_init_baud_gen:
-  170: 1  0091	75 89 20		mov tmod, #20h
-  171: 1  0094	75 8D FD		mov th1, #0fdh
-  172: 1  0097	D2 8E			setb tr1
-  173: 1
-  174: 1  0099	75 98 50		mov scon, #50h
-  175: 1
-  176: 1  009C	22			ret
-  177: 1
-  178: 1			; receives a character from serial port
-  179: 1			; <-- a: character received
-  180: 1  009D			uart_rx_char:
-  181: 1  009D	30 98 FD		jnb ri, $
-  182: 1  00A0	C2 98			clr ri
-  183: 1  00A2	E5 99			mov a, sbuf
-  184: 1  00A4	22			ret
-  185: 1
-  186: 1			; receives a string from the serial port
-  187: 1			; <-- dptr: location of string that was received
-  188: 1  00A5			uart_rx_string:
-  189: 1  00A5			loop_rx_string:
-  190: 1  00A5	11 9D			acall uart_rx_char
-  191: 1  00A7	F0			movx @dptr, a
-  192: 1  00A8	B4 0D 06		cjne a, #CR, uart_rx_string_is_lf
-  193: 1  00AB	74 00			mov a, #00h
-  194: 1  00AD	F0			movx @dptr, a
-  195: 1  00AE	A3			inc dptr
-  196: 1  00AF	80 F4			jmp loop_rx_string
-  197: 1  00B1			uart_rx_string_is_lf:
-  198: 1  00B1	B4 0A 06		cjne a, #LF, uart_rx_string_not_lf
-  199: 1  00B4	74 00			mov a, #00h
-  200: 1  00B6	F0			movx @dptr, a
+  145:	  0094	02 00 B5		jmp is_letter
+  146:	  0097			is_b:
+  147:	  0097	B4 62 03		cjne a, #'b', is_c
+  148:	  009A	02 00 B5		jmp is_letter
+  149:	  009D			is_c:
+  150:	  009D	B4 63 03		cjne a, #'c', is_d
+  151:	  00A0	02 00 B5		jmp is_letter
+  152:	  00A3			is_d:
+  153:	  00A3	B4 64 03		cjne a, #'d', is_e
+  154:	  00A6	02 00 B5		jmp is_letter
+  155:	  00A9			is_e:
+  156:	  00A9	B4 65 03		cjne a, #'e', is_f
+  157:	  00AC	02 00 B5		jmp is_letter
+  158:	  00AF			is_f:
+  159:	  00AF	B4 66 08		cjne a, #'f', is_0
+  160:	  00B2	02 00 B5		jmp is_letter
+  161:	  00B5			is_letter:
+  162:	  00B5	24 07			add a, #07h
+  163:	  00B7	02 00 FA		jmp exit_ascii_to_binary
+  164:	  00BA			is_0:
+  165:	  00BA	B4 30 03		cjne a, #'0', is_1
+  166:	  00BD	02 00 FA		jmp exit_ascii_to_binary
+  167:	  00C0			is_1:
+  168:	  00C0	B4 31 03		cjne a, #'1', is_2
+  169:	  00C3	02 00 FA		jmp exit_ascii_to_binary
+  170:	  00C6			is_2:
+  171:	  00C6	B4 32 03		cjne a, #'2', is_3
+  172:	  00C9	02 00 FA		jmp exit_ascii_to_binary
+  173:	  00CC			is_3:
+  174:	  00CC	B4 33 03		cjne a, #'3', is_4
+  175:	  00CF	02 00 FA		jmp exit_ascii_to_binary
+  176:	  00D2			is_4:
+  177:	  00D2	B4 34 03		cjne a, #'4', is_5
+  178:	  00D5	02 00 FA		jmp exit_ascii_to_binary
+  179:	  00D8			is_5:
+  180:	  00D8	B4 35 03		cjne a, #'5', is_6
+  181:	  00DB	02 00 FA		jmp exit_ascii_to_binary
+  182:	  00DE			is_6:
+  183:	  00DE	B4 36 03		cjne a, #'6', is_7
+  184:	  00E1	02 00 FA		jmp exit_ascii_to_binary
+  185:	  00E4			is_7:
+  186:	  00E4	B4 37 03		cjne a, #'7', is_8
+  187:	  00E7	02 00 FA		jmp exit_ascii_to_binary
+  188:	  00EA			is_8:
+  189:	  00EA	B4 38 03		cjne a, #'8', is_9
+  190:	  00ED	02 00 FA		jmp exit_ascii_to_binary
+  191:	  00F0			is_9:
+  192:	  00F0	B4 39 03		cjne a, #'9', ascii_to_binary__error
+  193:	  00F3	02 00 FA		jmp exit_ascii_to_binary
+  194:	  00F6			ascii_to_binary__error:
+  195:	  00F6	74 FF			mov a, #0ffh
+  196:	  00F8	54 0F			anl a, #0fh
+  197:	  00FA			exit_ascii_to_binary:
+  198:	  00FA	54 FF			anl a, #0ffh
+  199:	  00FC	22			ret
+  200:
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 7
 
@@ -383,62 +383,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  201: 1  00B7	02 00 BD		jmp exit_uart_rx_string
-  202: 1  00BA			uart_rx_string_not_lf:
-  203: 1  00BA	A3			inc dptr
-  204: 1  00BB	80 E8			jmp loop_rx_string
-  205: 1  00BD			exit_uart_rx_string:
-  206: 1  00BD	22			ret
-  207: 1
-  208: 1			; transmits character via serial port
-  209: 1			; --> a: character to be transmitted
-  210: 1  00BE			uart_tx_char:
-  211: 1  00BE	F5 99			mov sbuf, a
-  212: 1  00C0	30 99 FD		jnb ti, $
-  213: 1  00C3	C2 99			clr ti
-  214: 1  00C5	22			ret
-  215: 1
-  216: 1			; transmits a string via serial port
-  217: 1			; --> dptr: location of string to be transmitted
-  218: 1  00C6			uart_tx_string:
-  219: 1  00C6	E0			movx a, @dptr
-  220: 1  00C7	60 05			jz exit_uart_tx_string
-  221: 1  00C9	11 BE			acall uart_tx_char
-  222: 1  00CB	A3			inc dptr
-  223: 1  00CC	80 F8			jmp uart_tx_string
-  224: 1
-  225: 1  00CE			exit_uart_tx_string:
-  226: 1  00CE	22			ret
-  227: 1
-  228: 1			; transmits a string via serial port
-  229: 1			; --> dptr: location of string to be transmitted
-  230: 1  00CF			uart_tx_string_from_cseg:
-  231: 1  00CF	E4			clr a
-  232: 1  00D0	93			movc a, @a + dptr
-  233: 1  00D1	60 05			jz exit_uart_tx_string_from_cseg
-  234: 1  00D3	11 BE			acall uart_tx_char
-  235: 1  00D5	A3			inc dptr
-  236: 1  00D6	80 F7			jmp uart_tx_string_from_cseg
+  201:				$include(boot51.inc)
+  202: 1				; BOOT-51 Customization Header
+  203: 1				; ============================
+  204: 1				; generated with CUSTOMIZ V1.1
+  205: 1
+  206: 1	N      0000		STARTADDR CODE 0	;start address of bootstrap program
+  207: 1	N      8000		USERPROGS CODE 08000H	;start address of user programs
+  208: 1
+  209: 1				; Baudrate Generation
+  210: 1				; -------------------
+  211: 1				; system clock frequency:  11.0592 MHz
+  212: 1				; baudrate generator:      timer 1
+  213: 1				; nominal baudrate:        9600.0 Baud
+  214: 1				; required accuracy:       1.00 %
+  215: 1				;
+  216: 1				; resulting baudrate:      9600.0 Baud
+  217: 1
+  218: 1	N      0000		INTEL8051  EQU 0
+  219: 1	N      00FD		RELOAD     EQU 0FDH
+  220: 1	N      0000		SMOD       EQU 0
+  221: 1
+  222: 1	N      02CD		TIMEBASE   EQU 02CDH
+  223: 1	N      0202		CHARTIME   EQU 0202H
+  224:				$include(serial.inc)
+  225: 1
+  226: 1			; initializes timer 1 as standard uart baud rate generator
+  227: 1			; <-- timer 1: , mode 2, 8-bit auto-reload
+  228: 1			; <-- serial port: mode 1, 8-bit, 9600 bps
+  229: 1  00FD			uart_init_baud_gen:
+  230: 1  00FD	75 89 20		mov tmod, #20h
+  231: 1  0100	75 8D FD		mov th1, #0fdh
+  232: 1  0103	D2 8E			setb tr1
+  233: 1
+  234: 1  0105	75 98 50		mov scon, #50h
+  235: 1
+  236: 1  0108	22			ret
   237: 1
-  238: 1  00D8			exit_uart_tx_string_from_cseg:
-  239: 1  00D8	22			ret
-  240: 1
-  241: 1
-  242:				$include(menu.inc)
-  243: 1			; retrieves the command entered
-  244: 1			; --> uart_rx_buffer: contains command received
-  245: 1			; <-- a: HELP_CMD, LS_CMD, PEEK_CMD or POKE_CMD if valid, otherwise INVALID_CMD
-  246: 1  00D9			get_cmd:
-  247: 1  00D9	75 F0 00		mov b, #INVALID_CMD
-  248: 1  00DC	90 00 00		mov dptr, #uart_rx_buffer
-  249: 1  00DF	11 A5			acall uart_rx_string
-  250: 1
-  251: 1  00E1	90 00 00		mov dptr, #uart_rx_buffer
-  252: 1  00E4			skip_blanks_loop:
-  253: 1  00E4	E0			movx a, @dptr
-  254: 1  00E5	60 5E			jz exit_get_cmd
-  255: 1  00E7	B4 20 03		cjne a, #' ', is_help_cmd
-  256: 1  00EA	A3			inc dptr
+  238: 1			; receives a character from serial port
+  239: 1			; <-- a: character received
+  240: 1  0109			uart_rx_char:
+  241: 1  0109	30 98 FD		jnb ri, $
+  242: 1  010C	C2 98			clr ri
+  243: 1  010E	E5 99			mov a, sbuf
+  244: 1  0110	22			ret
+  245: 1
+  246: 1			; receives a string from the serial port
+  247: 1			; <-- dptr: location of string that was received
+  248: 1  0111			uart_rx_string:
+  249: 1  0111			loop_rx_string:
+  250: 1  0111	31 09			acall uart_rx_char
+  251: 1  0113	F0			movx @dptr, a
+  252: 1  0114	B4 0D 06		cjne a, #CR, uart_rx_string_is_lf
+  253: 1  0117	74 00			mov a, #00h
+  254: 1  0119	F0			movx @dptr, a
+  255: 1  011A	A3			inc dptr
+  256: 1  011B	80 F4			jmp loop_rx_string
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 8
 
@@ -446,62 +446,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  257: 1  00EB	80 F7			jmp skip_blanks_loop
-  258: 1
-  259: 1  00ED			is_help_cmd:
-  260: 1  00ED	E0			movx a, @dptr
-  261: 1  00EE	B4 68 15		cjne a, #'h', is_ls_cmd
-  262: 1  00F1	A3			inc dptr
-  263: 1  00F2	E0			movx a, @dptr
-  264: 1  00F3	B4 65 4C		cjne a, #'e', is_invalid_cmd
-  265: 1  00F6	A3			inc dptr
-  266: 1  00F7	E0			movx a, @dptr
-  267: 1  00F8	B4 6C 47		cjne a, #'l', is_invalid_cmd
-  268: 1  00FB	A3			inc dptr
-  269: 1  00FC	E0			movx a, @dptr
-  270: 1  00FD	B4 70 42		cjne a, #'p', is_invalid_cmd
-  271: 1  0100	75 F0 01		mov b, #HELP_CMD
-  272: 1  0103	02 01 45		jmp exit_get_cmd
-  273: 1  0106			is_ls_cmd:
-  274: 1  0106	E0			movx a, @dptr
-  275: 1  0107	B4 6C 0B		cjne a, #'l', is_peek_cmd
-  276: 1  010A	A3			inc dptr
-  277: 1  010B	E0			movx a, @dptr
-  278: 1  010C	B4 73 33		cjne a, #'s', is_invalid_cmd
-  279: 1  010F	75 F0 02		mov b, #LS_CMD
-  280: 1  0112	02 01 45		jmp exit_get_cmd
-  281: 1  0115			is_peek_cmd:
-  282: 1  0115	E0			movx a, @dptr
-  283: 1  0116	B4 70 29		cjne a, #'p', is_invalid_cmd
-  284: 1  0119	A3			inc dptr
-  285: 1  011A	E0			movx a, @dptr
-  286: 1  011B	B4 65 10		cjne a, #'e', is_poke_cmd
-  287: 1  011E	A3			inc dptr
-  288: 1  011F	E0			movx a, @dptr
-  289: 1  0120	B4 65 1F		cjne a, #'e', is_invalid_cmd
-  290: 1  0123	A3			inc dptr
-  291: 1  0124	E0			movx a, @dptr
-  292: 1  0125	B4 6B 1A		cjne a, #'k', is_invalid_cmd
-  293: 1  0128	75 F0 04		mov b, #PEEK_CMD
-  294: 1  012B	02 01 45		jmp exit_get_cmd
-  295: 1  012E			is_poke_cmd:
-  296: 1  012E	E0			movx a, @dptr
-  297: 1  012F	B4 6F 10		cjne a, #'o', is_invalid_cmd
-  298: 1  0132	A3			inc dptr
-  299: 1  0133	E0			movx a, @dptr
-  300: 1  0134	B4 6B 0B		cjne a, #'k', is_invalid_cmd
-  301: 1  0137	A3			inc dptr
-  302: 1  0138	E0			movx a, @dptr
-  303: 1  0139	B4 65 06		cjne a, #'e', is_invalid_cmd
-  304: 1  013C	75 F0 08		mov b, #POKE_CMD
-  305: 1  013F	02 01 45		jmp exit_get_cmd
-  306: 1  0142			is_invalid_cmd:
-  307: 1  0142	75 F0 00		mov b, #INVALID_CMD
-  308: 1  0145			exit_get_cmd:
-  309: 1  0145	E5 F0			mov a, b
-  310: 1  0147	22			ret
-  311: 1
-  312: 1			; skips blanks in front of buffer
+  257: 1  011D			uart_rx_string_is_lf:
+  258: 1  011D	B4 0A 06		cjne a, #LF, uart_rx_string_not_lf
+  259: 1  0120	74 00			mov a, #00h
+  260: 1  0122	F0			movx @dptr, a
+  261: 1  0123	02 01 29		jmp exit_uart_rx_string
+  262: 1  0126			uart_rx_string_not_lf:
+  263: 1  0126	A3			inc dptr
+  264: 1  0127	80 E8			jmp loop_rx_string
+  265: 1  0129			exit_uart_rx_string:
+  266: 1  0129	22			ret
+  267: 1
+  268: 1			; transmits character via serial port
+  269: 1			; --> a: character to be transmitted
+  270: 1  012A			uart_tx_char:
+  271: 1  012A	F5 99			mov sbuf, a
+  272: 1  012C	30 99 FD		jnb ti, $
+  273: 1  012F	C2 99			clr ti
+  274: 1  0131	22			ret
+  275: 1
+  276: 1			; transmits a string via serial port
+  277: 1			; --> dptr: location of string to be transmitted
+  278: 1  0132			uart_tx_string:
+  279: 1  0132	E0			movx a, @dptr
+  280: 1  0133	60 05			jz exit_uart_tx_string
+  281: 1  0135	31 2A			acall uart_tx_char
+  282: 1  0137	A3			inc dptr
+  283: 1  0138	80 F8			jmp uart_tx_string
+  284: 1
+  285: 1  013A			exit_uart_tx_string:
+  286: 1  013A	22			ret
+  287: 1
+  288: 1			; transmits a string via serial port
+  289: 1			; --> dptr: location of string to be transmitted
+  290: 1  013B			uart_tx_string_from_cseg:
+  291: 1  013B	E4			clr a
+  292: 1  013C	93			movc a, @a + dptr
+  293: 1  013D	60 05			jz exit_uart_tx_string_from_cseg
+  294: 1  013F	31 2A			acall uart_tx_char
+  295: 1  0141	A3			inc dptr
+  296: 1  0142	80 F7			jmp uart_tx_string_from_cseg
+  297: 1
+  298: 1  0144			exit_uart_tx_string_from_cseg:
+  299: 1  0144	22			ret
+  300: 1
+  301: 1
+  302:				$include(menu.inc)
+  303: 1			; retrieves the command entered
+  304: 1			; --> uart_rx_buffer: contains command received
+  305: 1			; <-- a: HELP_CMD, LS_CMD, PEEK_CMD or POKE_CMD if valid, otherwise INVALID_CMD
+  306: 1  0145			get_cmd:
+  307: 1  0145	75 F0 00		mov b, #INVALID_CMD
+  308: 1  0148	90 00 00		mov dptr, #uart_rx_buffer
+  309: 1  014B	31 11			acall uart_rx_string
+  310: 1
+  311: 1  014D	90 00 00		mov dptr, #uart_rx_buffer
+  312: 1  0150			skip_blanks_loop:
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 9
 
@@ -509,23 +509,90 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  313: 1			; --> dptr: contains address of buffer to read
-  314: 1			; <-- dptr: points at the first non-blank character in buffer
-  315: 1  0148			skip_blanks:
-  316: 1  0148	E0			movx a, @dptr
-  317: 1  0149	B4 20 03		cjne a, #' ', exit_skip_blanks
-  318: 1  014C	A3			inc dptr
-  319: 1  014D	80 F9			jmp skip_blanks
-  320: 1  014F			exit_skip_blanks:
-  321: 1  014F	22			ret
-  322: 1
-  323:
-  324:		N      0000	xseg at 0000h
-  325:	  0000	N      00FF		uart_rx_buffer: ds 255
-  326:
-  327:				end
-  328:
-  329:
+  313: 1  0150	E0			movx a, @dptr
+  314: 1  0151	60 5E			jz exit_get_cmd
+  315: 1  0153	B4 20 03		cjne a, #' ', is_help_cmd
+  316: 1  0156	A3			inc dptr
+  317: 1  0157	80 F7			jmp skip_blanks_loop
+  318: 1
+  319: 1  0159			is_help_cmd:
+  320: 1  0159	E0			movx a, @dptr
+  321: 1  015A	B4 68 15		cjne a, #'h', is_ls_cmd
+  322: 1  015D	A3			inc dptr
+  323: 1  015E	E0			movx a, @dptr
+  324: 1  015F	B4 65 4C		cjne a, #'e', is_invalid_cmd
+  325: 1  0162	A3			inc dptr
+  326: 1  0163	E0			movx a, @dptr
+  327: 1  0164	B4 6C 47		cjne a, #'l', is_invalid_cmd
+  328: 1  0167	A3			inc dptr
+  329: 1  0168	E0			movx a, @dptr
+  330: 1  0169	B4 70 42		cjne a, #'p', is_invalid_cmd
+  331: 1  016C	75 F0 01		mov b, #HELP_CMD
+  332: 1  016F	02 01 B1		jmp exit_get_cmd
+  333: 1  0172			is_ls_cmd:
+  334: 1  0172	E0			movx a, @dptr
+  335: 1  0173	B4 6C 0B		cjne a, #'l', is_peek_cmd
+  336: 1  0176	A3			inc dptr
+  337: 1  0177	E0			movx a, @dptr
+  338: 1  0178	B4 73 33		cjne a, #'s', is_invalid_cmd
+  339: 1  017B	75 F0 02		mov b, #LS_CMD
+  340: 1  017E	02 01 B1		jmp exit_get_cmd
+  341: 1  0181			is_peek_cmd:
+  342: 1  0181	E0			movx a, @dptr
+  343: 1  0182	B4 70 29		cjne a, #'p', is_invalid_cmd
+  344: 1  0185	A3			inc dptr
+  345: 1  0186	E0			movx a, @dptr
+  346: 1  0187	B4 65 10		cjne a, #'e', is_poke_cmd
+  347: 1  018A	A3			inc dptr
+  348: 1  018B	E0			movx a, @dptr
+  349: 1  018C	B4 65 1F		cjne a, #'e', is_invalid_cmd
+  350: 1  018F	A3			inc dptr
+  351: 1  0190	E0			movx a, @dptr
+  352: 1  0191	B4 6B 1A		cjne a, #'k', is_invalid_cmd
+  353: 1  0194	75 F0 04		mov b, #PEEK_CMD
+  354: 1  0197	02 01 B1		jmp exit_get_cmd
+  355: 1  019A			is_poke_cmd:
+  356: 1  019A	E0			movx a, @dptr
+  357: 1  019B	B4 6F 10		cjne a, #'o', is_invalid_cmd
+  358: 1  019E	A3			inc dptr
+  359: 1  019F	E0			movx a, @dptr
+  360: 1  01A0	B4 6B 0B		cjne a, #'k', is_invalid_cmd
+  361: 1  01A3	A3			inc dptr
+  362: 1  01A4	E0			movx a, @dptr
+  363: 1  01A5	B4 65 06		cjne a, #'e', is_invalid_cmd
+  364: 1  01A8	75 F0 08		mov b, #POKE_CMD
+  365: 1  01AB	02 01 B1		jmp exit_get_cmd
+  366: 1  01AE			is_invalid_cmd:
+  367: 1  01AE	75 F0 00		mov b, #INVALID_CMD
+  368: 1  01B1			exit_get_cmd:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 10
+
+
+
+ Line  I  Addr  Code            Source
+
+  369: 1  01B1	E5 F0			mov a, b
+  370: 1  01B3	22			ret
+  371: 1
+  372: 1			; skips blanks in front of buffer
+  373: 1			; --> dptr: contains address of buffer to read
+  374: 1			; <-- dptr: points at the first non-blank character in buffer
+  375: 1  01B4			skip_blanks:
+  376: 1  01B4	E0			movx a, @dptr
+  377: 1  01B5	B4 20 03		cjne a, #' ', exit_skip_blanks
+  378: 1  01B8	A3			inc dptr
+  379: 1  01B9	80 F9			jmp skip_blanks
+  380: 1  01BB			exit_skip_blanks:
+  381: 1  01BB	22			ret
+  382: 1
+  383:
+  384:		N      0000	xseg at 0000h
+  385:	  0000	N      00FF		uart_rx_buffer: ds 255
+  386:
+  387:				end
+  388:
+  389:
 
 
 
@@ -538,7 +605,7 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
 
 
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 10
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 11
 
 
 
@@ -554,15 +621,17 @@ SYMBOL				  TYPE     VALUE	LINE
 ??VERSION			  NUMBER    0130
 AC				  BIT	      D6
 ACC				  DATA	      E0
+ASCII_TO_BINARY			  CODE	    0091	 143
+ASCII_TO_BINARY__ERROR		  CODE	    00F6	 194
 B				  DATA	      F0
-CHARTIME			  NUMBER    0202	 163
+CHARTIME			  NUMBER    0202	 223
 COMMAND_PROMPT_LOOP		  CODE	    0046	  71
 COMMAND_PROMPT_STR		  CODE	    0233	  35
 CR				  NUMBER    000D	  22
 CY				  BIT	      D7
-DO_PROCESS_LS_CMD		  CODE	    0070	 101
-DO_PROCESS_PEEK_CMD		  CODE	    0076	 107
-DO_PROCESS_POKE_CMD		  CODE	    007C	 115
+DO_PROCESS_LS_CMD		  CODE	    0071	 104
+DO_PROCESS_PEEK_CMD		  CODE	    0077	 110
+DO_PROCESS_POKE_CMD		  CODE	    007A	 115
 DPH				  DATA	      83
 DPL				  DATA	      82
 EA				  BIT	      AF
@@ -571,18 +640,19 @@ ET0				  BIT	      A9
 ET1				  BIT	      AB
 EX0				  BIT	      A8
 EX1				  BIT	      AA
-EXIT_GET_CMD			  CODE	    0145	 308
-EXIT_PARSE_MEM_ADDRESS		  CODE	    0090	 138
-EXIT_SKIP_BLANKS		  CODE	    014F	 320
-EXIT_UART_RX_STRING		  CODE	    00BD	 205
-EXIT_UART_TX_STRING		  CODE	    00CE	 225
-EXIT_UART_TX_STRING_FROM_CSEG	  CODE	    00D8	 238
+EXIT_ASCII_TO_BINARY		  CODE	    00FA	 197
+EXIT_GET_CMD			  CODE	    01B1	 368
+EXIT_PARSE_MEM_ADDRESS		  CODE	    0090	 137
+EXIT_SKIP_BLANKS		  CODE	    01BB	 380
+EXIT_UART_RX_STRING		  CODE	    0129	 265
+EXIT_UART_TX_STRING		  CODE	    013A	 285
+EXIT_UART_TX_STRING_FROM_CSEG	  CODE	    0144	 298
 EXTI0				  CODE	    0003
 EXTI1				  CODE	    0013
 F0				  BIT	      D5
-FILL_XMEM			  CODE	    0082	 120
-FILL_XMEM_LOOP			  CODE	    0083	 122
-GET_CMD				  CODE	    00D9	 246
+FILL_XMEM			  CODE	    0080	 120
+FILL_XMEM_LOOP			  CODE	    0081	 122
+GET_CMD				  CODE	    0145	 306
 HELP_CMD			  NUMBER    0001	  27
 HELP_CMD_TXT			  CODE	    03B0	  49
 HELP_STR			  CODE	    023C	  37
@@ -593,26 +663,42 @@ IE1				  BIT	      8B
 IE1_VECTOR			  CODE	    0013	  10
 INT0				  BIT	      B2
 INT1				  BIT	      B3
-INTEL8051			  NUMBER    0000	 158
+INTEL8051			  NUMBER    0000	 218
 INVALID_CMD			  NUMBER    0000	  26
 INVALID_CMD_TXT			  CODE	    040E	  53
 IP				  DATA	      B8
-IS_HELP_CMD			  CODE	    00ED	 259
-IS_INVALID_CMD			  CODE	    0142	 306
-IS_LS_CMD			  CODE	    0106	 273
 
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 11
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 12
 
 
 
 SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
-IS_PEEK_CMD			  CODE	    0115	 281
-IS_POKE_CMD			  CODE	    012E	 295
+IS_0				  CODE	    00BA	 164
+IS_1				  CODE	    00C0	 167
+IS_2				  CODE	    00C6	 170
+IS_3				  CODE	    00CC	 173
+IS_4				  CODE	    00D2	 176
+IS_5				  CODE	    00D8	 179
+IS_6				  CODE	    00DE	 182
+IS_7				  CODE	    00E4	 185
+IS_8				  CODE	    00EA	 188
+IS_9				  CODE	    00F0	 191
+IS_B				  CODE	    0097	 146
+IS_C				  CODE	    009D	 149
+IS_D				  CODE	    00A3	 152
+IS_E				  CODE	    00A9	 155
+IS_F				  CODE	    00AF	 158
+IS_HELP_CMD			  CODE	    0159	 319
+IS_INVALID_CMD			  CODE	    01AE	 366
+IS_LETTER			  CODE	    00B5	 161
+IS_LS_CMD			  CODE	    0172	 333
+IS_PEEK_CMD			  CODE	    0181	 341
+IS_POKE_CMD			  CODE	    019A	 355
 IT0				  BIT	      88
 IT1				  BIT	      8A
 LF				  NUMBER    000A	  23
-LOOP_RX_STRING			  CODE	    00A5	 189
+LOOP_RX_STRING			  CODE	    0111	 249
 LS_CMD				  NUMBER    0002	  28
 LS_CMD_TXT			  CODE	    03C8	  50
 LS_STR				  CODE	    02C4	  43
@@ -624,17 +710,17 @@ P0				  DATA	      80
 P1				  DATA	      90
 P2				  DATA	      A0
 P3				  DATA	      B0
-PARSE_MEM_ADDRESS		  CODE	    008A	 129
-PARSE_MEM_ADDRESS_LOOP		  CODE	    0090	 135
+PARSE_MEM_ADDRESS		  CODE	    0088	 129
+PARSE_MEM_ADDRESS_LOOP		  CODE	    008E	 134
 PCON				  DATA	      87
 PEEK_CMD			  NUMBER    0004	  29
 PEEK_CMD_TXT			  CODE	    03DE	  51
 POKE_CMD			  NUMBER    0008	  30
 POKE_CMD_TXT			  CODE	    03F6	  52
-PROCESS_INVALID_CMD		  CODE	    006C	  95
-PROCESS_LS_CMD			  CODE	    0057	  82
-PROCESS_PEEK_CMD		  CODE	    005E	  87
-PROCESS_POKE_CMD		  CODE	    0065	  91
+PROCESS_INVALID_CMD		  CODE	    006D	  97
+PROCESS_LS_CMD			  CODE	    0057	  83
+PROCESS_PEEK_CMD		  CODE	    005E	  88
+PROCESS_POKE_CMD		  CODE	    0066	  93
 PS				  BIT	      BC
 PSW				  DATA	      D0
 PT0				  BIT	      B9
@@ -643,7 +729,14 @@ PX0				  BIT	      B8
 PX1				  BIT	      BA
 RB8				  BIT	      9A
 RD				  BIT	      B7
-RELOAD				  NUMBER    00FD	 159
+RELOAD				  NUMBER    00FD	 219
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 13
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
 REN				  BIT	      9C
 RESET				  CODE	    0000
 RI				  BIT	      98
@@ -653,23 +746,16 @@ RXD				  BIT	      B0
 SBUF				  DATA	      99
 SCON				  DATA	      98
 SERIAL_VECTOR			  CODE	    0023	  16
-SHOW_HELP			  CODE	    006E	  97
+SHOW_HELP			  CODE	    006F	 100
 SINT				  CODE	    0023
-SKIP_BLANKS			  CODE	    0148	 315
-SKIP_BLANKS_LOOP		  CODE	    00E4	 252
+SKIP_BLANKS			  CODE	    01B4	 375
+SKIP_BLANKS_LOOP		  CODE	    0150	 312
 SM0				  BIT	      9F
 SM1				  BIT	      9E
 SM2				  BIT	      9D
-SMOD				  NUMBER    0000	 160
+SMOD				  NUMBER    0000	 220
 SP				  DATA	      81
-STARTADDR			  CODE	    0000	 146
-
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 12
-
-
-
-SYMBOL				  TYPE     VALUE	LINE
-------------------------------------------------------------
+STARTADDR			  CODE	    0000	 206
 T0				  BIT	      B4
 T1				  BIT	      B5
 TAB				  NUMBER    0009	  24
@@ -682,7 +768,7 @@ TF1_VECTOR			  CODE	    001B	  13
 TH0				  DATA	      8C
 TH1				  DATA	      8D
 TI				  BIT	      99
-TIMEBASE			  NUMBER    02CD	 162
+TIMEBASE			  NUMBER    02CD	 222
 TIMER0				  CODE	    000B
 TIMER1				  CODE	    001B
 TITLE_STR			  CODE	    0200	  32
@@ -692,14 +778,14 @@ TMOD				  DATA	      89
 TR0				  BIT	      8C
 TR1				  BIT	      8E
 TXD				  BIT	      B1
-UART_INIT_BAUD_GEN		  CODE	    0091	 169
-UART_RX_BUFFER			  XDATA	    0000	 325
-UART_RX_CHAR			  CODE	    009D	 180
-UART_RX_STRING			  CODE	    00A5	 188
-UART_RX_STRING_IS_LF		  CODE	    00B1	 197
-UART_RX_STRING_NOT_LF		  CODE	    00BA	 202
-UART_TX_CHAR			  CODE	    00BE	 210
-UART_TX_STRING			  CODE	    00C6	 218
-UART_TX_STRING_FROM_CSEG	  CODE	    00CF	 230
-USERPROGS			  CODE	    8000	 147
+UART_INIT_BAUD_GEN		  CODE	    00FD	 229
+UART_RX_BUFFER			  XDATA	    0000	 385
+UART_RX_CHAR			  CODE	    0109	 240
+UART_RX_STRING			  CODE	    0111	 248
+UART_RX_STRING_IS_LF		  CODE	    011D	 257
+UART_RX_STRING_NOT_LF		  CODE	    0126	 262
+UART_TX_CHAR			  CODE	    012A	 270
+UART_TX_STRING			  CODE	    0132	 278
+UART_TX_STRING_FROM_CSEG	  CODE	    013B	 290
+USERPROGS			  CODE	    8000	 207
 WR				  BIT	      B6

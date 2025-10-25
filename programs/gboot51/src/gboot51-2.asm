@@ -46,6 +46,7 @@ command_prompt_loop:
 	mov dptr, #help_str
 	acall uart_tx_string_from_cseg
 	jmp command_prompt_loop
+
 process_ls_cmd:
 	cjne a, #LS_CMD, process_peek_cmd	
 	acall do_process_ls_cmd
@@ -53,6 +54,7 @@ process_ls_cmd:
 	
 process_peek_cmd:
 	cjne a, #PEEK_CMD, process_poke_cmd
+	inc dptr
 	acall do_process_peek_cmd
 	jmp command_prompt_loop
 process_poke_cmd:
@@ -61,6 +63,7 @@ process_poke_cmd:
 	jmp command_prompt_loop
 process_invalid_cmd:
 	jmp command_prompt_loop
+
 show_help:
 	
 	jmp $
@@ -72,9 +75,6 @@ do_process_ls_cmd:
 	ret
 
 do_process_peek_cmd:
-	;mov dptr, #peek_cmd_txt
-	;acall uart_tx_string_from_cseg
-	mov dptr, #uart_rx_buffer
 	acall parse_mem_address
 
 	ret
@@ -98,11 +98,71 @@ parse_mem_address:
 	jz exit_parse_mem_address
 	acall skip_blanks
 	movx a, @dptr
-	
 parse_mem_address_loop:
-	
+	acall uart_tx_char
 
 exit_parse_mem_address:
+	ret
+
+; convert an ascci hex charactor into its binary value
+; --> a: ascii hex character to be converted
+; <-- a: binary representation of ascii character
+ascii_to_binary:
+	cjne a, #'a', is_b
+	jmp is_letter
+is_b:
+	cjne a, #'b', is_c
+	jmp is_letter
+is_c:
+	cjne a, #'c', is_d
+	jmp is_letter
+is_d:
+	cjne a, #'d', is_e
+	jmp is_letter
+is_e:
+	cjne a, #'e', is_f
+	jmp is_letter
+is_f:
+	cjne a, #'f', is_0
+	jmp is_letter
+is_letter:
+	add a, #07h
+	jmp exit_ascii_to_binary
+is_0:
+	cjne a, #'0', is_1
+	jmp exit_ascii_to_binary
+is_1:
+	cjne a, #'1', is_2
+	jmp exit_ascii_to_binary
+is_2:
+	cjne a, #'2', is_3
+	jmp exit_ascii_to_binary
+is_3:
+	cjne a, #'3', is_4
+	jmp exit_ascii_to_binary
+is_4:
+	cjne a, #'4', is_5
+	jmp exit_ascii_to_binary
+is_5:
+	cjne a, #'5', is_6
+	jmp exit_ascii_to_binary
+is_6:
+	cjne a, #'6', is_7
+	jmp exit_ascii_to_binary
+is_7:
+	cjne a, #'7', is_8
+	jmp exit_ascii_to_binary
+is_8:	
+	cjne a, #'8', is_9
+	jmp exit_ascii_to_binary
+is_9:
+	cjne a, #'9', ascii_to_binary__error
+	jmp exit_ascii_to_binary
+ascii_to_binary__error:
+	mov a, #0ffh
+	anl a, #0fh
+exit_ascii_to_binary:
+	anl a, #0ffh
 	ret
 
 $include(boot51.inc)

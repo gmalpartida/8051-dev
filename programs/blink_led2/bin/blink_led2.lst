@@ -5,7 +5,7 @@ Hexadecimal [24-Bits]
 
                                       1 .module blink_led
                                       2 
-                                      3 ;.area INTV (ABS)
+                                      3 .area INTV (ABS)
                                       4 
                                       5 ;.org	0x0000
                                       6 

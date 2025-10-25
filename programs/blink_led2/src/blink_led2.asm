@@ -1,6 +1,6 @@
 .module blink_led
 
-;.area INTV (ABS)
+.area INTV (ABS)
 
 ;.org	0x0000
 

@@ -274,10 +274,6 @@ UPLOA2: CALL NEXTB         ;checksum
         CJNE A,#LF,UPLOA9  ;if no LF, may be ASCII upload with LF stripped
 UPLOA8: CALL CONIN         ;read next character
 UPLOA9: CJNE A,#':',UPLOA6 ;if no ":", unexpected character
-		PUSH 0E0H
-		MOV A, #'.'
-		CALL CONOUT
-		POP 0E0H
         JMP UPLOA0         ;read next HEX record
 UPLOAU: CJNE A,#LF,UPLOA6  ;if no LF, unexpected character
         JMP UPLOA8
