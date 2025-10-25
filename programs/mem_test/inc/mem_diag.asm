@@ -3,7 +3,6 @@
 ; --> r0/r1: starting address in ram ( low byte/ high byte )
 
 verify_copy_text_from_rom_to_ram:
-	mov r7, #00h
 verify_text_from_rom_to_ram_loop:
 	clr a
 	movc a, @a + dptr
@@ -24,10 +23,10 @@ verify_text_from_rom_to_ram_loop:
 	sjmp verify_text_from_rom_to_ram_loop
 
 verify_text_from_rom_to_ram_error:
-	mov r7, #0ffh
+	mov r7, #00h
 
 verify_text_from_rom_to_ram_exit:
-	mov a, r7	
+	inc r7	
 	ret
 
 

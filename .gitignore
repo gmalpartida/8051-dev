@@ -1,0 +1,7 @@
+programs/mem_test/bin/*
+*/bin/*
+*.hex
+*.lst
+*.bin
+*.sym
+*.rel
