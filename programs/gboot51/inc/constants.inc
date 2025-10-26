@@ -1,6 +1,3 @@
-CR equ 0dh
-LF equ 0ah
-TAB equ 09h
 
 INVALID_CMD	equ 00h
 HELP_CMD	equ 01h

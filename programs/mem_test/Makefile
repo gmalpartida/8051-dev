@@ -11,7 +11,7 @@ ROM='AT28C16@DIP24'
 INC=inc
 SRC=src/mem_test.asm
 TARGET=bin/mem_test
-ASFLAGS= -iinc/ -v
+ASFLAGS= -iinc/ -i../shared/inc/ -v
 UCSIM_FLAGS = $(TARGET).hex
 
 .PHONY: all build flash dump uart clean edit bin sim

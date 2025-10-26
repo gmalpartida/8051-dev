@@ -18,49 +18,49 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-    1:				cseg
+    1:		N      0000	cseg at 00h
     2:
-    3:	  0000	02 00 2B		ljmp main
-    4:
-    5:		N      0005		rept 5
-    6:						ljmp $
-    7:						ds 5
-    8:					endm
-    9+ 1  0003	02 00 03			ljmp $
-   10+ 1  0006	N      0005			ds 5
-   11+ 1  000B	02 00 0B			ljmp $
-   12+ 1  000E	N      0005			ds 5
-   13+ 1  0013	02 00 13			ljmp $
-   14+ 1  0016	N      0005			ds 5
-   15+ 1  001B	02 00 1B			ljmp $
-   16+ 1  001E	N      0005			ds 5
-   17+ 1  0023	02 00 23			ljmp $
-   18+ 1  0026	N      0005			ds 5
+    3:	  0000			reset_ivt:
+    4:	  0000	02 00 03		ljmp main_mem_test
+    5:
+    6:
+    7:
+    8:	  0003			main_mem_test:
+    9:
+   10:	  0003	90 00 F3		mov dptr, #a_short_text
+   11:	  0006	78 00			mov r0, #00h
+   12:	  0008	79 80			mov r1, #80h
+   13:	  000A	12 00 C9		lcall copy_text_from_rom_to_ram
+   14:
+   15:	  000D	90 00 F3		mov dptr, #a_short_text
+   16:	  0010	78 00			mov r0, #00h
+   17:	  0012	79 90			mov r1, #90h
+   18:	  0014	12 00 C9		lcall copy_text_from_rom_to_ram
    19:
-   20:	  002B			main:
-   21:	  002B	75 83 00		mov dph, #00h
-   22:	  002E	75 82 00		mov dpl, #00h
-   23:	  0031	74 FF			mov a, #0ffh
-   24:	  0033	75 F0 61		mov b, #'a'
-   25:	  0036	31 08			acall fill_xram
-   26:
-   27:	  0038	90 01 18		mov dptr, #a_short_text
-   28:	  003B	78 00			mov r0, #00h
-   29:	  003D	79 80			mov r1, #80h
-   30:	  003F	11 EE			acall copy_text_from_rom_to_ram
-   31:
-   32:	  0041	90 01 18		mov dptr, #a_short_text
-   33:	  0044	78 00			mov r0, #00h
-   34:	  0046	79 90			mov r1, #90h
-   35:	  0048	11 EE			acall copy_text_from_rom_to_ram
-   36:
-   37:	  004A	90 01 18		mov dptr, #a_short_text
-   38:	  004D	78 00			mov r0, #00h
-   39:	  004F	79 A0			mov r1, #0a0h
-   40:	  0051	11 EE			acall copy_text_from_rom_to_ram
-   41:
-   42:	  0053	90 01 18		mov dptr, #a_short_text
-   43:	  0056	78 00			mov r0, #00h
+   20:	  0017	90 00 F3		mov dptr, #a_short_text
+   21:	  001A	78 00			mov r0, #00h
+   22:	  001C	79 A0			mov r1, #0a0h
+   23:	  001E	12 00 C9		lcall copy_text_from_rom_to_ram
+   24:
+   25:	  0021	90 00 F3		mov dptr, #a_short_text
+   26:	  0024	78 00			mov r0, #00h
+   27:	  0026	79 B0			mov r1, #0b0h
+   28:	  0028	12 00 C9		lcall copy_text_from_rom_to_ram
+   29:
+   30:	  002B	90 00 F3		mov dptr, #a_short_text
+   31:	  002E	78 00			mov r0, #00h
+   32:	  0030	79 C0			mov r1, #0c0h
+   33:	  0032	12 00 C9		lcall copy_text_from_rom_to_ram
+   34:
+   35:	  0035	90 00 F3		mov dptr, #a_short_text
+   36:	  0038	78 00			mov r0, #00h
+   37:	  003A	79 D0			mov r1, #0d0h
+   38:	  003C	12 00 C9		lcall copy_text_from_rom_to_ram
+   39:
+   40:	  003F	90 00 F3		mov dptr, #a_short_text
+   41:	  0042	78 00			mov r0, #00h
+   42:	  0044	79 E0			mov r1, #0e0h
+   43:	  0046	12 00 C9		lcall copy_text_from_rom_to_ram
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
 
@@ -68,62 +68,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-   44:	  0058	79 B0			mov r1, #0b0h
-   45:	  005A	11 EE			acall copy_text_from_rom_to_ram
-   46:
-   47:	  005C	90 01 18		mov dptr, #a_short_text
-   48:	  005F	78 00			mov r0, #00h
-   49:	  0061	79 C0			mov r1, #0c0h
-   50:	  0063	11 EE			acall copy_text_from_rom_to_ram
-   51:
-   52:	  0065	90 01 18		mov dptr, #a_short_text
-   53:	  0068	78 00			mov r0, #00h
-   54:	  006A	79 D0			mov r1, #0d0h
-   55:	  006C	11 EE			acall copy_text_from_rom_to_ram
-   56:
-   57:	  006E	90 01 18		mov dptr, #a_short_text
-   58:	  0071	78 00			mov r0, #00h
-   59:	  0073	79 E0			mov r1, #0e0h
-   60:	  0075	11 EE			acall copy_text_from_rom_to_ram
-   61:
-   62:	  0077	90 01 18		mov dptr, #a_short_text
-   63:	  007A	78 00			mov r0, #00h
-   64:	  007C	79 F0			mov r1, #0f0h
-   65:	  007E	11 EE			acall copy_text_from_rom_to_ram
-   66:
-   67:	  0080	90 01 18		mov dptr, #a_short_text
-   68:	  0083	78 00			mov r0, #00h
-   69:	  0085	79 80			mov r1, #80h
-   70:	  0087	7F 00			mov r7, #00h
-   71:	  0089	11 CC			acall verify_copy_text_from_rom_to_ram
-   72:
-   73:	  008B	90 01 18		mov dptr, #a_short_text
-   74:	  008E	78 00			mov r0, #00h
-   75:	  0090	79 90			mov r1, #90h
-   76:	  0092	11 CC			acall verify_copy_text_from_rom_to_ram
-   77:
-   78:	  0094	90 01 18		mov dptr, #a_short_text
-   79:	  0097	78 00			mov r0, #00h
-   80:	  0099	79 A0			mov r1, #0a0h
-   81:	  009B	11 CC			acall verify_copy_text_from_rom_to_ram
-   82:
-   83:	  009D	90 01 18		mov dptr, #a_short_text
-   84:	  00A0	78 00			mov r0, #00h
-   85:	  00A2	79 B0			mov r1, #0b0h
-   86:	  00A4	11 CC			acall verify_copy_text_from_rom_to_ram
-   87:
-   88:	  00A6	90 01 18		mov dptr, #a_short_text
-   89:	  00A9	78 00			mov r0, #00h
-   90:	  00AB	79 C0			mov r1, #0c0h
-   91:	  00AD	11 CC			acall verify_copy_text_from_rom_to_ram
+   44:
+   45:	  0049	90 00 F3		mov dptr, #a_short_text
+   46:	  004C	78 00			mov r0, #00h
+   47:	  004E	79 F0			mov r1, #0f0h
+   48:	  0050	12 00 C9		lcall copy_text_from_rom_to_ram
+   49:
+   50:	  0053	90 00 F3		mov dptr, #a_short_text
+   51:	  0056	78 00			mov r0, #00h
+   52:	  0058	79 80			mov r1, #80h
+   53:	  005A	7F 00			mov r7, #00h
+   54:	  005C	12 00 A7		lcall verify_text_from_rom_to_ram
+   55:
+   56:	  005F	90 00 F3		mov dptr, #a_short_text
+   57:	  0062	78 00			mov r0, #00h
+   58:	  0064	79 90			mov r1, #90h
+   59:	  0066	12 00 A7		lcall verify_text_from_rom_to_ram
+   60:
+   61:	  0069	90 00 F3		mov dptr, #a_short_text
+   62:	  006C	78 00			mov r0, #00h
+   63:	  006E	79 A0			mov r1, #0a0h
+   64:	  0070	12 00 A7		lcall verify_text_from_rom_to_ram
+   65:
+   66:	  0073	90 00 F3		mov dptr, #a_short_text
+   67:	  0076	78 00			mov r0, #00h
+   68:	  0078	79 B0			mov r1, #0b0h
+   69:	  007A	12 00 A7		lcall verify_text_from_rom_to_ram
+   70:
+   71:	  007D	90 00 F3		mov dptr, #a_short_text
+   72:	  0080	78 00			mov r0, #00h
+   73:	  0082	79 C0			mov r1, #0c0h
+   74:	  0084	12 00 A7		lcall verify_text_from_rom_to_ram
+   75:
+   76:	  0087	90 00 F3		mov dptr, #a_short_text
+   77:	  008A	78 00			mov r0, #00h
+   78:	  008C	79 D0			mov r1, #0d0h
+   79:	  008E	12 00 A7		lcall verify_text_from_rom_to_ram
+   80:
+   81:	  0091	90 00 F3		mov dptr, #a_short_text
+   82:	  0094	78 00			mov r0, #00h
+   83:	  0096	79 E0			mov r1, #0e0h
+   84:	  0098	12 00 A7		lcall verify_text_from_rom_to_ram
+   85:
+   86:	  009B	90 00 F3		mov dptr, #a_short_text
+   87:	  009E	78 00			mov r0, #00h
+   88:	  00A0	79 F0			mov r1, #0f0h
+   89:	  00A2	12 00 A7		lcall verify_text_from_rom_to_ram
+   90:
+   91:	  00A5	80 FE			sjmp $
    92:
-   93:	  00AF	90 01 18		mov dptr, #a_short_text
-   94:	  00B2	78 00			mov r0, #00h
-   95:	  00B4	79 D0			mov r1, #0d0h
-   96:	  00B6	11 CC			acall verify_copy_text_from_rom_to_ram
-   97:
-   98:	  00B8	90 01 18		mov dptr, #a_short_text
-   99:	  00BB	78 00			mov r0, #00h
+   93:				$include(mem_diag.asm)
+   94: 1			; verifies that location in rom and ram contain same text until a null character is found
+   95: 1			; --> dptr: starting address in rom
+   96: 1			; --> r0/r1: starting address in ram ( low byte/ high byte )
+   97: 1			; <-- r7: 00h if error othewise incremented by 1
+   98: 1  00A7			verify_text_from_rom_to_ram:
+   99: 1  00A7	E4			clr a
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
 
@@ -131,62 +131,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  100:	  00BD	79 E0			mov r1, #0e0h
-  101:	  00BF	11 CC			acall verify_copy_text_from_rom_to_ram
-  102:
-  103:	  00C1	90 01 18		mov dptr, #a_short_text
-  104:	  00C4	78 00			mov r0, #00h
-  105:	  00C6	79 F0			mov r1, #0f0h
-  106:	  00C8	11 CC			acall verify_copy_text_from_rom_to_ram
-  107:
-  108:	  00CA	80 FE			jmp $
-  109:
-  110:				$include(mem_diag.asm)
-  111: 1			; verifies that location in rom and ram contain same text until a null character is found
-  112: 1			; --> dptr: starting address in rom
-  113: 1			; --> r0/r1: starting address in ram ( low byte/ high byte )
-  114: 1
-  115: 1  00CC			verify_copy_text_from_rom_to_ram:
-  116: 1  00CC			verify_text_from_rom_to_ram_loop:
-  117: 1  00CC	E4			clr a
-  118: 1  00CD	93			movc a, @a + dptr
-  119: 1  00CE	60 1C			jz verify_text_from_rom_to_ram_exit
-  120: 1  00D0	F5 F0			mov b, a
-  121: 1  00D2	AA 82			mov r2, dpl
-  122: 1  00D4	AB 83			mov r3, dph
-  123: 1  00D6	88 82			mov dpl, r0
-  124: 1  00D8	89 83			mov dph, r1
-  125: 1  00DA	E0			movx a, @dptr
-  126: 1  00DB	B5 F0 0C		cjne a, b, verify_text_from_rom_to_ram_error
-  127: 1  00DE	A3			inc dptr
-  128: 1  00DF	A8 82			mov r0, dpl
-  129: 1  00E1	A9 83			mov r1, dph
-  130: 1  00E3	8A 82			mov dpl, r2
-  131: 1  00E5	8B 83			mov dph, r3
-  132: 1  00E7	A3			inc dptr
-  133: 1  00E8	80 E2			sjmp verify_text_from_rom_to_ram_loop
-  134: 1
-  135: 1  00EA			verify_text_from_rom_to_ram_error:
-  136: 1  00EA	7F 00			mov r7, #00h
-  137: 1
-  138: 1  00EC			verify_text_from_rom_to_ram_exit:
-  139: 1  00EC	0F			inc r7
-  140: 1  00ED	22			ret
-  141: 1
-  142: 1
-  143: 1			; copies a section of text from rom to ram until a null character is found
-  144: 1			; --> dptr: starting address of text in rom
-  145: 1			; ->r0/r1: destination address low/high byte of text in ram
-  146: 1  00EE			copy_text_from_rom_to_ram:
-  147: 1  00EE	E4			clr a
-  148: 1  00EF	93			movc a, @a + dptr
-  149: 1  00F0	60 15			jz copy_text_from_rom_to_ram_exit
-  150: 1  00F2	AA 82			mov r2, dpl
-  151: 1  00F4	AB 83			mov r3, dph
-  152: 1  00F6	88 82			mov dpl, r0
-  153: 1  00F8	89 83			mov dph, r1
-  154: 1  00FA	F0			movx @dptr, a
-  155: 1  00FB	A3			inc dptr
+  100: 1  00A8	93			movc a, @a + dptr
+  101: 1  00A9	60 1C			jz verify_text_from_rom_to_ram_exit
+  102: 1  00AB	F5 F0			mov b, a
+  103: 1  00AD	AA 82			mov r2, dpl
+  104: 1  00AF	AB 83			mov r3, dph
+  105: 1  00B1	88 82			mov dpl, r0
+  106: 1  00B3	89 83			mov dph, r1
+  107: 1  00B5	E0			movx a, @dptr
+  108: 1  00B6	B5 F0 0C		cjne a, b, verify_text_from_rom_to_ram_error
+  109: 1  00B9	A3			inc dptr
+  110: 1  00BA	A8 82			mov r0, dpl
+  111: 1  00BC	A9 83			mov r1, dph
+  112: 1  00BE	8A 82			mov dpl, r2
+  113: 1  00C0	8B 83			mov dph, r3
+  114: 1  00C2	A3			inc dptr
+  115: 1  00C3	80 E2			sjmp verify_text_from_rom_to_ram
+  116: 1
+  117: 1  00C5			verify_text_from_rom_to_ram_error:
+  118: 1  00C5	7F FF			mov r7, #0ffh
+  119: 1
+  120: 1  00C7			verify_text_from_rom_to_ram_exit:
+  121: 1  00C7	0F			inc r7
+  122: 1  00C8	22			ret
+  123: 1
+  124: 1
+  125: 1			; copies a section of text from rom to ram until a null character is found
+  126: 1			; --> dptr: starting address of text in rom
+  127: 1			; ->r0/r1: destination address low/high byte of text in ram
+  128: 1  00C9			copy_text_from_rom_to_ram:
+  129: 1  00C9	E4			clr a
+  130: 1  00CA	93			movc a, @a + dptr
+  131: 1  00CB	60 15			jz copy_text_from_rom_to_ram_exit
+  132: 1  00CD	AA 82			mov r2, dpl
+  133: 1  00CF	AB 83			mov r3, dph
+  134: 1  00D1	88 82			mov dpl, r0
+  135: 1  00D3	89 83			mov dph, r1
+  136: 1  00D5	F0			movx @dptr, a
+  137: 1  00D6	A3			inc dptr
+  138: 1  00D7	A8 82			mov r0, dpl
+  139: 1  00D9	A9 83			mov r1, dph
+  140: 1  00DB	8A 82			mov dpl, r2
+  141: 1  00DD	8B 83			mov dph, r3
+  142: 1  00DF	A3			inc dptr
+  143: 1  00E0	80 E7			sjmp copy_text_from_rom_to_ram
+  144: 1
+  145: 1  00E2			copy_text_from_rom_to_ram_exit:
+  146: 1
+  147: 1  00E2	22			ret
+  148: 1
+  149: 1
+  150: 1			; fills a portion of external ram with a value
+  151: 1			; --> dptr: starting address in xram to be filled
+  152: 1			; --> a: count of bytes to fill in xram
+  153: 1			; --> b: value to be used to fill xram
+  154: 1
+  155: 1  00E3			fill_xram:
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
 
@@ -194,62 +194,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  156: 1  00FC	A8 82			mov r0, dpl
-  157: 1  00FE	A9 83			mov r1, dph
-  158: 1  0100	8A 82			mov dpl, r2
-  159: 1  0102	8B 83			mov dph, r3
-  160: 1  0104	A3			inc dptr
-  161: 1  0105	80 E7			sjmp copy_text_from_rom_to_ram
+  156: 1  00E3	F8			mov r0, a
+  157: 1  00E4			fill_xram_loop:
+  158: 1  00E4	E5 F0			mov a, b
+  159: 1  00E6	F0			movx @dptr, a
+  160: 1  00E7	A3			inc dptr
+  161: 1  00E8	D8 FA			djnz r0, fill_xram_loop
   162: 1
-  163: 1  0107			copy_text_from_rom_to_ram_exit:
+  163: 1  00EA	22			ret
   164: 1
-  165: 1  0107	22			ret
-  166: 1
-  167: 1
-  168: 1			; fills a portion of external ram with a value
-  169: 1			; --> dptr: starting address in xram to be filled
-  170: 1			; --> a: count of bytes to fill in xram
-  171: 1			; --> b: value to be used to fill xram
-  172: 1
-  173: 1  0108			fill_xram:
-  174: 1  0108	F8			mov r0, a
-  175: 1  0109			fill_xram_loop:
-  176: 1  0109	E5 F0			mov a, b
-  177: 1  010B	F0			movx @dptr, a
-  178: 1  010C	A3			inc dptr
-  179: 1  010D	D8 FA			djnz r0, fill_xram_loop
+  165: 1			; copies a portion of rom to ram
+  166: 1			; --> dptr: starting rom address
+  167: 1			; --> a: count of bytes to copy
+  168: 1  00EB			copy_rom_to_ram:
+  169: 1  00EB	FA			mov r2, a
+  170: 1  00EC			copy_rom_to_ram_loop:
+  171: 1  00EC	E4			clr a
+  172: 1  00ED	93			movc a, @a + dptr
+  173: 1  00EE	F0			movx @dptr, a
+  174: 1
+  175: 1  00EF	A3			inc dptr
+  176: 1  00F0	DA FA			djnz r2, copy_rom_to_ram_loop
+  177: 1
+  178: 1  00F2	22			ret
+  179: 1
   180: 1
-  181: 1  010F	22			ret
-  182: 1
-  183: 1			; copies a portion of rom to ram
-  184: 1			; --> dptr: starting rom address
-  185: 1			; --> a: count of bytes to copy
-  186: 1  0110			copy_rom_to_ram:
-  187: 1  0110	FA			mov r2, a
-  188: 1  0111			copy_rom_to_ram_loop:
-  189: 1  0111	E4			clr a
-  190: 1  0112	93			movc a, @a + dptr
-  191: 1  0113	F0			movx @dptr, a
-  192: 1
-  193: 1  0114	A3			inc dptr
-  194: 1  0115	DA FA			djnz r2, copy_rom_to_ram_loop
-  195: 1
-  196: 1  0117	22			ret
-  197: 1
-  198: 1	N      000D	CR equ 0dh
-  199: 1	N      000A	LF equ 0ah
-  200: 1
-  201: 1  0118			a_short_text:
-  202: 1  0118	42 52 49 4E	db	"BRING BACK A NEW SELF", CR, LF
-       1  011C	47 20 42 41
-       1  0120	43 4B 20 41
-       1  0124	20 4E 45 57
-       1  0128	20 53 45 4C
-       1  012C	46 0D 0A
-  203: 1  012F	41 20 73 69	db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF
-       1  0133	6C 65 6E 74
-       1  0137	20 63 61 74
-       1  013B	68 65 64 72
+  181: 1  00F3			a_short_text:
+  182: 1  00F3	42 52 49 4E	db	"BRING BACK A NEW SELF", CR, LF
+       1  00F7	47 20 42 41
+       1  00FB	43 4B 20 41
+       1  00FF	20 4E 45 57
+       1  0103	20 53 45 4C
+       1  0107	46 0D 0A
+  183: 1  010A	41 20 73 69	db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF
+       1  010E	6C 65 6E 74
+       1  0112	20 63 61 74
+       1  0116	68 65 64 72
+       1  011A	61 6C 2C 20
+       1  011E	61 20 6D 6F
+       1  0122	6F 6E 2D 64
+       1  0126	72 65 6E 63
+       1  012A	68 65 64 20
+       1  012E	6C 61 6B 65
+       1  0132	2C 20 61 20
+       1  0136	73 6E 61 74
+       1  013A	63 68 20 6F
+       1  013E	66 20 73 6F
+       1  0142	6E 67 2E 0D
+       1  0146	0A
+  184: 1  0147	41 20 72 65	db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF
+       1  014B	76 65 72 65
+       1  014F	6E 74 20 68
+       1  0153	61 6C 66 20
+       1  0157	68 6F 75 72
+       1  015B	20 62 65 66
+       1  015F	6F 72 65 20
+       1  0163	74 68 65 20
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
 
@@ -257,62 +257,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  013F	61 6C 2C 20
-       1  0143	61 20 6D 6F
-       1  0147	6F 6E 2D 64
-       1  014B	72 65 6E 63
-       1  014F	68 65 64 20
-       1  0153	6C 61 6B 65
-       1  0157	2C 20 61 20
-       1  015B	73 6E 61 74
-       1  015F	63 68 20 6F
-       1  0163	66 20 73 6F
-       1  0167	6E 67 2E 0D
-       1  016B	0A
-  204: 1  016C	41 20 72 65	db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF
-       1  0170	76 65 72 65
-       1  0174	6E 74 20 68
-       1  0178	61 6C 66 20
-       1  017C	68 6F 75 72
-       1  0180	20 62 65 66
-       1  0184	6F 72 65 20
-       1  0188	74 68 65 20
-       1  018C	56 65 6E 75
-       1  0190	73 20 64 65
-       1  0194	20 4D 69 6C
-       1  0198	6F 20 6F 72
-       1  019C	20 74 68 65
-       1  01A0	20 4D 6F 6E
-       1  01A4	61 20 4C 69
-       1  01A8	73 61 2E 0D
-       1  01AC	0A
-  205: 1  01AD	41 6E 20 61	db	"An ancient town hall, a gleaming ghost-haunted palace.", CR, LF
-       1  01B1	6E 63 69 65
-       1  01B5	6E 74 20 74
-       1  01B9	6F 77 6E 20
-       1  01BD	68 61 6C 6C
-       1  01C1	2C 20 61 20
-       1  01C5	67 6C 65 61
-       1  01C9	6D 69 6E 67
-       1  01CD	20 67 68 6F
-       1  01D1	73 74 2D 68
-       1  01D5	61 75 6E 74
-       1  01D9	65 64 20 70
-       1  01DD	61 6C 61 63
-       1  01E1	65 2E 0D 0A
-  206: 1  01E5	41 20 66 6F	db	"A fountain, a gable, a gateway.", CR, LF
-       1  01E9	75 6E 74 61
-       1  01ED	69 6E 2C 20
-       1  01F1	61 20 67 61
-       1  01F5	62 6C 65 2C
-       1  01F9	20 61 20 67
-       1  01FD	61 74 65 77
-       1  0201	61 79 2E 0D
-       1  0205	0A
-  207: 1  0206	43 61 6E 20	db	"Can one rub elbows with beauty without absorbing some slight shadow of it?", CR, LF
-       1  020A	6F 6E 65 20
-       1  020E	72 75 62 20
-       1  0212	65 6C 62 6F
+       1  0167	56 65 6E 75
+       1  016B	73 20 64 65
+       1  016F	20 4D 69 6C
+       1  0173	6F 20 6F 72
+       1  0177	20 74 68 65
+       1  017B	20 4D 6F 6E
+       1  017F	61 20 4C 69
+       1  0183	73 61 2E 0D
+       1  0187	0A
+  185: 1  0188	41 6E 20 61	db	"An ancient town hall, a gleaming ghost-haunted palace.", CR, LF
+       1  018C	6E 63 69 65
+       1  0190	6E 74 20 74
+       1  0194	6F 77 6E 20
+       1  0198	68 61 6C 6C
+       1  019C	2C 20 61 20
+       1  01A0	67 6C 65 61
+       1  01A4	6D 69 6E 67
+       1  01A8	20 67 68 6F
+       1  01AC	73 74 2D 68
+       1  01B0	61 75 6E 74
+       1  01B4	65 64 20 70
+       1  01B8	61 6C 61 63
+       1  01BC	65 2E 0D 0A
+  186: 1  01C0	41 20 66 6F	db	"A fountain, a gable, a gateway.", CR, LF
+       1  01C4	75 6E 74 61
+       1  01C8	69 6E 2C 20
+       1  01CC	61 20 67 61
+       1  01D0	62 6C 65 2C
+       1  01D4	20 61 20 67
+       1  01D8	61 74 65 77
+       1  01DC	61 79 2E 0D
+       1  01E0	0A
+  187: 1  01E1	43 61 6E 20	db	"Can one rub elbows with beauty without absorbing some slight shadow of it?", CR, LF
+       1  01E5	6F 6E 65 20
+       1  01E9	72 75 62 20
+       1  01ED	65 6C 62 6F
+       1  01F1	77 73 20 77
+       1  01F5	69 74 68 20
+       1  01F9	62 65 61 75
+       1  01FD	74 79 20 77
+       1  0201	69 74 68 6F
+       1  0205	75 74 20 61
+       1  0209	62 73 6F 72
+       1  020D	62 69 6E 67
+       1  0211	20 73 6F 6D
+       1  0215	65 20 73 6C
+       1  0219	69 67 68 74
+       1  021D	20 73 68 61
+       1  0221	64 6F 77 20
+       1  0225	6F 66 20 69
+       1  0229	74 3F 0D 0A
+  188: 1  022D	4F 6E 65 20	db	"One must come home a different person--fresh, vivid, eager.", 0
+       1  0231	6D 75 73 74
+       1  0235	20 63 6F 6D
+       1  0239	65 20 68 6F
+       1  023D	6D 65 20 61
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
 
@@ -320,42 +320,27 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  0216	77 73 20 77
-       1  021A	69 74 68 20
-       1  021E	62 65 61 75
-       1  0222	74 79 20 77
-       1  0226	69 74 68 6F
-       1  022A	75 74 20 61
-       1  022E	62 73 6F 72
-       1  0232	62 69 6E 67
-       1  0236	20 73 6F 6D
-       1  023A	65 20 73 6C
-       1  023E	69 67 68 74
-       1  0242	20 73 68 61
-       1  0246	64 6F 77 20
-       1  024A	6F 66 20 69
-       1  024E	74 3F 0D 0A
-  208: 1  0252	4F 6E 65 20	db	"One must come home a different person--fresh, vivid, eager.", 0
-       1  0256	6D 75 73 74
-       1  025A	20 63 6F 6D
-       1  025E	65 20 68 6F
-       1  0262	6D 65 20 61
-       1  0266	20 64 69 66
-       1  026A	66 65 72 65
-       1  026E	6E 74 20 70
-       1  0272	65 72 73 6F
-       1  0276	6E 2D 2D 66
-       1  027A	72 65 73 68
-       1  027E	2C 20 76 69
-       1  0282	76 69 64 2C
-       1  0286	20 65 61 67
-       1  028A	65 72 2E 00
-  209: 1
-  210: 1
-  211: 1
-  212: 1			end
-  213: 1
-  214:
+       1  0241	20 64 69 66
+       1  0245	66 65 72 65
+       1  0249	6E 74 20 70
+       1  024D	65 72 73 6F
+       1  0251	6E 2D 2D 66
+       1  0255	72 65 73 68
+       1  0259	2C 20 76 69
+       1  025D	76 69 64 2C
+       1  0261	20 65 61 67
+       1  0265	65 72 2E 00
+  189: 1
+  190: 1
+  191: 1			$include(globals.inc)
+  192: 2	N      000D	CR	equ	0dh
+  193: 2	N      000A	LF	equ	0ah
+  194: 2	N      0009	TAB	equ	09h
+  195: 1
+  196:
+  197:					end
+  198:
+  199:
 
 
 
@@ -384,13 +369,13 @@ SYMBOL				  TYPE     VALUE	LINE
 ??VERSION			  NUMBER    0130
 AC				  BIT	      D6
 ACC				  DATA	      E0
-A_SHORT_TEXT			  CODE	    0118	 201
+A_SHORT_TEXT			  CODE	    00F3	 181
 B				  DATA	      F0
-COPY_ROM_TO_RAM			  CODE	    0110	 186
-COPY_ROM_TO_RAM_LOOP		  CODE	    0111	 188
-COPY_TEXT_FROM_ROM_TO_RAM	  CODE	    00EE	 146
-COPY_TEXT_FROM_ROM_TO_RAM_EXIT	  CODE	    0107	 163
-CR				  NUMBER    000D	 198
+COPY_ROM_TO_RAM			  CODE	    00EB	 168
+COPY_ROM_TO_RAM_LOOP		  CODE	    00EC	 170
+COPY_TEXT_FROM_ROM_TO_RAM	  CODE	    00C9	 128
+COPY_TEXT_FROM_ROM_TO_RAM_EXIT	  CODE	    00E2	 145
+CR				  NUMBER    000D	 192
 CY				  BIT	      D7
 DPH				  DATA	      83
 DPL				  DATA	      82
@@ -403,8 +388,8 @@ EX1				  BIT	      AA
 EXTI0				  CODE	    0003
 EXTI1				  CODE	    0013
 F0				  BIT	      D5
-FILL_XRAM			  CODE	    0108	 173
-FILL_XRAM_LOOP			  CODE	    0109	 175
+FILL_XRAM			  CODE	    00E3	 155
+FILL_XRAM_LOOP			  CODE	    00E4	 157
 IE				  DATA	      A8
 IE0				  BIT	      89
 IE1				  BIT	      8B
@@ -413,8 +398,8 @@ INT1				  BIT	      B3
 IP				  DATA	      B8
 IT0				  BIT	      88
 IT1				  BIT	      8A
-LF				  NUMBER    000A	 199
-MAIN				  CODE	    002B	  20
+LF				  NUMBER    000A	 193
+MAIN_MEM_TEST			  CODE	    0003	   8
 OV				  BIT	      D2
 P				  BIT	      D0
 P0				  DATA	      80
@@ -439,6 +424,7 @@ SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
 REN				  BIT	      9C
 RESET				  CODE	    0000
+RESET_IVT			  CODE	    0000	   3
 RI				  BIT	      98
 RS0				  BIT	      D3
 RS1				  BIT	      D4
@@ -452,6 +438,7 @@ SM2				  BIT	      9D
 SP				  DATA	      81
 T0				  BIT	      B4
 T1				  BIT	      B5
+TAB				  NUMBER    0009	 194
 TB8				  BIT	      9B
 TCON				  DATA	      88
 TF0				  BIT	      8D
@@ -467,8 +454,7 @@ TMOD				  DATA	      89
 TR0				  BIT	      8C
 TR1				  BIT	      8E
 TXD				  BIT	      B1
-VERIFY_COPY_TEXT_FROM_ROM_TO_RA	  CODE	    00CC	 115
-VERIFY_TEXT_FROM_ROM_TO_RAM_ERR	  CODE	    00EA	 135
-VERIFY_TEXT_FROM_ROM_TO_RAM_EXI	  CODE	    00EC	 138
-VERIFY_TEXT_FROM_ROM_TO_RAM_LOO	  CODE	    00CC	 116
+VERIFY_TEXT_FROM_ROM_TO_RAM	  CODE	    00A7	  98
+VERIFY_TEXT_FROM_ROM_TO_RAM_ERR	  CODE	    00C5	 117
+VERIFY_TEXT_FROM_ROM_TO_RAM_EXI	  CODE	    00C7	 120
 WR				  BIT	      B6

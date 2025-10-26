@@ -17,11 +17,6 @@ serial_vector:
 	ljmp $
 	ds 5
 
-cseg at 0200h
-$include(constants.inc)
-
-cseg at 0030h
-
 main:
 	acall uart_init_baud_gen
 
@@ -98,6 +93,7 @@ parse_mem_address:
 	jz exit_parse_mem_address
 	acall skip_blanks
 	movx a, @dptr
+	
 parse_mem_address_loop:
 	acall uart_tx_char
 
@@ -165,9 +161,11 @@ exit_ascii_to_binary:
 	anl a, #0ffh
 	ret
 
+$include(constants.inc)
 $include(boot51.inc)
 $include(serial.inc)
 $include(menu.inc)
+$include(mem_diag.asm)
 
 xseg at 0000h
 	uart_rx_buffer: ds 255
