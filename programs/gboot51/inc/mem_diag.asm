@@ -54,18 +54,15 @@ copy_text_from_rom_to_ram_exit:
 	ret
 
 
-; fills a portion of external ram with a value
+; fills a portion of external ram with a given value
 ; --> dptr: starting address in xram to be filled
-; --> a: count of bytes to fill in xram
-; --> b: value to be used to fill xram
+; --> b: count of bytes to fill in xram
+; --> a: value to be used to fill xram
 
 fill_xram:
-	mov r0, a
-fill_xram_loop:
-	mov a, b
 	movx @dptr, a
 	inc dptr
-	djnz r0, fill_xram_loop
+	djnz b, fill_xram
 
 	ret
 

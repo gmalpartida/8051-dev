@@ -1,0 +1,153 @@
+This file documents the changes made to Intel's MCS-51(tm) BASIC V1.1 or
+better known as the BASIC in the 8052AH-BASIC chip. These changes were
+made to allow the BASIC to run on an 8031/8051 uP system in external EPROM.
+
+							Dan Karmann
+							(303)538-4075
+							Aug. 1993
+Files:
+	BASIC31A.DOC - This document file.
+	BASIC31A.HEX - Intel Hex formated file of modified BASIC-52.
+
+BASIC31 bug fixes: (see BASIC31.DOC below for BASIC31 features)
+	- corrected bug to allow Baud Rate to be correctly loaded from
+	  autoboot external EPROM at 8000H.
+
+	- corrected bug which displayed garbage characters on console port
+	  when printing with PRINT statements that were followed immediately
+	  by PRINT# statements.
+
+	- corrected Intel bug to allow autoboot EPROM at 8000H with program
+	  with user command extensions to work. Also made BASIC31 compatible
+	  with Intel work-around (see Intel TechBits - Ref. No. MIC-23, Oct.
+	  10, 1986) for this bug (not needed).
+
+	- corrected Intel bug to that discarded the 'F' in any variable
+	  ending in F, FP, FPR, and FPRO and followed by a space.
+	  (Note: this does not correct the problem of the character being
+	         discarded from a variable that is the first character of
+	         the last user added keyword extensions when it is followed
+	         by a space.)
+
+BASIC31 enhancements:
+	- modified ISTACK check to allow for execution on 8052 or enhanced
+	  8051 derivative to use 256 bytes of internal RAM if available.
+	  (Uses Bit 51 {38.3/26.3H}: 0 = 128, 1 = 256 bytes internal RAM)
+
+	- changed version number to V1.2a.
+
+ - References:
+         - Intel MCS(R) BASIC-52 USERS MANUAL, Order Number: 270010-003,
+           Intel Corporation, 1986
+
+         - BASIC-52 PROGRAMMING, First Edition, Revision 1.1E,
+           Systronix, Inc, November 1989
+
+         - Intel TECHBits BASIC-52 (ECO), Reference No. MIC-23,
+           B. Jones, Intel Corporation, October 10, 1986
+
+-------------------------------------------------------------------
+FILE: BASIC31.DOC	NOV. 1991
+
+Summary:
+	All 8052-specific functions/statements have been disabled.
+
+	Due to the fact that the EPROM programming features do not work
+	when executing BASIC-52 from external EPROM, all EPROM programming
+	features have been disabled.
+
+	Timer 1 defaults to the baud rate generation for the console port
+	except during execution of any commands that send output to the
+	list port and during the execution of the PWM statement.
+
+	All other features/functions are intact.
+
+Changes:
+	Timer 2 Overflow Interrupt disabled.
+	 - replaced with RETI instruction.
+
+	TIMER2 special function operator disabled.
+	 - generates ERROR: BAD SYNTAX message.
+
+	T2CON special function operator disabled.
+	 - generates ERROR: BAD SYNTAX message.
+
+	RCAP2 special function operator disabled.
+	 - generates ERROR: BAD SYNTAX message.
+
+	PROG command disabled.
+	 - generates ERROR: PROGRAMMING message.
+
+	FPROG command disabled.
+	 - generates ERROR: PROGRAMMING message.
+
+	PROGx command disabled.
+	 - generates ERROR: PROGRAMMING message.
+
+	FPROGx command disabled.
+	 - generates ERROR: PROGRAMMING message.
+
+	PGM statement disabled.
+	 - generates ERROR: PROGRAMMING message.
+
+	Timer 1 used for serial console port. (19200 baud is maximum)
+
+	EPROM baud rate value at 8000H converted to Timer 1 value when
+	 used; i.e. - value stored in EPROM by BASIC-52 still works.
+
+	Autobaud rate value converted to Timer 1 value.
+
+	Reserved location 44H in internal memory used for Timer 1 baud
+	 rate value.
+
+	Timesharing of Timer 1 support added to PH0.#, PH1.#, PRINT#,
+	 P.#, ?#, and LIST# statements so that when sending output to
+	 the list device, Timer 1 is used for the list device baud rate.
+	 Timer 1 is restored to the baud rate timer for the console port
+	 when output to the list device is finished.
+
+	Internal stack overflow checking modified to recognize that the
+	 8031/8051 has only 128 bytes of internal RAM instead of 256 bytes.
+
+	Timesharing of Timer 1 support added to the PWM statement so that
+	 when generating output on the PWM pin, Timer 1 is used for that
+	 timing. Timer 1 is restored to the baud rate timer for the console
+	 port when the PWM output is finished.
+
+	Sign-on version number changed to V1.2.
+
+	"Modified by ..." text added to ^W^C message.
+
+Enhancements:
+	Backspace support added to line editing - in addition to the
+	Delete character.
+
+	The floating point subtraction routine modifications and the
+	ASCII-TO-BINARY performance improvements from the OCTOBER 1991
+	issue of Elektor Electronics USA have been added. (Note: The
+	multiplication routine modifications from the NOVEMBER 1991 issue
+	of Elektor Electronics USA were not included due to the fixes not
+	performing as indicated in the article)
+
+Anomalies:
+	Due to the timesharing of Timer 1 during sending output to the
+	list device (PRINT#, LIST#, etc.), a ^C (control C) will not stop
+	the list output because Timer 1 is used for the output baud rate
+	and the console serial port is deactivated.
+
+	Due to the smaller internal RAM in the 8031/8051, the INTERNAL STACK
+	is defaulted to 51 bytes instead of the 179 bytes in the 8052. This
+	may cause some programs to generated an "ERROR: I-STACK". This is
+	typically caused by too many nested levels of parenthesis "()", and
+	can usually be made to work by breaking the expression into several
+	less complex expressions.
+
+Notes:
+	These code changes have been tested, but is not guaranteed to
+	be bug free (what software is?!).
+
+	For those who haven't discovered this, BASIC-52 has a keystroke
+	sequence ^W^C (control-W followed by a control C) that will
+	display the developers' name, company, and date.
+
+
