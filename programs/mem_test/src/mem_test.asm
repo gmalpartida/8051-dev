@@ -88,10 +88,25 @@ main_mem_test:
 	mov r1, #0f0h
 	lcall verify_text_from_rom_to_ram	
 
+	cjne r7, #08h, verify_error
+
+verify_success:
+	mov p1, #0aah
+	call delay_1_sec
+
+	jmp verify_success
+
+verify_error:
+	mov p1, #0f0h
+	call delay_1_sec
+	jmp verify_error
+
+
+halt:
 	sjmp $
 
 $include(mem_diag.asm)
-
+$include(delay.asm)
 	end
 
 

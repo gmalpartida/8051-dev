@@ -34,10 +34,10 @@ ASEM	programs/gboot51/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM51	programs/asem51_demo/Makefile	/^ASEM51=\/opt\/asem51\/asem$/;"	m
 ASEM51_FLAGS	programs/asem51_demo/Makefile	/^ASEM51_FLAGS=-i \/opt\/asem51\/mcu -i inc\/$/;"	m
 ASEM_FLAGS	programs/boot-51/Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
-ASEM_FLAGS	programs/gboot51/Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
+ASEM_FLAGS	programs/gboot51/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
 ASFLAGS	programs/blink_led/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASFLAGS	programs/blink_led2/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
-ASFLAGS	programs/mem_test/Makefile	/^ASFLAGS= -iinc\/ -v$/;"	m
+ASFLAGS	programs/mem_test/Makefile	/^ASFLAGS= -iinc\/ -i..\/shared\/inc\/ -v$/;"	m
 ASFLAGS	programs/monitorb/Makefile	/^ASFLAGS= -i -v$/;"	m
 ASFLAGS	programs/rom_test/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASTART	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP05.ASM	/^ASTART   EQU  030H              ; This is the start address.$/;"	d
@@ -90,7 +90,6 @@ CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Sup
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^CR       EQU   13               ; Carrage Return.$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04A.ASM	/^CR       EQU   13                ; Carrage Return.$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04B.ASM	/^CR       EQU   13               ; Carrage Return$/;"	d
-CR	programs/mem_test/inc/mem_diag.asm	/^CR equ 0dh$/;"	d
 CR	programs/monitorb/src/monitorb.asm	/^CR       EQU   13$/;"	d
 CURSOR_OFF	programs/cmon51-1.2/examples/tetris52.c	81;"	d	file:
 CURSOR_ON	programs/cmon51-1.2/examples/tetris52.c	80;"	d	file:
@@ -312,7 +311,6 @@ LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Sup
 LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^LF       EQU   10               ; Line Feed.$/;"	d
 LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04A.ASM	/^LF       EQU   10                ; Line Feed.$/;"	d
 LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04B.ASM	/^LF       EQU   10               ; Line Feed.$/;"	d
-LF	programs/mem_test/inc/mem_diag.asm	/^LF equ 0ah$/;"	d
 LF	programs/monitorb/src/monitorb.asm	/^LF       EQU   10$/;"	d
 LFCR	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/LFCR.ASM	/^LFCR:   MOV    A,#00AH$/;"	l
 LFCR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/LFCR.ASM	/^LFCR:   MOV    A,#00AH$/;"	l
@@ -1173,6 +1171,7 @@ _sdcc_external_startup	programs/cmon51-1.2/p89v51rd2.c	/^unsigned char _sdcc_ext
 _set_timer1_priority	programs/cmon51-1.2/8052.asm	/^_set_timer1_priority:$/;"	l
 _sfrn	programs/cmon51-1.2/8052.asm	/^_sfrn:$/;"	l
 _write_sfr	programs/cmon51-1.2/8052.asm	/^_write_sfr:$/;"	l
+a_short_text	programs/gboot51/inc/mem_diag.asm	/^a_short_text:$/;"	l
 a_short_text	programs/mem_test/inc/mem_diag.asm	/^a_short_text:$/;"	l
 add0	programs/rom_test/src/rom_test.asm	/^add0:$/;"	l
 add1	programs/rom_test/src/rom_test.asm	/^add1:$/;"	l
@@ -1241,8 +1240,8 @@ ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/AD
 ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.asm	/^	ar7 = 0x07$/;"	d
 ar7	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.asm	/^	ar7 = 0x07$/;"	d
 ar7	programs/cmon51-1.2/8052.asm	/^	ar7 = 0x07$/;"	d
-ascii_to_binary	programs/gboot51/src/gboot51-2.asm	/^ascii_to_binary:$/;"	l
-ascii_to_binary__error	programs/gboot51/src/gboot51-2.asm	/^ascii_to_binary__error:$/;"	l
+ascii2bin	programs/gboot51/src/gboot51-2.asm	/^ascii2bin:$/;"	l
+ascii2bin_error	programs/gboot51/src/gboot51-2.asm	/^ascii2bin_error:$/;"	l
 at89c51rd2_CODELOC	programs/cmon51-1.2/at89c51rd2.mak	/^at89c51rd2_CODELOC = 0xd800$/;"	m
 bitn	programs/cmon51-1.2/8052.c	/^__code unsigned char bitn[] =$/;"	v
 bitn	programs/cmon51-1.2/at89c51rd2.c	/^code unsigned char bitn[] =$/;"	v
@@ -1263,20 +1262,29 @@ cmd_is	programs/cmon51-1.2/cmon51.h	/^typedef enum cmd_is {$/;"	g
 cmdlst	programs/cmon51-1.2/cmon51.h	/^code unsigned char cmdlst[]={$/;"	v
 collapse	programs/cmon51-1.2/examples/tetris52.c	/^void collapse(void)$/;"	f
 command_prompt_loop	programs/gboot51/src/gboot51-2.asm	/^command_prompt_loop:$/;"	l
+copy_rom_to_ram	programs/gboot51/inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
 copy_rom_to_ram	programs/mem_test/inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
+copy_rom_to_ram_loop	programs/gboot51/inc/mem_diag.asm	/^copy_rom_to_ram_loop:$/;"	l
 copy_rom_to_ram_loop	programs/mem_test/inc/mem_diag.asm	/^copy_rom_to_ram_loop:$/;"	l
+copy_text_from_rom_to_ram	programs/gboot51/inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
 copy_text_from_rom_to_ram	programs/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
+copy_text_from_rom_to_ram_exit	programs/gboot51/inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
 copy_text_from_rom_to_ram_exit	programs/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
 cpuid	programs/cmon51-1.2/8052.c	/^void cpuid (void)$/;"	f
 cpuid	programs/cmon51-1.2/at89c51rd2.c	/^void cpuid (void)$/;"	f
 cpuid	programs/cmon51-1.2/p89v51rd2.c	/^void cpuid (void)$/;"	f
-cseg	programs/gboot51/src/gboot51-2.asm	/^cseg at 0030h$/;"	l
 cseg	programs/gboot51/src/gboot51-2.asm	/^cseg at 00h$/;"	l
-cseg	programs/gboot51/src/gboot51-2.asm	/^cseg at 0200h$/;"	l
 cseg	programs/gboot51/src/gboot51.asm	/^cseg$/;"	l
-cseg	programs/mem_test/src/mem_test.asm	/^cseg$/;"	l
+cseg	programs/mem_test/src/mem_test.asm	/^cseg at 00h$/;"	l
 cur	programs/cmon51-1.2/d51.c	/^unsigned char cur;$/;"	v
 cursor	programs/cmon51-1.2/cmon51.c	/^unsigned char cursor;$/;"	v
+db	programs/gboot51/inc/mem_diag.asm	/^db	"A fountain, a gable, a gateway.", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"An ancient town hall, a gleaming ghost-haunted palace.", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"BRING BACK A NEW SELF", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"Can one rub elbows with beauty without absorbing some slight shadow of it?", CR, LF$/;"	l
+db	programs/gboot51/inc/mem_diag.asm	/^db	"One must come home a different person--fresh, vivid, eager.", 0$/;"	l
 db	programs/mem_test/inc/mem_diag.asm	/^db	"A fountain, a gable, a gateway.", CR, LF$/;"	l
 db	programs/mem_test/inc/mem_diag.asm	/^db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF$/;"	l
 db	programs/mem_test/inc/mem_diag.asm	/^db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF$/;"	l
@@ -1304,13 +1312,14 @@ do_process_poke_cmd	programs/gboot51/src/gboot51-2.asm	/^do_process_poke_cmd:$/;
 erasesector	programs/cmon51-1.2/at89c51rd2.c	/^void erasesector (unsigned int sector)$/;"	f
 erasesector	programs/cmon51-1.2/p89v51rd2.c	/^void erasesector (unsigned int address)$/;"	f
 exit	programs/cmon51-1.2/examples/tetris52.c	/^void exit (void)$/;"	f
-exit_ascii_to_binary	programs/gboot51/src/gboot51-2.asm	/^exit_ascii_to_binary:$/;"	l
+exit_ascii2bin	programs/gboot51/src/gboot51-2.asm	/^exit_ascii2bin:$/;"	l
 exit_isr	programs/blink_led/src/blink_led.asm	/^exit_isr:$/;"	l
 exit_isr	programs/blink_led2/src/blink_led2.asm	/^exit_isr:$/;"	l
 exit_parse_mem_address	programs/gboot51/src/gboot51-2.asm	/^exit_parse_mem_address:$/;"	l
 filesize	programs/cmon51-1.2/bigblock.c	/^long filesize(FILE *stream)$/;"	f
 fill_xmem	programs/gboot51/src/gboot51-2.asm	/^fill_xmem:$/;"	l
 fill_xmem_loop	programs/gboot51/src/gboot51-2.asm	/^fill_xmem_loop:$/;"	l
+fill_xram	programs/gboot51/inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram	programs/mem_test/inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram_loop	programs/mem_test/inc/mem_diag.asm	/^fill_xram_loop:$/;"	l
 fillmem	programs/cmon51-1.2/cmon51.c	/^void fillmem(unsigned char * begin,  unsigned int len, unsigned char val)$/;"	f
@@ -1326,6 +1335,7 @@ getwordn	programs/cmon51-1.2/cmon51.c	/^unsigned int getwordn(void)$/;"	f
 go	programs/gboot51/src/gboot51.asm	/^go:$/;"	l
 gostep	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gostep;$/;"	v
 gotbreak	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gotbreak;$/;"	v
+halt	programs/mem_test/src/mem_test.asm	/^halt:$/;"	l
 hex2dec	programs/cmon51-1.2/bigblock.c	/^int hex2dec (char hex_digit)$/;"	f
 hexval	programs/cmon51-1.2/cmon51.c	/^const char hexval[]="0123456789ABCDEF";$/;"	v
 highof	programs/cmon51-1.2/cmon51.h	24;"	d
@@ -1372,9 +1382,9 @@ main	programs/cmon51-1.2/examples/tetris52.c	/^void main(void)$/;"	f
 main	programs/cmon51-1.2/p89v51rd2.c	/^void main (void)$/;"	f
 main	programs/gboot51/src/gboot51-2.asm	/^main:$/;"	l
 main	programs/gboot51/src/gboot51.asm	/^main:$/;"	l
-main	programs/mem_test/src/mem_test.asm	/^main:$/;"	l
 main	programs/nop_test/src/nop_test.asm	/^main:$/;"	l
 main	programs/rom_test/src/rom_test.asm	/^main:$/;"	l
+main_mem_test	programs/mem_test/src/mem_test.asm	/^main_mem_test:$/;"	l
 maskbit	programs/cmon51-1.2/cmon51.c	/^const unsigned char maskbit[]={0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};$/;"	v
 mnem	programs/cmon51-1.2/d51.h	/^code char * code mnem[]={$/;"	v
 mnemtbl	programs/cmon51-1.2/d51.h	/^code char mnemtbl[] =$/;"	v
@@ -1385,7 +1395,6 @@ outbyte	programs/cmon51-1.2/cmon51.c	/^void outbyte(unsigned char x)$/;"	f
 outword	programs/cmon51-1.2/cmon51.c	/^void outword(unsigned int x)$/;"	f
 outwordnl	programs/cmon51-1.2/cmon51.c	/^void outwordnl (unsigned int val)$/;"	f
 parse_mem_address	programs/gboot51/src/gboot51-2.asm	/^parse_mem_address:$/;"	l
-parse_mem_address_loop	programs/gboot51/src/gboot51-2.asm	/^parse_mem_address_loop:$/;"	l
 printf	programs/cmon51-1.2/examples/tetris52.c	38;"	d	file:
 process_invalid_cmd	programs/gboot51/src/gboot51-2.asm	/^process_invalid_cmd:$/;"	l
 process_ls_cmd	programs/gboot51/src/gboot51-2.asm	/^process_ls_cmd:$/;"	l
@@ -1403,6 +1412,7 @@ read_sfr	programs/cmon51-1.2/8052.c	/^unsigned char read_sfr (unsigned char x)$/
 read_sfr	programs/cmon51-1.2/at89c51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
 read_sfr	programs/cmon51-1.2/p89v51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
 refresh	programs/cmon51-1.2/examples/tetris52.c	/^void refresh(void)$/;"	f
+reset_ivt	programs/mem_test/src/mem_test.asm	/^reset_ivt:$/;"	l
 restorePC	programs/cmon51-1.2/8052.c	/^void restorePC (void)$/;"	f
 restorePC	programs/cmon51-1.2/at89c51rd2.c	/^void restorePC (void)$/;"	f
 restorePC	programs/cmon51-1.2/p89v51rd2.c	/^void restorePC (void)$/;"	f
@@ -1430,7 +1440,6 @@ shape	programs/cmon51-1.2/examples/tetris52.c	/^} shape;	\/* drawing instruction
 shapeDraw	programs/cmon51-1.2/examples/tetris52.c	/^void shapeDraw(char XPos, char YPos, char WhichShape)$/;"	f
 shapeErase	programs/cmon51-1.2/examples/tetris52.c	/^void shapeErase(char XPos, char YPos, char WhichShape)$/;"	f
 shapeHit	programs/cmon51-1.2/examples/tetris52.c	/^char shapeHit(char XPos, char YPos, char WhichShape)$/;"	f
-show_help	programs/gboot51/src/gboot51-2.asm	/^show_help:$/;"	l
 showreg	programs/cmon51-1.2/cmon51.c	/^void showreg(char * name, unsigned char val)$/;"	f
 step_start	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  step_start;$/;"	v
 tf0_vector	programs/gboot51/src/gboot51-2.asm	/^tf0_vector:$/;"	l
@@ -1459,10 +1468,14 @@ var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/A
 var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.C	/^ float var3 = 7;$/;"	v
 var3	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.C	/^char var3 = 7;$/;"	v
 vector	programs/cmon51-1.2/examples/tetris52.c	/^} vector;$/;"	t	typeref:struct:__anon1	file:
-verify_copy_text_from_rom_to_ram	programs/mem_test/inc/mem_diag.asm	/^verify_copy_text_from_rom_to_ram:$/;"	l
+verify_error	programs/mem_test/src/mem_test.asm	/^verify_error:$/;"	l
+verify_success	programs/mem_test/src/mem_test.asm	/^verify_success:$/;"	l
+verify_text_from_rom_to_ram	programs/gboot51/inc/mem_diag.asm	/^verify_text_from_rom_to_ram:$/;"	l
+verify_text_from_rom_to_ram	programs/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram:$/;"	l
+verify_text_from_rom_to_ram_error	programs/gboot51/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_error:$/;"	l
 verify_text_from_rom_to_ram_error	programs/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_error:$/;"	l
+verify_text_from_rom_to_ram_exit	programs/gboot51/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_exit:$/;"	l
 verify_text_from_rom_to_ram_exit	programs/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_exit:$/;"	l
-verify_text_from_rom_to_ram_loop	programs/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_loop:$/;"	l
 wait	programs/blink_led/inc/delay.asm	/^wait:$/;"	l
 wait	programs/blink_led2/inc/delay.asm	/^wait:$/;"	l
 wait	programs/mem_test/inc/delay.asm	/^wait:$/;"	l
