@@ -18,6 +18,7 @@ UCSIM	Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_FLAGS	Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 VI	Makefile	/^VI=vi$/;"	m
 a_short_text	inc/mem_diag.asm	/^a_short_text:$/;"	l
+copy_loop	src/mem_test.asm	/^copy_loop:$/;"	l
 copy_rom_to_ram	inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
 copy_rom_to_ram_loop	inc/mem_diag.asm	/^copy_rom_to_ram_loop:$/;"	l
 copy_text_from_rom_to_ram	inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
@@ -33,10 +34,12 @@ db	inc/mem_diag.asm	/^db	"One must come home a different person--fresh, vivid, e
 delay2	inc/delay.asm	/^delay2:$/;"	l
 delay3	inc/delay.asm	/^delay3:$/;"	l
 delay_1_sec	inc/delay.asm	/^delay_1_sec:$/;"	l
+end_of_program	src/mem_test.asm	/^end_of_program:$/;"	l
 fill_xram	inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram_loop	inc/mem_diag.asm	/^fill_xram_loop:$/;"	l
 halt	src/mem_test.asm	/^halt:$/;"	l
-main_mem_test	src/mem_test.asm	/^main_mem_test:$/;"	l
+main	src/mem_test.asm	/^main:$/;"	l
+mem_test	src/mem_test.asm	/^mem_test:$/;"	l
 reset_ivt	src/mem_test.asm	/^reset_ivt:$/;"	l
 verify_error	src/mem_test.asm	/^verify_error:$/;"	l
 verify_success	src/mem_test.asm	/^verify_success:$/;"	l

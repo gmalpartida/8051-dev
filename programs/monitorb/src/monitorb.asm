@@ -338,7 +338,7 @@ H_1:    ACALL  RD_CHAR
         MOV    R1,A       ; Load Word Count to R1
 ;
         ACALL  READHEX    ; Read Address and put into Data Pointer        
-        ADD    A,#080H    ; Add offset in address
+        ADDC   A,#080H    ; Add offset in address
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte
@@ -447,6 +447,7 @@ E_1:    ACALL  RD_CHAR
         MOV    R1,A       ; Load Word Count to R1
 ;
         ACALL  READHEX    ; Read Address and put into Data Pointer        
+		ADD    A, #80H
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte
@@ -491,6 +492,7 @@ K_1:    ACALL  RD_CHAR
         ADD    A,R0       ; Add Upper Address Byte to Checksum
         MOV    R0,A
         MOV    A,R2
+		ADDC   A, #80H
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte

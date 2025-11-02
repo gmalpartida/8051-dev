@@ -1,11 +1,40 @@
 cseg at 00h
 
 reset_ivt:
-	ljmp main_mem_test
+	ljmp mem_test
 
+main:
 
+	mov dptr, #mem_test
 
-main_mem_test:
+	mov r0, #00h
+	mov r1, #80h
+
+copy_loop:
+	movc a, @a + dptr
+	mov r2, dpl
+	mov r3, dph
+
+	mov dpl, r0
+	mov dph, r1
+
+	movx @dptr, a
+	inc dptr
+	mov r0, dpl
+	mov r1, dph
+
+	mov dpl, r2
+	mov dph, r3
+	inc dptr
+
+	
+
+	ljmp mem_test
+
+halt:
+	jmp $
+
+mem_test:
 
 	mov dptr, #a_short_text
 	mov r0, #00h
@@ -95,18 +124,19 @@ verify_success:
 	call delay_1_sec
 
 	jmp verify_success
+	ret
 
 verify_error:
 	mov p1, #0f0h
 	call delay_1_sec
 	jmp verify_error
 
-
-halt:
-	sjmp $
+	ret
 
 $include(mem_diag.asm)
 $include(delay.asm)
+
+end_of_program:
 	end
 
 
