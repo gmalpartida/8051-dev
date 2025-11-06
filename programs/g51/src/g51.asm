@@ -22,9 +22,9 @@ main:
 
 	mov dptr, #newline_str
 	acall uart_tx_string_from_cseg
-	mov dptr, #title_str
+	mov dptr, #g51_logo
 	acall uart_tx_string_from_cseg
-	mov dptr, #newline_str
+	mov dptr, #title_str
 	acall uart_tx_string_from_cseg
 	mov dptr, #newline_str
 	acall uart_tx_string_from_cseg
@@ -163,6 +163,7 @@ $include(boot51.inc)
 $include(serial.inc)
 $include(menu.inc)
 $include(mem_diag.asm)
+$include(g51-logo.inc)
 
 xseg at 0000h
 	uart_rx_buffer: ds 255

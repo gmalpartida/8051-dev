@@ -5,8 +5,8 @@ HEXDUMP=hexdump
 HEXBIN=/opt/asem51/hexbin
 UCSIM_51=/opt/sdcc/bin/ucsim_51
 
-SRC=src/gboot51-2.asm
-TARGET=bin/gboot51-2
+SRC=src/g51.asm
+TARGET=bin/g51
 
 ASEM_FLAGS= -i inc -i ../shared/inc -v
 MINICOM_FLAGS= 8051

@@ -5,10 +5,9 @@ LS_CMD		equ 02h
 PEEK_CMD	equ 04h
 POKE_CMD	equ 08h
 
-title_str: 	db "GBOOT51 v.1.0", CR, LF
-		db "Copyright 2025 Gino Malpartida", CR, LF, 0
+title_str: db TAB, TAB, TAB, "Copyright 2025 Gino Malpartida", CR, LF, 0
 newline_str:	db CR, LF,0
-command_prompt_str: db "gboot51>", 0
+command_prompt_str: db "g51>", 0
 
 help_str: db TAB, "Commands", CR, LF
 	  db TAB, "help: shows this help.", CR, LF
