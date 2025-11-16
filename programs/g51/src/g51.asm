@@ -77,6 +77,22 @@ do_process_poke_cmd:
 	acall uart_tx_string_from_cseg
 	ret
 
+; shift upper nibble from register a to register b
+; b's upper nibble is shifted left first.
+; --> a: data to be shifted
+; <-- b: contains upper nibble from register a in its lower nibble
+shift_nibble_left:
+	mov r0, a 	; save a
+	mov a, b 	; copy b to a
+	rl a 		; rotate a left
+	mov b, a 	; copy a to b
+	mov a, r0 	; restore a
+	rlc a 		; rotate a left with carry
+	mov r1, a 	; save a for later
+	clr a
+	mov acc.7, c
+	ret
+
 fill_xmem:
 	clr a
 fill_xmem_loop:
@@ -93,6 +109,7 @@ parse_mem_address:
 	jz exit_parse_mem_address
 	movx a, @dptr
 	acall ascii2bin
+	call shift_nibble_left
 	sjmp parse_mem_address
 exit_parse_mem_address:
 	ret
@@ -119,7 +136,7 @@ is_f:
 	cjne a, #'f', is_0
 	jmp is_letter
 is_letter:
-	add a, #07h
+	add a, #09h
 	jmp exit_ascii2bin
 is_0:
 	cjne a, #'0', is_1
@@ -152,10 +169,11 @@ is_9:
 	cjne a, #'9', ascii2bin_error
 	jmp exit_ascii2bin
 ascii2bin_error:
-	mov a, #0ffh
+	setb c
 exit_ascii2bin:
 	anl a, #0fh
 	inc dptr
+	clr c
 	ret
 
 $include(constants.inc)
