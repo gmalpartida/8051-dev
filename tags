@@ -32,10 +32,12 @@ ASC2HEX	Rudley Development Board/0004-8031-Assembly_Language_Programming_Example
 ASC2HEX	programs/monitorb/src/asc2hex.asm	/^ASC2HEX: CLR    CY$/;"	l
 ASEM	programs/boot-51/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM	programs/g51/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
+ASEM	programs/test_port1/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM51	programs/asem51_demo/Makefile	/^ASEM51=\/opt\/asem51\/asem$/;"	m
 ASEM51_FLAGS	programs/asem51_demo/Makefile	/^ASEM51_FLAGS=-i \/opt\/asem51\/mcu -i inc\/$/;"	m
 ASEM_FLAGS	programs/boot-51/Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
 ASEM_FLAGS	programs/g51/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
+ASEM_FLAGS	programs/test_port1/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
 ASFLAGS	programs/blink_led/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASFLAGS	programs/blink_led2/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASFLAGS	programs/lcd_test/Makefile	/^ASFLAGS= -iinc\/ -i..\/shared\/inc\/ -v$/;"	m
@@ -139,8 +141,10 @@ HEXBIN	programs/g51/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/lcd_test/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/mem_test/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/monitorb/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXBIN	programs/test_port1/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN_FLAGS	programs/boot-51/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXBIN_FLAGS	programs/g51/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
+HEXBIN_FLAGS	programs/test_port1/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXDUMP	programs/blink_led/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/blink_led2/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/boot-51/Makefile	/^HEXDUMP=hexdump$/;"	m
@@ -150,8 +154,10 @@ HEXDUMP	programs/mem_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/monitorb/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/nop_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/rom_test/Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP	programs/test_port1/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP_FLAGS	programs/boot-51/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 HEXDUMP_FLAGS	programs/g51/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+HEXDUMP_FLAGS	programs/test_port1/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 H_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_1:    ACALL  RD_CHAR$/;"	l
 H_1	programs/monitorb/src/monitorb.asm	/^H_1:    ACALL  RD_CHAR$/;"	l
 H_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_2:    ACALL  READHEX    ; Read Data$/;"	l
@@ -254,8 +260,10 @@ MINICOM	programs/mem_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/monitorb/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/nop_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/rom_test/Makefile	/^MINICOM=minicom$/;"	m
+MINICOM	programs/test_port1/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM_FLAGS	programs/boot-51/Makefile	/^MINICOM_FLAGS= 8051$/;"	m
 MINICOM_FLAGS	programs/g51/Makefile	/^MINICOM_FLAGS= 8051$/;"	m
+MINICOM_FLAGS	programs/test_port1/Makefile	/^MINICOM_FLAGS= 8051$/;"	m
 M_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^M_RUN:  ACALL  WT_STRING$/;"	l
 M_RUN	programs/monitorb/src/monitorb.asm	/^M_RUN:  ACALL  WT_STRING$/;"	l
 M_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^M_TEST: CJNE   A,#'M',S_TEST; If Not M, Then Repeat Menu$/;"	l
@@ -272,6 +280,7 @@ N_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Su
 N_TEST	programs/monitorb/src/monitorb.asm	/^N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu$/;"	l
 OBJCOPY_FLAGS	programs/boot-51/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJCOPY_FLAGS	programs/g51/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+OBJCOPY_FLAGS	programs/test_port1/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJS	programs/cmon51-1.2/8052.mak	/^OBJS= 8052.rel cmon51.rel d51.rel step.rel$/;"	m
 OBJS	programs/cmon51-1.2/at89c51rd2.mak	/^OBJS= at89c51rd2.rel cmon51.rel d51.rel step.rel$/;"	m
 OBJS	programs/cmon51-1.2/p89v51rd2.mak	/^OBJS= p89v51rd2.rel cmon51.rel d51.rel step.rel$/;"	m
@@ -318,6 +327,7 @@ SRC	programs/mem_test/Makefile	/^SRC=src\/mem_test.asm$/;"	m
 SRC	programs/monitorb/Makefile	/^SRC=src\/monitorb.asm$/;"	m
 SRC	programs/nop_test/Makefile	/^SRC=src\/nop_test.asm$/;"	m
 SRC	programs/rom_test/Makefile	/^SRC=src\/rom_test.asm$/;"	m
+SRC	programs/test_port1/Makefile	/^SRC=src\/test_port1.asm$/;"	m
 S_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
 S_RUN	programs/monitorb/src/monitorb.asm	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
 S_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^S_TEST: CJNE   A,#'S',B_TEST; If Not S, Then Repeat Menu$/;"	l
@@ -332,6 +342,7 @@ TARGET	programs/mem_test/Makefile	/^TARGET=bin\/mem_test$/;"	m
 TARGET	programs/monitorb/Makefile	/^TARGET=bin\/monitorb$/;"	m
 TARGET	programs/nop_test/Makefile	/^TARGET=bin\/nop_test$/;"	m
 TARGET	programs/rom_test/Makefile	/^TARGET=bin\/rom_test$/;"	m
+TARGET	programs/test_port1/Makefile	/^TARGET=bin\/test_port1$/;"	m
 UCSIM	programs/blink_led/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/blink_led2/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/lcd_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
@@ -340,8 +351,10 @@ UCSIM	programs/monitorb/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/rom_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	programs/boot-51/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	programs/g51/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM_51	programs/test_port1/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51_FLAGS	programs/boot-51/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000, $(TARGET).hex$/;"	m
 UCSIM_51_FLAGS	programs/g51/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
+UCSIM_51_FLAGS	programs/test_port1/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
 UCSIM_FLAGS	programs/lcd_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 UCSIM_FLAGS	programs/mem_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 VALUE	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02.ASM	/^VALUE    EQU  0AAH        ; The value to set all the external data ram.$/;"	d
@@ -358,6 +371,7 @@ VI	programs/lcd_test/Makefile	/^VI=vi$/;"	m
 VI	programs/mem_test/Makefile	/^VI=vi$/;"	m
 VI	programs/monitorb/Makefile	/^VI=vi$/;"	m
 VI	programs/rom_test/Makefile	/^VI=vi$/;"	m
+VI	programs/test_port1/Makefile	/^VI=vi$/;"	m
 WAIT	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/WAIT.ASM	/^WAIT:   MOV    A,#10$/;"	l
 WAIT	programs/monitorb/src/wait.asm	/^WAIT:   MOV    A,#10$/;"	l
 WAIT1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/WAIT.ASM	/^WAIT1:  MOV    B,#0FFH$/;"	l
@@ -1166,6 +1180,7 @@ full	programs/g51/src/gboot51.asm	/^full:$/;"	l
 getbytene	programs/cmon51-1.2/proto.h	/^unsigned char getbytene (void);$/;"	p	signature:(void)
 go	programs/g51/src/gboot51.asm	/^go:$/;"	l
 halt	programs/mem_test/src/mem_test.asm	/^halt:$/;"	l
+halt	programs/test_port1/src/test_port1.asm	/^halt:$/;"	l
 hitanykey	programs/cmon51-1.2/proto.h	/^unsigned char hitanykey(void);$/;"	p	signature:(void)
 ie0_vector	programs/g51/src/g51.asm	/^ie0_vector:$/;"	l
 ie0_vector	programs/g51/src/gboot51.asm	/^ie0_vector:$/;"	l
@@ -1196,6 +1211,7 @@ main	programs/g51/src/gboot51.asm	/^main:$/;"	l
 main	programs/mem_test/src/mem_test.asm	/^main:$/;"	l
 main	programs/nop_test/src/nop_test.asm	/^main:$/;"	l
 main	programs/rom_test/src/rom_test.asm	/^main:$/;"	l
+main	programs/test_port1/src/test_port1.asm	/^main:$/;"	l
 mem_test	programs/mem_test/src/mem_test.asm	/^mem_test:$/;"	l
 mor	programs/g51/src/gboot51.asm	/^mor:$/;"	l
 outbyte	programs/cmon51-1.2/proto.h	/^void outbyte(unsigned char x);$/;"	p	signature:(unsigned char x)
@@ -1211,6 +1227,7 @@ putsp	programs/cmon51-1.2/proto.h	/^void putsp(unsigned char * x);$/;"	p	signatu
 rcve	programs/g51/src/gboot51.asm	/^rcve:$/;"	l
 read	programs/g51/src/gboot51.asm	/^read:$/;"	l
 read_sfr	programs/cmon51-1.2/proto.h	/^unsigned char read_sfr (unsigned char x);$/;"	p	signature:(unsigned char x)
+reset_isr	programs/test_port1/src/test_port1.asm	/^reset_isr:$/;"	l
 reset_ivt	programs/mem_test/src/mem_test.asm	/^reset_ivt:$/;"	l
 restorePC	programs/cmon51-1.2/proto.h	/^void restorePC (void);$/;"	p	signature:(void)
 rok	programs/g51/src/gboot51.asm	/^rok:$/;"	l
