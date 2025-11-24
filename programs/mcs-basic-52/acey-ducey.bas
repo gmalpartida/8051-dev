@@ -64,6 +64,8 @@
 700    PRINT "you have only ",Q," dollars to bet"
 710    GOTO 650
 730   C=INT(14*RND)+2
+732   C=INT(14*RND)+2
+734   C=INT(14*RND)+2
 740    IF C<2 THEN 730
 750    IF C>14 THEN 730
 760    IF C<11 THEN 810
@@ -91,7 +93,10 @@
 990    PRINT 
 1000   PRINT 
 1010   PRINT "sorry, friend but you blew your wad"
-1020   INPUT "try again ( yes or no)",A$
-1030   IF A$="Yes" THEN 110
+1020   INPUT "try again? ( yes=1 or no=0 )",ANS
+1030   IF ANS=1 THEN 110
 1040   PRINT "ok, hope you had fun."
-1050   END
+1050   END 
+
+READY
+>
