@@ -9,7 +9,7 @@ SRC=src/g51.asm
 TARGET=bin/g51
 
 ASEM_FLAGS= -i inc -i ../shared/inc -v
-MINICOM_FLAGS= 8051
+MINICOM_FLAGS= g51
 OBJCOPY_FLAGS= -C
 HEXDUMP_FLAGS=-C 
 HEXBIN_FLAGS=--fill=ff --length=8000

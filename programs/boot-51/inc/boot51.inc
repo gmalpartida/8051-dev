@@ -9,14 +9,14 @@
 	; -------------------
 	; system clock frequency:  11.0592 MHz
 	; baudrate generator:      timer 1
-	; nominal baudrate:        1200.0 Baud
+	; nominal baudrate:        9600.0 Baud
 	; required accuracy:       1.00 %
 	;
-	; resulting baudrate:      1200.0 Baud
+	; resulting baudrate:      9600.0 Baud
 
 	INTEL8051  EQU 0
-	RELOAD     EQU 0E8H
+	RELOAD     EQU 0FDH
 	SMOD       EQU 0
 
 	TIMEBASE   EQU 02CDH
-	CHARTIME   EQU 010AH
+	CHARTIME   EQU 0102H

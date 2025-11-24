@@ -1,5 +1,6 @@
-programs/mem_test/bin
-programs/gboot51/bin
+*bin/
+programs/mem_test/bin/
+programs/gboot51/bin/
 *.hex
 *.lst
 *.bin

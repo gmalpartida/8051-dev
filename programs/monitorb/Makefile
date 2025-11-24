@@ -27,7 +27,7 @@ dump: bin
 	$(HEXDUMP) -C $(TARGET).bin
 
 uart:
-	sudo $(MINICOM) 8051
+	sudo $(MINICOM) monitorb
 
 edit:
 	$(VI) $(SRC)

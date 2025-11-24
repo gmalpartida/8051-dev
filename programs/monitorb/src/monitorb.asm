@@ -338,7 +338,7 @@ H_1:    ACALL  RD_CHAR
         MOV    R1,A       ; Load Word Count to R1
 ;
         ACALL  READHEX    ; Read Address and put into Data Pointer        
-        ADDC   A,#080H    ; Add offset in address
+        ADDC   A,#00H    ; Add offset in address
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte
@@ -383,7 +383,7 @@ C_1:    ACALL  RD_CHAR
         ADD    A,R0       ; Add Upper Address Byte to Checksum
         MOV    R0,A
         MOV    A,R2
-        ADD    A,#080H    ; Add offset in address
+        ADD    A,#00H    ; Add offset in address
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte
@@ -447,7 +447,7 @@ E_1:    ACALL  RD_CHAR
         MOV    R1,A       ; Load Word Count to R1
 ;
         ACALL  READHEX    ; Read Address and put into Data Pointer        
-		ADD    A, #80H
+		ADD    A, #00H
         MOV    DPH,A      ; Upper Byte
 ;
         ACALL  READHEX    ; Lower Byte
@@ -481,7 +481,7 @@ K_RUN:  ACALL  WT_STRING
 ;
 K_1:    ACALL  RD_CHAR
         CJNE   A,#':',K_4 ; Exit if not a ":"
-        MOV    R0,#000H   ; Clear Resister for Checksum
+        MOV    R0,#000H   ; Clear Register for Checksum
 ;
         ACALL  READHEX    ; Get Word Count
         MOV    R1,A       ; Load Word Count to R1

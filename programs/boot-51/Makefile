@@ -9,7 +9,7 @@ SRC=src/boot51.a51
 TARGET=bin/boot51
 
 ASEM_FLAGS= -i inc -v
-MINICOM_FLAGS= 8051
+MINICOM_FLAGS= boot-51
 OBJCOPY_FLAGS= -C
 HEXDUMP_FLAGS=-C 
 HEXBIN_FLAGS=--fill=ff --length=8000

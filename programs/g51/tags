@@ -5,53 +5,91 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ASEM	Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
-ASEM_FLAGS	Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
-CR	src/gboot51-2.asm	/^	CR equ 0dh$/;"	d
+ASEM_FLAGS	Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
 HEXBIN	Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN_FLAGS	Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXDUMP	Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP_FLAGS	Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 MINICOM	Makefile	/^MINICOM=minicom$/;"	m
-MINICOM_FLAGS	Makefile	/^MINICOM_FLAGS= 8051$/;"	m
+MINICOM_FLAGS	Makefile	/^MINICOM_FLAGS= g51$/;"	m
 OBJCOPY_FLAGS	Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
-SRC	Makefile	/^SRC=src\/gboot51-2.asm$/;"	m
-TARGET	Makefile	/^TARGET=bin\/gboot51-2$/;"	m
+SRC	Makefile	/^SRC=src\/g51.asm$/;"	m
+TARGET	Makefile	/^TARGET=bin\/g51$/;"	m
 UCSIM_51	Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
-UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -s \/dev\/pts\/1 $(TARGET).hex$/;"	m
+UCSIM_51_FLAGS	Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
 VI	Makefile	/^VI=vi$/;"	m
-cseg	src/gboot51-2.asm	/^cseg$/;"	l
+a_short_text	inc/mem_diag.asm	/^a_short_text:$/;"	l
+ascii2bin	src/g51.asm	/^ascii2bin:$/;"	l
+ascii2bin_error	src/g51.asm	/^ascii2bin_error:$/;"	l
+command_prompt_loop	src/g51.asm	/^command_prompt_loop:$/;"	l
+copy_rom_to_ram	inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
+copy_rom_to_ram_loop	inc/mem_diag.asm	/^copy_rom_to_ram_loop:$/;"	l
+copy_text_from_rom_to_ram	inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
+copy_text_from_rom_to_ram_exit	inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
+cseg	src/g51.asm	/^cseg at 00h$/;"	l
 cseg	src/gboot51.asm	/^cseg$/;"	l
-delay2	inc/delay.asm	/^delay2:$/;"	l
-delay3	inc/delay.asm	/^delay3:$/;"	l
-delay_1_sec	inc/delay.asm	/^delay_1_sec:$/;"	l
+db	inc/mem_diag.asm	/^db	"A fountain, a gable, a gateway.", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"An ancient town hall, a gleaming ghost-haunted palace.", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"BRING BACK A NEW SELF", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"Can one rub elbows with beauty without absorbing some slight shadow of it?", CR, LF$/;"	l
+db	inc/mem_diag.asm	/^db	"One must come home a different person--fresh, vivid, eager.", 0$/;"	l
+do_process_ls_cmd	src/g51.asm	/^do_process_ls_cmd:$/;"	l
+do_process_peek_cmd	src/g51.asm	/^do_process_peek_cmd:$/;"	l
+do_process_poke_cmd	src/g51.asm	/^do_process_poke_cmd:$/;"	l
+exit_ascii2bin	src/g51.asm	/^exit_ascii2bin:$/;"	l
+exit_parse_mem_address	src/g51.asm	/^exit_parse_mem_address:$/;"	l
+fill_xmem	src/g51.asm	/^fill_xmem:$/;"	l
+fill_xmem_loop	src/g51.asm	/^fill_xmem_loop:$/;"	l
+fill_xram	inc/mem_diag.asm	/^fill_xram:$/;"	l
 full	src/gboot51.asm	/^full:$/;"	l
 go	src/gboot51.asm	/^go:$/;"	l
-ie0_vector	src/gboot51-2.asm	/^ie0_vector:$/;"	l
+ie0_vector	src/g51.asm	/^ie0_vector:$/;"	l
 ie0_vector	src/gboot51.asm	/^ie0_vector:$/;"	l
-ie1_vector	src/gboot51-2.asm	/^ie1_vector:$/;"	l
+ie1_vector	src/g51.asm	/^ie1_vector:$/;"	l
 ie1_vector	src/gboot51.asm	/^ie1_vector:$/;"	l
-init_t1_as_baud_generator	inc/timer.asm	/^init_t1_as_baud_generator:$/;"	l
+is_0	src/g51.asm	/^is_0:$/;"	l
+is_1	src/g51.asm	/^is_1:$/;"	l
+is_2	src/g51.asm	/^is_2:$/;"	l
+is_3	src/g51.asm	/^is_3:$/;"	l
+is_4	src/g51.asm	/^is_4:$/;"	l
+is_5	src/g51.asm	/^is_5:$/;"	l
+is_6	src/g51.asm	/^is_6:$/;"	l
+is_7	src/g51.asm	/^is_7:$/;"	l
+is_8	src/g51.asm	/^is_8:	$/;"	l
+is_9	src/g51.asm	/^is_9:$/;"	l
+is_b	src/g51.asm	/^is_b:$/;"	l
+is_c	src/g51.asm	/^is_c:$/;"	l
+is_d	src/g51.asm	/^is_d:$/;"	l
+is_e	src/g51.asm	/^is_e:$/;"	l
+is_f	src/g51.asm	/^is_f:$/;"	l
+is_letter	src/g51.asm	/^is_letter:$/;"	l
 loop	src/gboot51.asm	/^loop:$/;"	l
-loop_echo	src/gboot51-2.asm	/^loop_echo:$/;"	l
-loop_rx_string	src/gboot51-2.asm	/^loop_rx_string:$/;"	l
-main	src/gboot51-2.asm	/^main:$/;"	l
+main	src/g51.asm	/^main:$/;"	l
 main	src/gboot51.asm	/^main:$/;"	l
 mor	src/gboot51.asm	/^mor:$/;"	l
+parse_mem_address	src/g51.asm	/^parse_mem_address:$/;"	l
+process_invalid_cmd	src/g51.asm	/^process_invalid_cmd:$/;"	l
+process_ls_cmd	src/g51.asm	/^process_ls_cmd:$/;"	l
+process_peek_cmd	src/g51.asm	/^process_peek_cmd:$/;"	l
+process_poke_cmd	src/g51.asm	/^process_poke_cmd:$/;"	l
 rcve	src/gboot51.asm	/^rcve:$/;"	l
 read	src/gboot51.asm	/^read:$/;"	l
 rok	src/gboot51.asm	/^rok:$/;"	l
 sd	src/gboot51.asm	/^sd:$/;"	l
 send	src/gboot51.asm	/^send:$/;"	l
 serial_isr	src/gboot51.asm	/^serial_isr:$/;"	l
-serial_vector	src/gboot51-2.asm	/^serial_vector:$/;"	l
+serial_vector	src/g51.asm	/^serial_vector:$/;"	l
 serial_vector	src/gboot51.asm	/^serial_vector:$/;"	l
-tf0_vector	src/gboot51-2.asm	/^tf0_vector:$/;"	l
+shift_nibble_left	src/g51.asm	/^shift_nibble_left:$/;"	l
+tf0_vector	src/g51.asm	/^tf0_vector:$/;"	l
 tf0_vector	src/gboot51.asm	/^tf0_vector:$/;"	l
-tf1_vector	src/gboot51-2.asm	/^tf1_vector:$/;"	l
+tf1_vector	src/g51.asm	/^tf1_vector:$/;"	l
 tf1_vector	src/gboot51.asm	/^tf1_vector:$/;"	l
-uart_init_baud_gen	src/gboot51-2.asm	/^uart_init_baud_gen:$/;"	l
-uart_rx_char	src/gboot51-2.asm	/^uart_rx_char:$/;"	l
-uart_rx_string	src/gboot51-2.asm	/^uart_rx_string:$/;"	l
-uart_tx_char	src/gboot51-2.asm	/^uart_tx_char:$/;"	l
-wait	inc/delay.asm	/^wait:$/;"	l
+uart_rx_buffer	src/g51.asm	/^	uart_rx_buffer: ds 255$/;"	d
+verify_text_from_rom_to_ram	inc/mem_diag.asm	/^verify_text_from_rom_to_ram:$/;"	l
+verify_text_from_rom_to_ram_error	inc/mem_diag.asm	/^verify_text_from_rom_to_ram_error:$/;"	l
+verify_text_from_rom_to_ram_exit	inc/mem_diag.asm	/^verify_text_from_rom_to_ram_exit:$/;"	l
 xmit	src/gboot51.asm	/^xmit:$/;"	l
+xseg	src/g51.asm	/^xseg at 0000h$/;"	l
