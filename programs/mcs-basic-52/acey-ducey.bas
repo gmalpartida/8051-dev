@@ -97,6 +97,3 @@
 1030   IF ANS=1 THEN 110
 1040   PRINT "ok, hope you had fun."
 1050   END 
-
-READY
->

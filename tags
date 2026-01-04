@@ -32,11 +32,13 @@ ASC2HEX	Rudley Development Board/0004-8031-Assembly_Language_Programming_Example
 ASC2HEX	programs/monitorb/src/asc2hex.asm	/^ASC2HEX: CLR    CY$/;"	l
 ASEM	programs/boot-51/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM	programs/g51/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
+ASEM	programs/mcs-basic-52/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM	programs/test_port1/Makefile	/^ASEM=\/opt\/asem51\/asem$/;"	m
 ASEM51	programs/asem51_demo/Makefile	/^ASEM51=\/opt\/asem51\/asem$/;"	m
 ASEM51_FLAGS	programs/asem51_demo/Makefile	/^ASEM51_FLAGS=-i \/opt\/asem51\/mcu -i inc\/$/;"	m
 ASEM_FLAGS	programs/boot-51/Makefile	/^ASEM_FLAGS= -i inc -v$/;"	m
 ASEM_FLAGS	programs/g51/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
+ASEM_FLAGS	programs/mcs-basic-52/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
 ASEM_FLAGS	programs/test_port1/Makefile	/^ASEM_FLAGS= -i inc -i ..\/shared\/inc -v$/;"	m
 ASFLAGS	programs/blink_led/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASFLAGS	programs/blink_led2/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
@@ -49,13 +51,8 @@ A_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 A_RUN	programs/monitorb/src/monitorb.asm	/^A_RUN:  ACALL  WT_STRING$/;"	l
 A_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^A_TEST: CJNE   A,#'A',X_TEST; If Not A, Then Repeat Menu$/;"	l
 A_TEST	programs/monitorb/src/monitorb.asm	/^A_TEST: CJNE   A,#'A',X_TEST; If Not A, Then Repeat Menu$/;"	l
-A_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char A_save;$/;"	v
-BANNER	programs/cmon51-1.2/cmon51.h	20;"	d
-BAUD	programs/cmon51-1.2/examples/tetris52.c	32;"	d	file:
 BITRATE	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^BITRATE  equ    0FDH   ; For 9600 Baud Rate$/;"	d
 BITRATE	programs/monitorb/src/monitorb.asm	/^BITRATE  equ    0FDH   ; For 9600 Baud Rate$/;"	d
-BKF_WTB	programs/cmon51-1.2/examples/tetris52.c	85;"	d	file:
-BUFFSIZE	programs/cmon51-1.2/cmon51.c	45;"	d	file:
 B_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^B_1:    MOV    DPL,R0   $/;"	l
 B_1	programs/monitorb/src/monitorb.asm	/^B_1:    MOV    DPL,R0   $/;"	l
 B_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^B_2:    MOV    DPL,R0$/;"	l
@@ -64,8 +61,6 @@ B_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 B_RUN	programs/monitorb/src/monitorb.asm	/^B_RUN:  ACALL  WT_STRING$/;"	l
 B_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^B_TEST: CJNE   A,#'B',D_TEST; If Not B, Then Repeat Menu$/;"	l
 B_TEST	programs/monitorb/src/monitorb.asm	/^B_TEST: CJNE   A,#'B',D_TEST; If Not B, Then Repeat Menu$/;"	l
-B_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char B_save;$/;"	v
-BuffLoaded	programs/cmon51-1.2/bigblock.c	/^int BuffLoaded=FALSE;$/;"	v
 CC	programs/cmon51-1.2/8052.mak	/^CC = \/opt\/sdcc\/bin\/sdcc$/;"	m
 CC	programs/cmon51-1.2/at89c51rd2.mak	/^CC = sdcc$/;"	m
 CC	programs/cmon51-1.2/p89v51rd2.mak	/^CC = sdcc$/;"	m
@@ -77,26 +72,12 @@ CDTIM2	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples
 CFLAGS	programs/nop_test/Makefile	/^CFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 CKSUM	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^CKSUM    equ    010H$/;"	d
 CKSUM	programs/monitorb/src/monitorb.asm	/^CKSUM    equ    010H$/;"	d
-CLEAR_SCREEN	programs/cmon51-1.2/examples/tetris52.c	82;"	d	file:
-COLOR_BLACK	programs/cmon51-1.2/examples/tetris52.c	70;"	d	file:
-COLOR_BLUE	programs/cmon51-1.2/examples/tetris52.c	74;"	d	file:
-COLOR_CYAN	programs/cmon51-1.2/examples/tetris52.c	76;"	d	file:
-COLOR_GREEN	programs/cmon51-1.2/examples/tetris52.c	72;"	d	file:
-COLOR_MAGENTA	programs/cmon51-1.2/examples/tetris52.c	75;"	d	file:
-COLOR_RED	programs/cmon51-1.2/examples/tetris52.c	71;"	d	file:
-COLOR_WHITE	programs/cmon51-1.2/examples/tetris52.c	77;"	d	file:
-COLOR_YELLOW	programs/cmon51-1.2/examples/tetris52.c	73;"	d	file:
-CPUPID	programs/cmon51-1.2/8052.c	35;"	d	file:
-CPUPID	programs/cmon51-1.2/at89c51rd2.c	26;"	d	file:
-CPUPID	programs/cmon51-1.2/p89v51rd2.c	26;"	d	file:
 CR	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^CR       EQU   13$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02A.ASM	/^CR       EQU   13          ; Carrage Return.$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^CR       EQU   13               ; Carrage Return.$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04A.ASM	/^CR       EQU   13                ; Carrage Return.$/;"	d
 CR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04B.ASM	/^CR       EQU   13               ; Carrage Return$/;"	d
 CR	programs/monitorb/src/monitorb.asm	/^CR       EQU   13$/;"	d
-CURSOR_OFF	programs/cmon51-1.2/examples/tetris52.c	81;"	d	file:
-CURSOR_ON	programs/cmon51-1.2/examples/tetris52.c	80;"	d	file:
 C_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^C_1:    ACALL  RD_CHAR$/;"	l
 C_1	programs/monitorb/src/monitorb.asm	/^C_1:    ACALL  RD_CHAR$/;"	l
 C_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^C_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It$/;"	l
@@ -115,17 +96,6 @@ C_Y	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Suppo
 C_Y	programs/monitorb/src/monitorb.asm	/^C_Y:    ACALL  READHEX$/;"	l
 C_Z	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^C_Z:    ACALL  WT_STRING$/;"	l
 C_Z	programs/monitorb/src/monitorb.asm	/^C_Z:    ACALL  WT_STRING$/;"	l
-Color	programs/cmon51-1.2/examples/tetris52.c	/^	char Color;		\/* shape color *\/$/;"	m	struct:__anon2	file:
-DIR_DN	programs/cmon51-1.2/examples/tetris52.c	61;"	d	file:
-DIR_DN2	programs/cmon51-1.2/examples/tetris52.c	65;"	d	file:
-DIR_LT	programs/cmon51-1.2/examples/tetris52.c	62;"	d	file:
-DIR_LT2	programs/cmon51-1.2/examples/tetris52.c	66;"	d	file:
-DIR_RT	programs/cmon51-1.2/examples/tetris52.c	63;"	d	file:
-DIR_RT2	programs/cmon51-1.2/examples/tetris52.c	67;"	d	file:
-DIR_UP	programs/cmon51-1.2/examples/tetris52.c	60;"	d	file:
-DIR_UP2	programs/cmon51-1.2/examples/tetris52.c	64;"	d	file:
-DPH_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  DPH_save;$/;"	v
-DPL_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  DPL_save;$/;"	v
 D_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^D_1:    MOV    A,@R0$/;"	l
 D_1	programs/monitorb/src/monitorb.asm	/^D_1:    MOV    A,@R0$/;"	l
 D_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^D_2:    ACALL  LFCR$/;"	l
@@ -134,10 +104,6 @@ D_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 D_RUN	programs/monitorb/src/monitorb.asm	/^D_RUN:  ACALL  WT_STRING$/;"	l
 D_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^D_TEST: CJNE   A,#'D',H_TEST; If Not D, Then Repeat Menu$/;"	l
 D_TEST	programs/monitorb/src/monitorb.asm	/^D_TEST: CJNE   A,#'D',H_TEST; If Not D, Then Repeat Menu$/;"	l
-DeltaX	programs/cmon51-1.2/examples/tetris52.c	/^	char DeltaX, DeltaY;$/;"	m	struct:__anon1	file:
-DeltaY	programs/cmon51-1.2/examples/tetris52.c	/^	char DeltaX, DeltaY;$/;"	m	struct:__anon1	file:
-Dir	programs/cmon51-1.2/examples/tetris52.c	/^	vector Dir[4];$/;"	m	struct:__anon2	file:
-EQ	programs/cmon51-1.2/cmon51.h	22;"	d
 ESC	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^ESC      equ    01BH$/;"	d
 ESC	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02A.ASM	/^ESC      EQU   01BH        ; Escape Character.$/;"	d
 ESC	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^ESC      EQU   01BH             ; Escape Character.$/;"	d
@@ -156,7 +122,6 @@ E_X	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Suppo
 E_X	programs/monitorb/src/monitorb.asm	/^E_X:    ACALL  LFCR$/;"	l
 E_Y	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^E_Y:    ACALL  READHEX$/;"	l
 E_Y	programs/monitorb/src/monitorb.asm	/^E_Y:    ACALL  READHEX$/;"	l
-FALSE	programs/cmon51-1.2/bigblock.c	8;"	d	file:
 FLASHER	programs/blink_led/Makefile	/^FLASHER=minipro$/;"	m
 FLASHER	programs/blink_led2/Makefile	/^FLASHER=minipro$/;"	m
 FLASHER	programs/lcd_test/Makefile	/^FLASHER=minipro$/;"	m
@@ -164,14 +129,9 @@ FLASHER	programs/mem_test/Makefile	/^FLASHER=minipro$/;"	m
 FLASHER	programs/monitorb/Makefile	/^FLASHER=minipro$/;"	m
 FLASHER	programs/nop_test/Makefile	/^FLASHER=minipro$/;"	m
 FLASHER	programs/rom_test/Makefile	/^FLASHER=minipro$/;"	m
-FlashBuff	programs/cmon51-1.2/bigblock.c	/^unsigned char FlashBuff[MEMSIZE];$/;"	v
-FlashByte	programs/cmon51-1.2/at89c51rd2.c	/^void FlashByte (unsigned int address, unsigned char value)$/;"	f
-FlashByte	programs/cmon51-1.2/p89v51rd2.c	/^void FlashByte (unsigned int address, unsigned char value)$/;"	f
+FlashByte	programs/cmon51-1.2/proto.h	/^void FlashByte (unsigned int address, unsigned char value);$/;"	p	signature:(unsigned int address, unsigned char value)
 GETSEL	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^GETSEL: LCALL  WT_STRING$/;"	l
 GETSEL	programs/monitorb/src/monitorb.asm	/^GETSEL: LCALL  WT_STRING$/;"	l
-GOTO_YX	programs/cmon51-1.2/examples/tetris52.c	83;"	d	file:
-GetByte	programs/cmon51-1.2/bigblock.c	/^unsigned char GetByte(char * buffer)$/;"	f
-GetWord	programs/cmon51-1.2/bigblock.c	/^unsigned short GetWord(char * buffer)$/;"	f
 H2LT10	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/HEX2ASC.ASM	/^H2LT10:   ADD    A,#'0'$/;"	l
 H2LT10	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/HEX2ASC.ASM	/^H2LT10:   ADD    A,#'0'$/;"	l
 H2LT10	programs/monitorb/src/hex2asc.asm	/^H2LT10:   ADD    A,#'0'$/;"	l
@@ -181,17 +141,20 @@ HEX2ASC	programs/monitorb/src/hex2asc.asm	/^HEX2ASC:  ANL    A,#00FH$/;"	l
 HEXBIN	programs/boot-51/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/g51/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/lcd_test/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
+HEXBIN	programs/mcs-basic-52/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/mem_test/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/monitorb/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN	programs/test_port1/Makefile	/^HEXBIN=\/opt\/asem51\/hexbin$/;"	m
 HEXBIN_FLAGS	programs/boot-51/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXBIN_FLAGS	programs/g51/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
+HEXBIN_FLAGS	programs/mcs-basic-52/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXBIN_FLAGS	programs/test_port1/Makefile	/^HEXBIN_FLAGS=--fill=ff --length=8000$/;"	m
 HEXDUMP	programs/blink_led/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/blink_led2/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/boot-51/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/g51/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/lcd_test/Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP	programs/mcs-basic-52/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/mem_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/monitorb/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/nop_test/Makefile	/^HEXDUMP=hexdump$/;"	m
@@ -199,6 +162,7 @@ HEXDUMP	programs/rom_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	programs/test_port1/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP_FLAGS	programs/boot-51/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 HEXDUMP_FLAGS	programs/g51/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+HEXDUMP_FLAGS	programs/mcs-basic-52/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 HEXDUMP_FLAGS	programs/test_port1/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 H_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_1:    ACALL  RD_CHAR$/;"	l
 H_1	programs/monitorb/src/monitorb.asm	/^H_1:    ACALL  RD_CHAR$/;"	l
@@ -212,44 +176,6 @@ H_X	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Suppo
 H_X	programs/monitorb/src/monitorb.asm	/^H_X:    ACALL  LFCR$/;"	l
 H_Y	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_Y:    ACALL  READHEX$/;"	l
 H_Y	programs/monitorb/src/monitorb.asm	/^H_Y:    ACALL  READHEX$/;"	l
-ID_br	programs/cmon51-1.2/cmon51.h	/^	ID_br,$/;"	e	enum:cmd_is
-ID_br0	programs/cmon51-1.2/cmon51.h	/^	ID_br0,$/;"	e	enum:cmd_is
-ID_br1	programs/cmon51-1.2/cmon51.h	/^	ID_br1,$/;"	e	enum:cmd_is
-ID_br2	programs/cmon51-1.2/cmon51.h	/^	ID_br2,$/;"	e	enum:cmd_is
-ID_br3	programs/cmon51-1.2/cmon51.h	/^	ID_br3,$/;"	e	enum:cmd_is
-ID_brc	programs/cmon51-1.2/cmon51.h	/^	ID_brc,$/;"	e	enum:cmd_is
-ID_display_code	programs/cmon51-1.2/cmon51.h	/^	ID_display_code,$/;"	e	enum:cmd_is
-ID_display_data	programs/cmon51-1.2/cmon51.h	/^	ID_display_data,$/;"	e	enum:cmd_is
-ID_display_idata	programs/cmon51-1.2/cmon51.h	/^	ID_display_idata,$/;"	e	enum:cmd_is
-ID_display_xdata	programs/cmon51-1.2/cmon51.h	/^	ID_display_xdata,$/;"	e	enum:cmd_is
-ID_fill_data	programs/cmon51-1.2/cmon51.h	/^	ID_fill_data,$/;"	e	enum:cmd_is
-ID_fill_idata	programs/cmon51-1.2/cmon51.h	/^	ID_fill_idata,$/;"	e	enum:cmd_is
-ID_fill_xdata	programs/cmon51-1.2/cmon51.h	/^	ID_fill_xdata,$/;"	e	enum:cmd_is
-ID_go	programs/cmon51-1.2/cmon51.h	/^	ID_go,$/;"	e	enum:cmd_is
-ID_go_breaks	programs/cmon51-1.2/cmon51.h	/^	ID_go_breaks,$/;"	e	enum:cmd_is
-ID_invalid_cmd	programs/cmon51-1.2/cmon51.h	/^	ID_invalid_cmd$/;"	e	enum:cmd_is
-ID_load	programs/cmon51-1.2/cmon51.h	/^	ID_load,$/;"	e	enum:cmd_is
-ID_modify_data	programs/cmon51-1.2/cmon51.h	/^	ID_modify_data,$/;"	e	enum:cmd_is
-ID_modify_idata	programs/cmon51-1.2/cmon51.h	/^	ID_modify_idata,$/;"	e	enum:cmd_is
-ID_modify_xdata	programs/cmon51-1.2/cmon51.h	/^	ID_modify_xdata,$/;"	e	enum:cmd_is
-ID_nothing	programs/cmon51-1.2/cmon51.h	/^	ID_nothing,$/;"	e	enum:cmd_is
-ID_pcr	programs/cmon51-1.2/cmon51.h	/^	ID_pcr,$/;"	e	enum:cmd_is
-ID_reg_dptr	programs/cmon51-1.2/cmon51.h	/^	ID_reg_dptr,$/;"	e	enum:cmd_is
-ID_reg_pc	programs/cmon51-1.2/cmon51.h	/^	ID_reg_pc,$/;"	e	enum:cmd_is
-ID_reg_r0	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r0,$/;"	e	enum:cmd_is
-ID_reg_r1	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r1,$/;"	e	enum:cmd_is
-ID_reg_r2	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r2,$/;"	e	enum:cmd_is
-ID_reg_r3	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r3,$/;"	e	enum:cmd_is
-ID_reg_r4	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r4,$/;"	e	enum:cmd_is
-ID_reg_r5	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r5,$/;"	e	enum:cmd_is
-ID_reg_r6	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r6,$/;"	e	enum:cmd_is
-ID_reg_r7	programs/cmon51-1.2/cmon51.h	/^	ID_reg_r7,$/;"	e	enum:cmd_is
-ID_registers	programs/cmon51-1.2/cmon51.h	/^	ID_registers,$/;"	e	enum:cmd_is
-ID_step	programs/cmon51-1.2/cmon51.h	/^	ID_step,$/;"	e	enum:cmd_is
-ID_trace	programs/cmon51-1.2/cmon51.h	/^	ID_trace,$/;"	e	enum:cmd_is
-ID_trace_reg	programs/cmon51-1.2/cmon51.h	/^	ID_trace_reg,$/;"	e	enum:cmd_is
-ID_unassemble	programs/cmon51-1.2/cmon51.h	/^	ID_unassemble,$/;"	e	enum:cmd_is
-IE_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char IE_save;$/;"	v
 INC	programs/blink_led/Makefile	/^INC=inc$/;"	m
 INC	programs/blink_led2/Makefile	/^INC=inc$/;"	m
 INC	programs/lcd_test/Makefile	/^INC=inc$/;"	m
@@ -263,14 +189,6 @@ J_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 J_RUN	programs/monitorb/src/monitorb.asm	/^J_RUN:  LJMP   NEWPROG$/;"	l
 J_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^J_TEST: CJNE   A,#'J',E_TEST; If Not J, Then Repeat Menu$/;"	l
 J_TEST	programs/monitorb/src/monitorb.asm	/^J_TEST: CJNE   A,#'J',E_TEST; If Not J, Then Repeat Menu$/;"	l
-KEY_BEGIN	programs/cmon51-1.2/examples/tetris52.c	47;"	d	file:
-KEY_CCW	programs/cmon51-1.2/examples/tetris52.c	42;"	d	file:
-KEY_CW	programs/cmon51-1.2/examples/tetris52.c	41;"	d	file:
-KEY_DOWN	programs/cmon51-1.2/examples/tetris52.c	46;"	d	file:
-KEY_LEFT	programs/cmon51-1.2/examples/tetris52.c	44;"	d	file:
-KEY_QUIT	programs/cmon51-1.2/examples/tetris52.c	40;"	d	file:
-KEY_RIGHT	programs/cmon51-1.2/examples/tetris52.c	43;"	d	file:
-KEY_UP	programs/cmon51-1.2/examples/tetris52.c	45;"	d	file:
 K_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^K_1:    ACALL  RD_CHAR$/;"	l
 K_1	programs/monitorb/src/monitorb.asm	/^K_1:    ACALL  RD_CHAR$/;"	l
 K_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^K_2:    ACALL  READHEX    ; Read Data But Don't Do Anything With It$/;"	l
@@ -330,12 +248,10 @@ LFCR	programs/monitorb/src/lfcr.asm	/^LFCR:   MOV    A,#00AH$/;"	l
 LL	programs/cmon51-1.2/8052.mak	/^LL = \/opt\/sdcc\/bin\/sdcc$/;"	m
 LL	programs/cmon51-1.2/at89c51rd2.mak	/^LL = sdcc$/;"	m
 LL	programs/cmon51-1.2/p89v51rd2.mak	/^LL = sdcc$/;"	m
-Level	programs/cmon51-1.2/examples/tetris52.c	/^unsigned int Level=0;$/;"	v
 MAKEBIN	programs/blink_led/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
 MAKEBIN	programs/blink_led2/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
 MAKEBIN	programs/nop_test/Makefile	/^MAKEBIN=makebin$/;"	m
 MAKEBIN	programs/rom_test/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
-MEMSIZE	programs/cmon51-1.2/bigblock.c	6;"	d	file:
 MENU	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^MENU:   LCALL  WT_STRING$/;"	l
 MENU	programs/monitorb/src/monitorb.asm	/^MENU:   LCALL  WT_STRING$/;"	l
 MEN_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/WT_STRIN.ASM	/^MEN_1:     JNB    TI,MEN_1     ; Wait until transmitter ready$/;"	l
@@ -346,6 +262,7 @@ MINICOM	programs/blink_led2/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/boot-51/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/g51/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/lcd_test/Makefile	/^MINICOM=minicom$/;"	m
+MINICOM	programs/mcs-basic-52/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/mem_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/monitorb/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/nop_test/Makefile	/^MINICOM=minicom$/;"	m
@@ -353,20 +270,17 @@ MINICOM	programs/rom_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	programs/test_port1/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM_FLAGS	programs/boot-51/Makefile	/^MINICOM_FLAGS= boot-51$/;"	m
 MINICOM_FLAGS	programs/g51/Makefile	/^MINICOM_FLAGS= g51$/;"	m
+MINICOM_FLAGS	programs/mcs-basic-52/Makefile	/^MINICOM_FLAGS= -D \/dev\/ttyUSB0 -b 57600$/;"	m
 MINICOM_FLAGS	programs/test_port1/Makefile	/^MINICOM_FLAGS= 8051$/;"	m
-MONITOR_LOC	programs/cmon51-1.2/at89c51rd2.c	29;"	d	file:
-MONITOR_LOC	programs/cmon51-1.2/p89v51rd2.c	29;"	d	file:
 M_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^M_RUN:  ACALL  WT_STRING$/;"	l
 M_RUN	programs/monitorb/src/monitorb.asm	/^M_RUN:  ACALL  WT_STRING$/;"	l
 M_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^M_TEST: CJNE   A,#'M',S_TEST; If Not M, Then Repeat Menu$/;"	l
 M_TEST	programs/monitorb/src/monitorb.asm	/^M_TEST: CJNE   A,#'M',S_TEST; If Not M, Then Repeat Menu$/;"	l
-Minus90	programs/cmon51-1.2/examples/tetris52.c	/^	char Plus90, Minus90;	\/* pointer to shape rotated +\/- 90 degrees *\/$/;"	m	struct:__anon2	file:
 NEQUAL	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^NEQUAL:  LCALL WTSTRING         ; If not equal, then write out "not equal".$/;"	l
 NEQUAL	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04A.ASM	/^NEQUAL:  LCALL WTSTRING          ; If equal, then write out "equal".$/;"	l
 NEQUAL	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04B.ASM	/^NEQUAL:  JC    L03              ; IF R4 is Greater THEN VALUE.$/;"	l
 NEWPROG	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^NEWPROG  equ   0800H$/;"	d
 NEWPROG	programs/monitorb/src/monitorb.asm	/^NEWPROG  equ   8000H$/;"	d
-NUMBYTES	programs/cmon51-1.2/bigblock.c	41;"	d	file:
 NZERO1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^NZERO1:  DJNZ R1,NZERO1   ; Countdown the 1st timer until zero.$/;"	l
 N_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^N_RUN:  ACALL  WT_STRING$/;"	l
 N_RUN	programs/monitorb/src/monitorb.asm	/^N_RUN:  ACALL  WT_STRING$/;"	l
@@ -374,6 +288,7 @@ N_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Su
 N_TEST	programs/monitorb/src/monitorb.asm	/^N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu$/;"	l
 OBJCOPY_FLAGS	programs/boot-51/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJCOPY_FLAGS	programs/g51/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+OBJCOPY_FLAGS	programs/mcs-basic-52/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJCOPY_FLAGS	programs/test_port1/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJS	programs/cmon51-1.2/8052.mak	/^OBJS= 8052.rel cmon51.rel d51.rel step.rel$/;"	m
 OBJS	programs/cmon51-1.2/at89c51rd2.mak	/^OBJS= at89c51rd2.rel cmon51.rel d51.rel step.rel$/;"	m
@@ -390,9 +305,6 @@ PACKIHX	programs/blink_led/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	programs/blink_led2/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	programs/nop_test/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	programs/rom_test/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
-PC_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  PC_save;$/;"	v
-PSW_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char PSW_save;$/;"	v
-Plus90	programs/cmon51-1.2/examples/tetris52.c	/^	char Plus90, Minus90;	\/* pointer to shape rotated +\/- 90 degrees *\/$/;"	m	struct:__anon2	file:
 RD_CHAR	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/RD_CHAR.ASM	/^RD_CHAR:  JNB    RI,RD_CHAR$/;"	l
 RD_CHAR	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/RD_CHAR.ASM	/^RD_CHAR:  JNB    RI,RD_CHAR$/;"	l
 RD_CHAR	programs/monitorb/src/rd_char.asm	/^RD_CHAR:  JNB    RI,RD_CHAR$/;"	l
@@ -413,19 +325,14 @@ R_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 R_RUN	programs/monitorb/src/monitorb.asm	/^R_RUN:  ACALL  WT_STRING$/;"	l
 R_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^R_TEST: CJNE   A,#'R',W_TEST; If Not R, Then Repeat Menu$/;"	l
 R_TEST	programs/monitorb/src/monitorb.asm	/^R_TEST: CJNE   A,#'R',W_TEST; If Not R, Then Repeat Menu$/;"	l
-ReadBinFile	programs/cmon51-1.2/bigblock.c	/^int ReadBinFile(char * filename)$/;"	f
-ReadHexFile	programs/cmon51-1.2/bigblock.c	/^int ReadHexFile(char * filename)$/;"	f
-SCN_HT	programs/cmon51-1.2/examples/tetris52.c	57;"	d	file:
-SCN_WID	programs/cmon51-1.2/examples/tetris52.c	56;"	d	file:
 SETP1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^SETP1:   MOV  P1,R3       ; Set P1 to R3.$/;"	l
-SFR_CODE_LOC	programs/cmon51-1.2/8052.c	28;"	d	file:
-SP_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char SP_save;$/;"	v
 SRC	programs/asem51_demo/Makefile	/^SRC=src\/demo.a51$/;"	m
 SRC	programs/blink_led/Makefile	/^SRC=src\/blink_led.asm$/;"	m
 SRC	programs/blink_led2/Makefile	/^SRC=src\/blink_led2.asm$/;"	m
 SRC	programs/boot-51/Makefile	/^SRC=src\/boot51.a51$/;"	m
 SRC	programs/g51/Makefile	/^SRC=src\/g51.asm$/;"	m
 SRC	programs/lcd_test/Makefile	/^SRC=src\/lcd_test.asm$/;"	m
+SRC	programs/mcs-basic-52/Makefile	/^SRC=src\/g51.asm$/;"	m
 SRC	programs/mem_test/Makefile	/^SRC=src\/mem_test.asm$/;"	m
 SRC	programs/monitorb/Makefile	/^SRC=src\/monitorb.asm$/;"	m
 SRC	programs/nop_test/Makefile	/^SRC=src\/nop_test.asm$/;"	m
@@ -435,51 +342,18 @@ S_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 S_RUN	programs/monitorb/src/monitorb.asm	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
 S_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^S_TEST: CJNE   A,#'S',B_TEST; If Not S, Then Repeat Menu$/;"	l
 S_TEST	programs/monitorb/src/monitorb.asm	/^S_TEST: CJNE   A,#'S',B_TEST; If Not S, Then Repeat Menu$/;"	l
-Score	programs/cmon51-1.2/examples/tetris52.c	/^unsigned int Score=0;$/;"	v
-Screen	programs/cmon51-1.2/examples/tetris52.c	/^idata unsigned char Screen[(SCN_WID+1)\/2][SCN_HT];$/;"	v
-Shapes	programs/cmon51-1.2/examples/tetris52.c	/^const shape Shapes[]=$/;"	v
 TARGET	programs/asem51_demo/Makefile	/^TARGET=bin\/demo$/;"	m
 TARGET	programs/blink_led/Makefile	/^TARGET=bin\/blink_led$/;"	m
 TARGET	programs/blink_led2/Makefile	/^TARGET=bin\/blink_led2$/;"	m
 TARGET	programs/boot-51/Makefile	/^TARGET=bin\/boot51$/;"	m
 TARGET	programs/g51/Makefile	/^TARGET=bin\/g51$/;"	m
 TARGET	programs/lcd_test/Makefile	/^TARGET=bin\/lcd_test$/;"	m
+TARGET	programs/mcs-basic-52/Makefile	/^TARGET=bin\/g51$/;"	m
 TARGET	programs/mem_test/Makefile	/^TARGET=bin\/mem_test$/;"	m
 TARGET	programs/monitorb/Makefile	/^TARGET=bin\/monitorb$/;"	m
 TARGET	programs/nop_test/Makefile	/^TARGET=bin\/nop_test$/;"	m
 TARGET	programs/rom_test/Makefile	/^TARGET=bin\/rom_test$/;"	m
 TARGET	programs/test_port1/Makefile	/^TARGET=bin\/test_port1$/;"	m
-TEXT_POS	programs/cmon51-1.2/examples/tetris52.c	435;"	d	file:
-TIMER1_K1_1200	programs/cmon51-1.2/baud.h	7;"	d
-TIMER1_K1_19200	programs/cmon51-1.2/baud.h	11;"	d
-TIMER1_K1_2400	programs/cmon51-1.2/baud.h	8;"	d
-TIMER1_K1_300	programs/cmon51-1.2/baud.h	5;"	d
-TIMER1_K1_4800	programs/cmon51-1.2/baud.h	9;"	d
-TIMER1_K1_57600	programs/cmon51-1.2/baud.h	12;"	d
-TIMER1_K1_600	programs/cmon51-1.2/baud.h	6;"	d
-TIMER1_K1_9600	programs/cmon51-1.2/baud.h	10;"	d
-TIMER1_K2_115200	programs/cmon51-1.2/baud.h	22;"	d
-TIMER1_K2_1200	programs/cmon51-1.2/baud.h	15;"	d
-TIMER1_K2_19200	programs/cmon51-1.2/baud.h	19;"	d
-TIMER1_K2_2400	programs/cmon51-1.2/baud.h	16;"	d
-TIMER1_K2_38400	programs/cmon51-1.2/baud.h	20;"	d
-TIMER1_K2_4800	programs/cmon51-1.2/baud.h	17;"	d
-TIMER1_K2_57600	programs/cmon51-1.2/baud.h	21;"	d
-TIMER1_K2_600	programs/cmon51-1.2/baud.h	14;"	d
-TIMER1_K2_9600	programs/cmon51-1.2/baud.h	18;"	d
-TIMER1_RELOAD_VALUE	programs/cmon51-1.2/examples/tetris52.c	34;"	d	file:
-TIMER2_115200	programs/cmon51-1.2/baud.h	36;"	d
-TIMER2_1200	programs/cmon51-1.2/baud.h	29;"	d
-TIMER2_150	programs/cmon51-1.2/baud.h	26;"	d
-TIMER2_19200	programs/cmon51-1.2/baud.h	33;"	d
-TIMER2_2400	programs/cmon51-1.2/baud.h	30;"	d
-TIMER2_300	programs/cmon51-1.2/baud.h	27;"	d
-TIMER2_38400	programs/cmon51-1.2/baud.h	34;"	d
-TIMER2_4800	programs/cmon51-1.2/baud.h	31;"	d
-TIMER2_57600	programs/cmon51-1.2/baud.h	35;"	d
-TIMER2_600	programs/cmon51-1.2/baud.h	28;"	d
-TIMER2_9600	programs/cmon51-1.2/baud.h	32;"	d
-TRUE	programs/cmon51-1.2/bigblock.c	7;"	d	file:
 UCSIM	programs/blink_led/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/blink_led2/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/lcd_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
@@ -488,9 +362,11 @@ UCSIM	programs/monitorb/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	programs/rom_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	programs/boot-51/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	programs/g51/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM_51	programs/mcs-basic-52/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	programs/test_port1/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51_FLAGS	programs/boot-51/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000, $(TARGET).hex$/;"	m
 UCSIM_51_FLAGS	programs/g51/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
+UCSIM_51_FLAGS	programs/mcs-basic-52/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
 UCSIM_51_FLAGS	programs/test_port1/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
 UCSIM_FLAGS	programs/lcd_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 UCSIM_FLAGS	programs/mem_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
@@ -505,6 +381,7 @@ VI	programs/blink_led2/Makefile	/^VI=vi$/;"	m
 VI	programs/boot-51/Makefile	/^VI=vi$/;"	m
 VI	programs/g51/Makefile	/^VI=vi$/;"	m
 VI	programs/lcd_test/Makefile	/^VI=vi$/;"	m
+VI	programs/mcs-basic-52/Makefile	/^VI=vi$/;"	m
 VI	programs/mem_test/Makefile	/^VI=vi$/;"	m
 VI	programs/monitorb/Makefile	/^VI=vi$/;"	m
 VI	programs/rom_test/Makefile	/^VI=vi$/;"	m
@@ -534,10 +411,6 @@ W_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Sup
 W_RUN	programs/monitorb/src/monitorb.asm	/^W_RUN:  ACALL  WT_STRING$/;"	l
 W_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^W_TEST: CJNE   A,#'W',O_TEST; If Not W, Then Repeat Menu$/;"	l
 W_TEST	programs/monitorb/src/monitorb.asm	/^W_TEST: CJNE   A,#'W',O_TEST; If Not W, Then Repeat Menu$/;"	l
-WriteBlock	programs/cmon51-1.2/at89c51rd2.c	/^void WriteBlock (unsigned int src, unsigned int dst, unsigned char size)$/;"	f
-WriteHexFile	programs/cmon51-1.2/bigblock.c	/^void WriteHexFile (char * filename, int total)$/;"	f
-XRAM_CODE_LOC	programs/cmon51-1.2/8052.c	32;"	d	file:
-XTAL	programs/cmon51-1.2/examples/tetris52.c	31;"	d	file:
 X_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^X_1:    MOV    DPL,R0   $/;"	l
 X_1	programs/monitorb/src/monitorb.asm	/^X_1:    MOV    DPL,R0   $/;"	l
 X_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^X_2:    MOV    DPL,R0$/;"	l
@@ -1158,7 +1031,6 @@ __interrupt_vect	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_80
 __interrupt_vect	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.asm	/^__interrupt_vect:$/;"	l
 __interrupt_vect	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.asm	/^__interrupt_vect:$/;"	l
 __interrupt_vect	programs/cmon51-1.2/8052.asm	/^__interrupt_vect:$/;"	l
-__sdcc_external_startup	programs/cmon51-1.2/8052.c	/^unsigned char __sdcc_external_startup(void)$/;"	f
 __sdcc_program_startup	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.asm	/^__sdcc_program_startup:$/;"	l
 __sdcc_program_startup	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.asm	/^__sdcc_program_startup:$/;"	l
 __sdcc_program_startup	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.asm	/^__sdcc_program_startup:$/;"	l
@@ -1191,10 +1063,7 @@ _main	programs/cmon51-1.2/8052.asm	/^_main:$/;"	l
 _putnl	programs/cmon51-1.2/8052.asm	/^_putnl:$/;"	l
 _read_sfr	programs/cmon51-1.2/8052.asm	/^_read_sfr:$/;"	l
 _restorePC	programs/cmon51-1.2/8052.asm	/^_restorePC:$/;"	l
-_sdcc_external_startup	programs/cmon51-1.2/at89c51rd2.c	/^unsigned char _sdcc_external_startup(void)$/;"	f
 _sdcc_external_startup	programs/cmon51-1.2/cmon51.htm	/^function _sdcc_external_startup (defined in 8052.c, p89v51rd2.c, at89c51ed2.c,$/;"	f
-_sdcc_external_startup	programs/cmon51-1.2/examples/tetris52.c	/^unsigned char _sdcc_external_startup(void)$/;"	f
-_sdcc_external_startup	programs/cmon51-1.2/p89v51rd2.c	/^unsigned char _sdcc_external_startup(void)$/;"	f
 _set_timer1_priority	programs/cmon51-1.2/8052.asm	/^_set_timer1_priority:$/;"	l
 _sfrn	programs/cmon51-1.2/8052.asm	/^_sfrn:$/;"	l
 _write_sfr	programs/cmon51-1.2/8052.asm	/^_write_sfr:$/;"	l
@@ -1215,10 +1084,6 @@ add6	programs/rom_test/src/rom_test.asm	/^add6:$/;"	l
 add7	programs/rom_test/src/rom_test.asm	/^add7:	$/;"	l
 add8	programs/rom_test/src/rom_test.asm	/^add8:$/;"	l
 add9	programs/rom_test/src/rom_test.asm	/^add9:$/;"	l
-addbyte	programs/cmon51-1.2/d51.c	/^void addbyte (unsigned char x)$/;"	f
-addchar	programs/cmon51-1.2/d51.c	32;"	d	file:
-addstr	programs/cmon51-1.2/d51.c	/^void addstr(unsigned char * x)$/;"	f
-addword	programs/cmon51-1.2/d51.c	/^void addword (unsigned int x)$/;"	f
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.asm	/^	ar0 = 0x00$/;"	d
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.asm	/^	ar0 = 0x00$/;"	d
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.asm	/^	ar0 = 0x00$/;"	d
@@ -1267,27 +1132,11 @@ ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/AD
 ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.asm	/^	ar7 = 0x07$/;"	d
 ar7	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.asm	/^	ar7 = 0x07$/;"	d
 ar7	programs/cmon51-1.2/8052.asm	/^	ar7 = 0x07$/;"	d
-ascii2bin	programs/g51/src/g51.asm	/^ascii2bin:$/;"	l
-ascii2bin_error	programs/g51/src/g51.asm	/^ascii2bin_error:$/;"	l
+asc_2_bin_buffer	programs/g51/src/g51.asm	/^	asc_2_bin_buffer: ds 4$/;"	d
 at89c51rd2_CODELOC	programs/cmon51-1.2/at89c51rd2.mak	/^at89c51rd2_CODELOC = 0xd800$/;"	m
-bitn	programs/cmon51-1.2/8052.c	/^__code unsigned char bitn[] =$/;"	v
-bitn	programs/cmon51-1.2/at89c51rd2.c	/^code unsigned char bitn[] =$/;"	v
-bitn	programs/cmon51-1.2/p89v51rd2.c	/^code unsigned char bitn[] =$/;"	v
-blockDraw	programs/cmon51-1.2/examples/tetris52.c	/^void blockDraw(char XPos, char YPos, unsigned char Color)$/;"	f
-blockHit	programs/cmon51-1.2/examples/tetris52.c	/^char blockHit(char XPos, char YPos)$/;"	f
-br	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  br[4];$/;"	v
-break_address	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  break_address;$/;"	v
-breakorstep	programs/cmon51-1.2/cmon51.c	/^void breakorstep (void)$/;"	f
-breakpoint	programs/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
-buff	programs/cmon51-1.2/cmon51.c	/^char buff[BUFFSIZE];$/;"	v
-buff_hasdot	programs/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
-buff_haseq	programs/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
-chartohex	programs/cmon51-1.2/cmon51.c	/^unsigned char chartohex(char c)$/;"	f
-cleanbuff	programs/cmon51-1.2/cmon51.c	/^void cleanbuff (void)$/;"	f
-clearline	programs/cmon51-1.2/cmon51.c	/^void clearline (void)$/;"	f
-cmd_is	programs/cmon51-1.2/cmon51.h	/^typedef enum cmd_is {$/;"	g
-cmdlst	programs/cmon51-1.2/cmon51.h	/^code unsigned char cmdlst[]={$/;"	v
-collapse	programs/cmon51-1.2/examples/tetris52.c	/^void collapse(void)$/;"	f
+atoi	programs/g51/src/g51.asm	/^atoi:$/;"	l
+atoi_exit	programs/g51/src/g51.asm	/^atoi_exit:$/;"	l
+chartohex	programs/cmon51-1.2/proto.h	/^unsigned char chartohex(char c);$/;"	p	signature:(char c)
 command_prompt_loop	programs/g51/src/g51.asm	/^command_prompt_loop:$/;"	l
 copy_loop	programs/mem_test/src/mem_test.asm	/^copy_loop:$/;"	l
 copy_rom_to_ram	programs/g51/inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
@@ -1298,14 +1147,10 @@ copy_text_from_rom_to_ram	programs/g51/inc/mem_diag.asm	/^copy_text_from_rom_to_
 copy_text_from_rom_to_ram	programs/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
 copy_text_from_rom_to_ram_exit	programs/g51/inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
 copy_text_from_rom_to_ram_exit	programs/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
-cpuid	programs/cmon51-1.2/8052.c	/^void cpuid (void)$/;"	f
-cpuid	programs/cmon51-1.2/at89c51rd2.c	/^void cpuid (void)$/;"	f
-cpuid	programs/cmon51-1.2/p89v51rd2.c	/^void cpuid (void)$/;"	f
+cpuid	programs/cmon51-1.2/proto.h	/^void cpuid (void);$/;"	p	signature:(void)
 cseg	programs/g51/src/g51.asm	/^cseg at 00h$/;"	l
 cseg	programs/g51/src/gboot51.asm	/^cseg$/;"	l
 cseg	programs/mem_test/src/mem_test.asm	/^cseg at 00h$/;"	l
-cur	programs/cmon51-1.2/d51.c	/^unsigned char cur;$/;"	v
-cursor	programs/cmon51-1.2/cmon51.c	/^unsigned char cursor;$/;"	v
 db	programs/g51/inc/mem_diag.asm	/^db	"A fountain, a gable, a gateway.", CR, LF$/;"	l
 db	programs/g51/inc/mem_diag.asm	/^db	"A reverent half hour before the Venus de Milo or the Mona Lisa.", CR, LF$/;"	l
 db	programs/g51/inc/mem_diag.asm	/^db	"A silent cathedral, a moon-drenched lake, a snatch of song.", CR, LF$/;"	l
@@ -1320,7 +1165,6 @@ db	programs/mem_test/inc/mem_diag.asm	/^db	"An ancient town hall, a gleaming gho
 db	programs/mem_test/inc/mem_diag.asm	/^db	"BRING BACK A NEW SELF", CR, LF$/;"	l
 db	programs/mem_test/inc/mem_diag.asm	/^db	"Can one rub elbows with beauty without absorbing some slight shadow of it?", CR, LF$/;"	l
 db	programs/mem_test/inc/mem_diag.asm	/^db	"One must come home a different person--fresh, vivid, eager.", 0$/;"	l
-delay	programs/cmon51-1.2/examples/tetris52.c	/^unsigned char delay=((XTAL\/22118400L)*40);$/;"	v
 delay2	programs/blink_led/inc/delay.asm	/^delay2:$/;"	l
 delay2	programs/blink_led2/inc/delay.asm	/^delay2:$/;"	l
 delay2	programs/mem_test/inc/delay.asm	/^delay2:$/;"	l
@@ -1330,130 +1174,63 @@ delay3	programs/mem_test/inc/delay.asm	/^delay3:$/;"	l
 delay_1_sec	programs/blink_led/inc/delay.asm	/^delay_1_sec:$/;"	l
 delay_1_sec	programs/blink_led2/inc/delay.asm	/^delay_1_sec:$/;"	l
 delay_1_sec	programs/mem_test/inc/delay.asm	/^delay_1_sec:$/;"	l
-discnt	programs/cmon51-1.2/d51.c	/^unsigned int discnt;$/;"	v
-disp_regs	programs/cmon51-1.2/cmon51.c	/^void disp_regs(void)$/;"	f
-dispmem	programs/cmon51-1.2/cmon51.c	/^void dispmem(unsigned char * begin,  unsigned int len, char loc)$/;"	f
-do_cmd	programs/cmon51-1.2/cmon51.c	/^void do_cmd (void)$/;"	f
+do_cmd	programs/cmon51-1.2/proto.h	/^void do_cmd (void);$/;"	p	signature:(void)
 do_process_ls_cmd	programs/g51/src/g51.asm	/^do_process_ls_cmd:$/;"	l
-do_process_peek_cmd	programs/g51/src/g51.asm	/^do_process_peek_cmd:$/;"	l
-do_process_poke_cmd	programs/g51/src/g51.asm	/^do_process_poke_cmd:$/;"	l
+dostep	programs/cmon51-1.2/proto.h	/^void dostep (void);$/;"	p	signature:(void)
 end_of_program	programs/mem_test/src/mem_test.asm	/^end_of_program:$/;"	l
-erasesector	programs/cmon51-1.2/at89c51rd2.c	/^void erasesector (unsigned int sector)$/;"	f
-erasesector	programs/cmon51-1.2/p89v51rd2.c	/^void erasesector (unsigned int address)$/;"	f
-exit	programs/cmon51-1.2/examples/tetris52.c	/^void exit (void)$/;"	f
-exit_ascii2bin	programs/g51/src/g51.asm	/^exit_ascii2bin:$/;"	l
+erasesector	programs/cmon51-1.2/proto.h	/^void erasesector (unsigned int address);$/;"	p	signature:(unsigned int address)
 exit_isr	programs/blink_led/src/blink_led.asm	/^exit_isr:$/;"	l
 exit_isr	programs/blink_led2/src/blink_led2.asm	/^exit_isr:$/;"	l
-exit_parse_mem_address	programs/g51/src/g51.asm	/^exit_parse_mem_address:$/;"	l
-filesize	programs/cmon51-1.2/bigblock.c	/^long filesize(FILE *stream)$/;"	f
-fill_xmem	programs/g51/src/g51.asm	/^fill_xmem:$/;"	l
-fill_xmem_loop	programs/g51/src/g51.asm	/^fill_xmem_loop:$/;"	l
 fill_xram	programs/g51/inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram	programs/mem_test/inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram_loop	programs/mem_test/inc/mem_diag.asm	/^fill_xram_loop:$/;"	l
-fillmem	programs/cmon51-1.2/cmon51.c	/^void fillmem(unsigned char * begin,  unsigned int len, unsigned char val)$/;"	f
+fillmem	programs/cmon51-1.2/proto.h	/^void fillmem(unsigned char * begin,  unsigned int len, unsigned char val);$/;"	p	signature:(unsigned char * begin, unsigned int len, unsigned char val)
 full	programs/g51/src/gboot51.asm	/^full:$/;"	l
-getKey	programs/cmon51-1.2/examples/tetris52.c	/^char getKey(void)$/;"	f
-getbyte	programs/cmon51-1.2/cmon51.c	/^unsigned char getbyte (void)$/;"	f
-getbytene	programs/cmon51-1.2/cmon51.c	/^unsigned char getbytene (void)$/;"	f
-getchar	programs/cmon51-1.2/8052.c	/^char getchar(void)$/;"	f
-getchar	programs/cmon51-1.2/at89c51rd2.c	/^char getchar(void)$/;"	f
-getchar	programs/cmon51-1.2/p89v51rd2.c	/^char getchar(void)$/;"	f
-getsn	programs/cmon51-1.2/cmon51.c	/^void getsn (void)$/;"	f
-getwordn	programs/cmon51-1.2/cmon51.c	/^unsigned int getwordn(void)$/;"	f
+getbytene	programs/cmon51-1.2/proto.h	/^unsigned char getbytene (void);$/;"	p	signature:(void)
 go	programs/g51/src/gboot51.asm	/^go:$/;"	l
-gostep	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gostep;$/;"	v
-gotbreak	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gotbreak;$/;"	v
+halt	programs/g51/src/g51.asm	/^halt:$/;"	l
 halt	programs/mem_test/src/mem_test.asm	/^halt:$/;"	l
 halt	programs/test_port1/src/test_port1.asm	/^halt:$/;"	l
-hex2dec	programs/cmon51-1.2/bigblock.c	/^int hex2dec (char hex_digit)$/;"	f
-hexval	programs/cmon51-1.2/cmon51.c	/^const char hexval[]="0123456789ABCDEF";$/;"	v
-highof	programs/cmon51-1.2/cmon51.h	24;"	d
-hitanykey	programs/cmon51-1.2/cmon51.c	/^unsigned char hitanykey (void)$/;"	f
+hitanykey	programs/cmon51-1.2/proto.h	/^unsigned char hitanykey(void);$/;"	p	signature:(void)
 ie0_vector	programs/g51/src/g51.asm	/^ie0_vector:$/;"	l
 ie0_vector	programs/g51/src/gboot51.asm	/^ie0_vector:$/;"	l
 ie1_vector	programs/g51/src/g51.asm	/^ie1_vector:$/;"	l
 ie1_vector	programs/g51/src/gboot51.asm	/^ie1_vector:$/;"	l
-iram_save	programs/cmon51-1.2/cmon51.c	/^volatile xdata char iram_save[128];$/;"	v
-is_0	programs/g51/src/g51.asm	/^is_0:$/;"	l
-is_1	programs/g51/src/g51.asm	/^is_1:$/;"	l
-is_2	programs/g51/src/g51.asm	/^is_2:$/;"	l
-is_3	programs/g51/src/g51.asm	/^is_3:$/;"	l
-is_4	programs/g51/src/g51.asm	/^is_4:$/;"	l
-is_5	programs/g51/src/g51.asm	/^is_5:$/;"	l
-is_6	programs/g51/src/g51.asm	/^is_6:$/;"	l
-is_7	programs/g51/src/g51.asm	/^is_7:$/;"	l
-is_8	programs/g51/src/g51.asm	/^is_8:	$/;"	l
-is_9	programs/g51/src/g51.asm	/^is_9:$/;"	l
-is_b	programs/g51/src/g51.asm	/^is_b:$/;"	l
-is_c	programs/g51/src/g51.asm	/^is_c:$/;"	l
-is_d	programs/g51/src/g51.asm	/^is_d:$/;"	l
-is_e	programs/g51/src/g51.asm	/^is_e:$/;"	l
-is_f	programs/g51/src/g51.asm	/^is_f:$/;"	l
-is_letter	programs/g51/src/g51.asm	/^is_letter:$/;"	l
-keepediting	programs/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
-loadintelhex	programs/cmon51-1.2/8052.c	/^void loadintelhex (void)$/;"	f
-loadintelhex	programs/cmon51-1.2/at89c51rd2.c	/^void loadintelhex (void)$/;"	f
-loadintelhex	programs/cmon51-1.2/p89v51rd2.c	/^void loadintelhex (void)$/;"	f
+itoa	programs/g51/src/g51.asm	/^itoa:$/;"	l
+itoa_exit	programs/g51/src/g51.asm	/^itoa_exit:$/;"	l
+itoa_is_digit	programs/g51/src/g51.asm	/^itoa_is_digit:$/;"	l
+loadintelhex	programs/cmon51-1.2/proto.h	/^void loadintelhex (void);$/;"	p	signature:(void)
 loop	programs/g51/src/gboot51.asm	/^loop:$/;"	l
-lowof	programs/cmon51-1.2/cmon51.h	23;"	d
-main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ void main(void)$/;"	f
-main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ void main(void)$/;"	f
-main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.C	/^ void main(void)$/;"	f
-main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.C	/^ void main(void)$/;"	f
-main	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.C	/^void main(void)$/;"	f
 main	programs/blink_led/src/blink_led.asm	/^main:$/;"	l
 main	programs/blink_led2/src/blink_led2.asm	/^main:$/;"	l
-main	programs/cmon51-1.2/8052.c	/^void main (void)$/;"	f
-main	programs/cmon51-1.2/at89c51rd2.c	/^void main (void)$/;"	f
-main	programs/cmon51-1.2/baud.c	/^int main(int argc, char **argv)$/;"	f
-main	programs/cmon51-1.2/bigblock.c	/^int main(int argc, char **argv)$/;"	f
-main	programs/cmon51-1.2/examples/tetris52.c	/^void main(void)$/;"	f
-main	programs/cmon51-1.2/p89v51rd2.c	/^void main (void)$/;"	f
 main	programs/g51/src/g51.asm	/^main:$/;"	l
 main	programs/g51/src/gboot51.asm	/^main:$/;"	l
 main	programs/mem_test/src/mem_test.asm	/^main:$/;"	l
 main	programs/nop_test/src/nop_test.asm	/^main:$/;"	l
 main	programs/rom_test/src/rom_test.asm	/^main:$/;"	l
 main	programs/test_port1/src/test_port1.asm	/^main:$/;"	l
-maskbit	programs/cmon51-1.2/cmon51.c	/^const unsigned char maskbit[]={0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};$/;"	v
 mem_test	programs/mem_test/src/mem_test.asm	/^mem_test:$/;"	l
-mnem	programs/cmon51-1.2/d51.h	/^code char * code mnem[]={$/;"	v
-mnemtbl	programs/cmon51-1.2/d51.h	/^code char mnemtbl[] =$/;"	v
-modifymem	programs/cmon51-1.2/cmon51.c	/^void modifymem(unsigned char * ptr,  char loc)$/;"	f
 mor	programs/g51/src/gboot51.asm	/^mor:$/;"	l
-nlist	programs/cmon51-1.2/cmon51.c	/^unsigned char nlist (unsigned char * slist)$/;"	f
-outbyte	programs/cmon51-1.2/cmon51.c	/^void outbyte(unsigned char x)$/;"	f
-outword	programs/cmon51-1.2/cmon51.c	/^void outword(unsigned int x)$/;"	f
-outwordnl	programs/cmon51-1.2/cmon51.c	/^void outwordnl (unsigned int val)$/;"	f
-parse_mem_address	programs/g51/src/g51.asm	/^parse_mem_address:$/;"	l
-printf	programs/cmon51-1.2/examples/tetris52.c	38;"	d	file:
+not_a_digit	programs/g51/src/g51.asm	/^not_a_digit:$/;"	l
+not_a_letter	programs/g51/src/g51.asm	/^not_a_letter:$/;"	l
+outbyte	programs/cmon51-1.2/proto.h	/^void outbyte(unsigned char x);$/;"	p	signature:(unsigned char x)
+outword	programs/cmon51-1.2/proto.h	/^void outword(unsigned int x);$/;"	p	signature:(unsigned int x)
+process_dump_cmd	programs/g51/src/g51.asm	/^process_dump_cmd:$/;"	l
+process_help_cmd	programs/g51/src/g51.asm	/^process_help_cmd:$/;"	l
 process_invalid_cmd	programs/g51/src/g51.asm	/^process_invalid_cmd:$/;"	l
 process_ls_cmd	programs/g51/src/g51.asm	/^process_ls_cmd:$/;"	l
 process_peek_cmd	programs/g51/src/g51.asm	/^process_peek_cmd:$/;"	l
 process_poke_cmd	programs/g51/src/g51.asm	/^process_poke_cmd:$/;"	l
-putc	programs/cmon51-1.2/proto.h	20;"	d
-putchar	programs/cmon51-1.2/examples/tetris52.c	/^void putchar(char c)$/;"	f
-putnl	programs/cmon51-1.2/8052.c	/^void putnl (void)$/;"	f
-putnl	programs/cmon51-1.2/at89c51rd2.c	/^void putnl (void)$/;"	f
-putnl	programs/cmon51-1.2/p89v51rd2.c	/^void putnl (void)$/;"	f
-putsp	programs/cmon51-1.2/cmon51.c	/^void putsp(unsigned char * x)$/;"	f
+putnl	programs/cmon51-1.2/proto.h	/^void putnl (void);$/;"	p	signature:(void)
+putnl	programs/cmon51-1.2/proto.h	/^void putnl(void);$/;"	p	signature:(void)
+putsp	programs/cmon51-1.2/proto.h	/^void putsp(unsigned char * x);$/;"	p	signature:(unsigned char * x)
 rcve	programs/g51/src/gboot51.asm	/^rcve:$/;"	l
 read	programs/g51/src/gboot51.asm	/^read:$/;"	l
-read_sfr	programs/cmon51-1.2/8052.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
-read_sfr	programs/cmon51-1.2/at89c51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
-read_sfr	programs/cmon51-1.2/p89v51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
-refresh	programs/cmon51-1.2/examples/tetris52.c	/^void refresh(void)$/;"	f
+read_sfr	programs/cmon51-1.2/proto.h	/^unsigned char read_sfr (unsigned char x);$/;"	p	signature:(unsigned char x)
 reset_isr	programs/test_port1/src/test_port1.asm	/^reset_isr:$/;"	l
 reset_ivt	programs/mem_test/src/mem_test.asm	/^reset_ivt:$/;"	l
-restorePC	programs/cmon51-1.2/8052.c	/^void restorePC (void)$/;"	f
-restorePC	programs/cmon51-1.2/at89c51rd2.c	/^void restorePC (void)$/;"	f
-restorePC	programs/cmon51-1.2/p89v51rd2.c	/^void restorePC (void)$/;"	f
+restorePC	programs/cmon51-1.2/proto.h	/^void restorePC (void);$/;"	p	signature:(void)
 rok	programs/g51/src/gboot51.asm	/^rok:$/;"	l
-rscr	programs/cmon51-1.2/examples/tetris52.c	/^unsigned char rscr (unsigned char x, unsigned char y)$/;"	f
-saved_int	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char saved_int[3];$/;"	v
-saved_jmp	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char saved_jmp[3];$/;"	v
-screenInit	programs/cmon51-1.2/examples/tetris52.c	/^void screenInit(void)$/;"	f
 sd	programs/g51/src/gboot51.asm	/^sd:$/;"	l
 sdcc_atomic_compare_exchange_idata_impl	programs/cmon51-1.2/8052.asm	/^sdcc_atomic_compare_exchange_idata_impl:$/;"	l
 sdcc_atomic_compare_exchange_pdata_impl	programs/cmon51-1.2/8052.asm	/^sdcc_atomic_compare_exchange_pdata_impl:$/;"	l
@@ -1466,42 +1243,14 @@ send	programs/g51/src/gboot51.asm	/^send:$/;"	l
 serial_isr	programs/g51/src/gboot51.asm	/^serial_isr:$/;"	l
 serial_vector	programs/g51/src/g51.asm	/^serial_vector:$/;"	l
 serial_vector	programs/g51/src/gboot51.asm	/^serial_vector:$/;"	l
-sfrn	programs/cmon51-1.2/8052.c	/^__code unsigned char sfrn[] =$/;"	v
-sfrn	programs/cmon51-1.2/at89c51rd2.c	/^code unsigned char sfrn[] =$/;"	v
-sfrn	programs/cmon51-1.2/p89v51rd2.c	/^code unsigned char sfrn[] =$/;"	v
-shape	programs/cmon51-1.2/examples/tetris52.c	/^} shape;	\/* drawing instructions for this shape *\/$/;"	t	typeref:struct:__anon2	file:
-shapeDraw	programs/cmon51-1.2/examples/tetris52.c	/^void shapeDraw(char XPos, char YPos, char WhichShape)$/;"	f
-shapeErase	programs/cmon51-1.2/examples/tetris52.c	/^void shapeErase(char XPos, char YPos, char WhichShape)$/;"	f
-shapeHit	programs/cmon51-1.2/examples/tetris52.c	/^char shapeHit(char XPos, char YPos, char WhichShape)$/;"	f
-shift_nibble_left	programs/g51/src/g51.asm	/^shift_nibble_left:$/;"	l
-showreg	programs/cmon51-1.2/cmon51.c	/^void showreg(char * name, unsigned char val)$/;"	f
-step_start	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  step_start;$/;"	v
 tf0_vector	programs/g51/src/g51.asm	/^tf0_vector:$/;"	l
 tf0_vector	programs/g51/src/gboot51.asm	/^tf0_vector:$/;"	l
 tf1_vector	programs/g51/src/g51.asm	/^tf1_vector:$/;"	l
 tf1_vector	programs/g51/src/gboot51.asm	/^tf1_vector:$/;"	l
 timer_isr	programs/blink_led/src/blink_led.asm	/^timer_isr:$/;"	l
 timer_isr	programs/blink_led2/src/blink_led2.asm	/^timer_isr:$/;"	l
-trace_type	programs/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char trace_type;$/;"	v
 uart_rx_buffer	programs/g51/src/g51.asm	/^	uart_rx_buffer: ds 255$/;"	d
-unassemble	programs/cmon51-1.2/d51.c	/^void unassemble (unsigned int address)$/;"	f
-validbyte	programs/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
-var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ int var1 = 5;$/;"	v
-var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ int var1 = 5;$/;"	v
-var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.C	/^ char var1 = 5;$/;"	v
-var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.C	/^ float var1 = 5;$/;"	v
-var1	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.C	/^char var1 = 5;$/;"	v
-var2	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ int var2 = 6;$/;"	v
-var2	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ int var2 = 6;$/;"	v
-var2	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.C	/^ char var2 = 6;$/;"	v
-var2	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.C	/^ float var2 = 6;$/;"	v
-var2	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.C	/^char var2 = 6;$/;"	v
-var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ int var3 = 7;$/;"	v
-var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ int var3 = 7;$/;"	v
-var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.C	/^ char var3 = 7;$/;"	v
-var3	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.C	/^ float var3 = 7;$/;"	v
-var3	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.C	/^char var3 = 7;$/;"	v
-vector	programs/cmon51-1.2/examples/tetris52.c	/^} vector;$/;"	t	typeref:struct:__anon1	file:
+unassemble	programs/cmon51-1.2/proto.h	/^void unassemble (unsigned int address);$/;"	p	signature:(unsigned int address)
 verify_error	programs/mem_test/src/mem_test.asm	/^verify_error:$/;"	l
 verify_success	programs/mem_test/src/mem_test.asm	/^verify_success:$/;"	l
 verify_text_from_rom_to_ram	programs/g51/inc/mem_diag.asm	/^verify_text_from_rom_to_ram:$/;"	l
@@ -1513,10 +1262,6 @@ verify_text_from_rom_to_ram_exit	programs/mem_test/inc/mem_diag.asm	/^verify_tex
 wait	programs/blink_led/inc/delay.asm	/^wait:$/;"	l
 wait	programs/blink_led2/inc/delay.asm	/^wait:$/;"	l
 wait	programs/mem_test/inc/delay.asm	/^wait:$/;"	l
-wastetime	programs/cmon51-1.2/examples/tetris52.c	/^void wastetime(int j)$/;"	f
-write_sfr	programs/cmon51-1.2/8052.c	/^void write_sfr (unsigned char val)$/;"	f
-write_sfr	programs/cmon51-1.2/at89c51rd2.c	/^void write_sfr (unsigned char val)$/;"	f
-write_sfr	programs/cmon51-1.2/p89v51rd2.c	/^void write_sfr (unsigned char val)$/;"	f
-wscr	programs/cmon51-1.2/examples/tetris52.c	/^void wscr (unsigned char x, unsigned char y, unsigned char val)$/;"	f
+write_sfr	programs/cmon51-1.2/proto.h	/^void write_sfr (unsigned char val);$/;"	p	signature:(unsigned char val)
 xmit	programs/g51/src/gboot51.asm	/^xmit:$/;"	l
 xseg	programs/g51/src/g51.asm	/^xseg at 0000h$/;"	l
