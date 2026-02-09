@@ -1,41 +1,54 @@
-ASEM=/opt/asem51/asem
+AS=/opt/asem51/asem
+UCSIM=/opt/sdcc/bin/ucsim_51
+VI=vim
+DIS51=/opt/dis51/dis51
+SOCAT=socat
 MINICOM=minicom
-VI=vi
-HEXDUMP=hexdump
-HEXBIN=/opt/asem51/hexbin
-UCSIM_51=/opt/sdcc/bin/ucsim_51
+SCREEN=screen
 
-SRC=src/g51.asm
-TARGET=bin/g51
+TARGET=$(notdir $(CURDIR))
 
-ASEM_FLAGS= -i inc -i ../shared/inc -v
-MINICOM_FLAGS= g51
-OBJCOPY_FLAGS= -C
-HEXDUMP_FLAGS=-C 
-HEXBIN_FLAGS=--fill=ff --length=8000
-UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex
+SRC_DIR=src
+BIN_DIR=bin
 
-.PHONY: all, build, clean, uart, edit, dump, bin, sim
+MAIN_FILE=$(SRC_DIR)/main.asm
+HEX_FILE=$(BIN_DIR)/$(TARGET).hex
+DIS_FILE=$(BIN_DIR)/$(TARGET).dis
+VPORT0=/tmp/ttyV0
+VPORT1=/tmp/ttyV1
+
+AS_FLAGS= -i inc -v 
+UCSIM_FLAGS= -C ucsim_51.cfg -t 51 -s$(VPORT0) -X 11.0592 
+SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0
+MINICOM_FLAGS=-D $(VPORT1)
+SCREEN_FLAGS= -S sim_uart
+
+.PHONY: all, build, clean, edit, dis, bridge, uart, screen
 
 all: build
 
 build:
-	$(ASEM) $(ASEM_FLAGS) $(SRC) $(TARGET).hex
-
-uart:
-	sudo $(MINICOM) $(MINICOM_FLAGS) 
-
-edit:
-	$(VI) $(SRC)
-
-dump: bin
-	$(HEXDUMP) $(HEXDUMP_FLAGS) $(TARGET).bin
-
-bin: build
-	$(HEXBIN) $(HEXBIN_FLAGS) $(TARGET).hex $(TARGET).bin
+	$(AS) $(AS_FLAGS) $(MAIN_FILE) $(HEX_FILE)
 
 sim: build
-	$(UCSIM_51) $(UCSIM_51_FLAGS)
+	$(UCSIM) $(UCSIM_FLAGS) $(HEX_FILE)
+
+edit: 
+	$(VI) $(MAIN_FILE)
+
+dis: build
+	$(DIS51) $(DIS51_FLAGS)	< $(HEX_FILE) > $(DIS_FILE)
+
+bridge:
+	$(SOCAT) $(SOCAT_FLAGS) 
+
+uart: build
+	$(MINICOM) $(MINICOM_FLAGS) 
+
+screen:
+	$(SCREEN) $(SCREEN_FLAGS)
 
 clean:
-	rm -f bin/*
+	rm -rf $(BIN_DIR)/*
+
+

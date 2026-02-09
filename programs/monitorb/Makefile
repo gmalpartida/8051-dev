@@ -6,12 +6,13 @@ VI=vi
 HEXBIN=/opt/asem51/hexbin
 UCSIM=/opt/sdcc/bin/ucsim_51
 
-ROM='AT28C16@DIP24'
+ROM='UPD27C256A@DIP28'
 
 INC=inc
 SRC=src/monitorb.asm
 TARGET=bin/monitorb
 ASFLAGS= -i -v
+MINICOM_FLAGS=-D /dev/ttyUSB0 -b 9600
 
 .PHONY: all build link pack flash dump uart clean edit bin sim
 
@@ -27,7 +28,7 @@ dump: bin
 	$(HEXDUMP) -C $(TARGET).bin
 
 uart:
-	sudo $(MINICOM) monitorb
+	sudo $(MINICOM) $(MINICOM_FLAGS)
 
 edit:
 	$(VI) $(SRC)

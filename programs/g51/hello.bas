@@ -1,4 +1,0 @@
-10     FOR I=1 TO 20
-20     PRINT "hello, world!"
-30     NEXT 
-40     END 
