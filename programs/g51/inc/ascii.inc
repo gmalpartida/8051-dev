@@ -1,4 +1,4 @@
-
+cseg
 ; Function: asc2bin
 ; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
 ; Output: Accumulator (A) = Binary value (00h-0Fh)

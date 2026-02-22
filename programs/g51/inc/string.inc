@@ -1,4 +1,4 @@
-
+cseg
 ; --- String Compare Utility ---
 STRCMP:
     ; Compares RAM string at R0 with CODE string at DPTR

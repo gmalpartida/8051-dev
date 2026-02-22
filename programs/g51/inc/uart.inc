@@ -1,11 +1,15 @@
 ; UART Library for 8051 (Polling Method)
 ; Includes: uart_init, uart_rx_char, uart_rx_string, uart_tx_char, uart_tx_string
+cseg
 
 UART_INIT:
     MOV TMOD, #20H      ; Timer 1, Mode 2 (8-bit auto-reload)
     MOV TH1, #0FDH      ; 9600 baud at 11.0592 MHz
     MOV SCON, #50H      ; Mode 1 (8-bit UART), Enable Receiver (REN=1)
     SETB TR1            ; Start Timer 1
+	mov dptr, #UART_RX_BUFFER_CUR
+	mov a, #00h
+	movx @dptr, a
     RET
 
 UART_TX_CHAR:
@@ -50,4 +54,9 @@ SAVE_CHAR:
 STR_TERM:
     MOV @R0, #00H       ; Add Null Terminator (ASCIIZ)
     RET
+
+xseg
+UART_RX_BUFFER_CUR:	ds 01H
+UART_RX_BUFFER: ds 100h				; 256-byte buffer
+
 

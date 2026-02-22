@@ -113,18 +113,28 @@ check_move:
 	mov dptr, #move_txt
 	mov r2, #4
 	call strncmp
-	cjne a, #0, check_jump
+	cjne a, #0, check_goto
 	call do_move
 	jmp cmd_prompt
 
-check_jump:
+check_goto:
 	mov r0, #30h
 	call skip_blanks
-	mov dptr, #jump_txt
+	mov dptr, #goto_txt
+	mov r2, #4
+	call strncmp
+	cjne a, #0, check_iram
+	call do_goto
+	jmp cmd_prompt
+
+check_iram:
+	mov r0, #30h
+	call skip_blanks
+	mov dptr, #iram_txt
 	mov r2, #4
 	call strncmp
 	cjne a, #0, check_sfr
-	call do_jump
+	call do_iram
 	jmp cmd_prompt
 
 check_sfr:
@@ -136,6 +146,7 @@ check_sfr:
 	cjne a, #0, unknown
 	call do_sfr
 	jmp cmd_prompt
+
     ; Unknown command
 unknown:
 	call println

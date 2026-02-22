@@ -1,3 +1,4 @@
+cseg 
 do_help:
 	call println
     mov dptr, #help_str
@@ -194,7 +195,7 @@ do_move:
 
 ; jumps to a memory address in program memory
 ; --> r6, r7: memmory address in program memory
-do_jump:
+do_goto:
 	call println
 	call skip_blanks
 	call get_hex_address
@@ -209,10 +210,13 @@ do_jump:
 
 	ret
 
-do_sfr:
-	mov r1, #0ffh
+do_iram:
+	call println
+	mov r1, #80h
 	mov r0, #00h
-do_sfr_loop:
+	mov r2, #10h
+do_iram_loop:
+	push 02h
 	mov a, @r0
 	mov b, a
 	swap a
@@ -226,10 +230,44 @@ do_sfr_loop:
 	mov a, #' '
 	call uart_tx_char
 	call uart_tx_char
-
+	pop 02h
+	djnz r2, do_iram_continue
+	call println
+	mov r2, #10h
+do_iram_continue:
 	inc r0
-	djnz r1, do_sfr_loop
-
+	djnz r1, do_iram_loop
+	call println
 	ret
 
+
+do_sfr:
+	call println
+	mov r1, #80h
+	mov r0, #80h
+	mov r2, #10h
+do_sfr_loop:
+	push 02h
+	mov a, @r0
+	mov b, a
+	swap a
+	anl a, #0fh
+	call bin2asc
+	call uart_tx_char
+	mov a, b
+	anl a, #0fh
+	call bin2asc
+	call uart_tx_char
+	mov a, #' '
+	call uart_tx_char
+	call uart_tx_char
+	pop 02h
+	djnz r2, do_sfr_continue
+	call println
+	mov r2, #10h
+do_sfr_continue:
+	inc r0
+	djnz r1, do_sfr_loop
+	call println
+	ret
 
