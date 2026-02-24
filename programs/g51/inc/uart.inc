@@ -1,62 +1,62 @@
-; UART Library for 8051 (Polling Method)
-; Includes: uart_init, uart_rx_char, uart_rx_string, uart_tx_char, uart_tx_string
+; uart library for 8051 (polling method)
+; includes: uart_init, uart_rx_char, uart_rx_string, uart_tx_char, uart_tx_string
 cseg
 
-UART_INIT:
-    MOV TMOD, #20H      ; Timer 1, Mode 2 (8-bit auto-reload)
-    MOV TH1, #0FDH      ; 9600 baud at 11.0592 MHz
-    MOV SCON, #50H      ; Mode 1 (8-bit UART), Enable Receiver (REN=1)
-    SETB TR1            ; Start Timer 1
-	mov dptr, #UART_RX_BUFFER_CUR
+uart_init:
+    mov tmod, #20h      ; timer 1, mode 2 (8-bit auto-reload)
+    mov th1, #0fdh      ; 9600 baud at 11.0592 mhz
+    mov scon, #50h      ; mode 1 (8-bit uart), enable receiver (ren=1)
+    setb tr1            ; start timer 1
+	mov dptr, #uart_rx_buffer_cur
 	mov a, #00h
 	movx @dptr, a
-    RET
+    ret
 
-UART_TX_CHAR:
-	MOV SBUF, A             ; Load character into buffer
-TX_WAIT:
-    JNB TI, TX_WAIT     ; Wait for transmission to complete
-    CLR TI              ; Clear flag for next char
-    RET
+uart_tx_char:
+	mov sbuf, a             ; load character into buffer
+tx_wait:
+    jnb ti, tx_wait     ; wait for transmission to complete
+    clr ti              ; clear flag for next char
+    ret
 
-UART_TX_STRING:
-    ; Sends null-terminated string from DPTR
-    CLR A
-    MOVC A, @A+DPTR     ; Get char from code memory
-    JZ TX_STR_DONE      ; If 0, end of string
-    ACALL UART_TX_CHAR  ; Transmit char
-    INC DPTR            ; Next char
-    SJMP UART_TX_STRING
-TX_STR_DONE:
-    RET
+uart_tx_string:
+    ; sends null-terminated string from dptr
+    clr a
+    movc a, @a+dptr     ; get char from code memory
+    jz tx_str_done      ; if 0, end of string
+    acall uart_tx_char  ; transmit char
+    inc dptr            ; next char
+    sjmp uart_tx_string
+tx_str_done:
+    ret
 
-UART_RX_CHAR:
-    JNB RI, UART_RX_CHAR ; Wait for character
-    MOV A, SBUF         ; Read from buffer
-    CLR RI              ; Clear flag
-    RET
+uart_rx_char:
+    jnb ri, uart_rx_char ; wait for character
+    mov a, sbuf         ; read from buffer
+    clr ri              ; clear flag
+    ret
 
-UART_RX_STRING:
-    ; Receives string into RAM at R0. Terminates on CR (0x0D) or LF (0x0A).
-    ; Replaces terminator with 0x00 (ASCIIZ).
-RX_LOOP:
-    ACALL UART_RX_CHAR  ; Get char
-    ACALL UART_TX_CHAR  ; Echo char back to Minicom (optional but helpful)
-    CJNE A, #0DH, CHK_LF ; Is it CR?
-    SJMP STR_TERM       ; Yes, terminate
-CHK_LF:
-    CJNE A, #0AH, SAVE_CHAR ; Is it LF?
-    SJMP STR_TERM       ; Yes, terminate
-SAVE_CHAR:
-    MOV @R0, A          ; Store char in RAM
-    INC R0
-    SJMP RX_LOOP
-STR_TERM:
-    MOV @R0, #00H       ; Add Null Terminator (ASCIIZ)
-    RET
+uart_rx_string:
+    ; receives string into ram at r0. terminates on cr (0x0d) or lf (0x0a).
+    ; replaces terminator with 0x00 (asciiz).
+rx_loop:
+    acall uart_rx_char  ; get char
+    acall uart_tx_char  ; echo char back to minicom (optional but helpful)
+    cjne a, #0dh, chk_lf ; is it cr?
+    sjmp str_term       ; yes, terminate
+chk_lf:
+    cjne a, #0ah, save_char ; is it lf?
+    sjmp str_term       ; yes, terminate
+save_char:
+    mov @r0, a          ; store char in ram
+    inc r0
+    sjmp rx_loop
+str_term:
+    mov @r0, #00h       ; add null terminator (asciiz)
+    ret
 
 xseg
-UART_RX_BUFFER_CUR:	ds 01H
-UART_RX_BUFFER: ds 100h				; 256-byte buffer
+uart_rx_buffer_cur:	ds 01h
+uart_rx_buffer: ds 100h				; 256-byte buffer
 
 

@@ -22,7 +22,7 @@ VPORT1=/tmp/ttyV1
 BIN_FILE=$(BIN_DIR)/$(TARGET).bin
 UCSIM_FILE=$(CFG_DIR)/$(TARGET).ucsim
 
-AS_FLAGS= -i inc 
+AS_FLAGS= -i inc -v 
 UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 
 SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0
 MINICOM_FLAGS=-D $(VPORT1)
@@ -53,7 +53,7 @@ uart: build
 	$(MINICOM) $(MINICOM_FLAGS) 
 
 screen:
-	$(SCREEN) $(SCREEN_FLAGS) $(HEX_FILE)
+	$(SCREEN) $(SCREEN_FLAGS) 
 
 dump: bin
 	$(HEXDUMP) $(HEXDUMP_FLAGS) $(BIN_FILE)

@@ -215,6 +215,12 @@ mem_test_fail:
 	call uart_tx_string
 	ret
 
+lcd_app:
+	ret
+
+pwm_app:
+	ret
+
 $INCLUDE (constants.inc)
 $INCLUDE (uart.inc)
 $INCLUDE (g51-logo.inc)

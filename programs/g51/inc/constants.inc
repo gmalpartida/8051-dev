@@ -12,35 +12,49 @@ newline_str:
 command_prompt_str: 
 	db "g51> ", 0
 
-help_str: 
-	db TAB, "Commands", CR, LF
-	db TAB, "help:", TAB, "displays list of available commands.", CR, LF
-	db TAB, "ls:", TAB, "displays available applications.", CR, LF
-	db TAB, "peek:", TAB, "examine a single memory cell.", CR, LF
-	db TAB, TAB, TAB, "ex. peek 1b2c", CR, LF
-	db TAB, "poke:", TAB, "modify a single memory cell.", CR, LF
-	db TAB, TAB, TAB, "ex. poke 1b2c 55", CR, LF
-	db TAB, "dump:", TAB, "displays a 256 memory block.", CR, LF
-	db TAB, TAB, TAB, "ex. dump 12", CR, LF
-	db TAB, "clear:", TAB, "clear screen and homes the cursor.", CR, LF 
-	db TAB, "reset:", TAB, "perform a soft-reset of the system.", CR, LF
-	db TAB, "fill:", TAB, "initializes a memory block with a specific byte.", CR, LF
-	db TAB, TAB, TAB, "ex. fill 1ab7 ff 1a", CR, LF
-	db TAB, "move:", TAB, "copies a block of data from one memory location to another.", CR, LF
-	db TAB, TAB, TAB, "ex. move 2d4f 83bd a5", CR, LF
-	db TAB, "goto:", TAB, "jumps to a location in program memory to execute code.", CR, LF
-	db TAB, TAB, TAB, "ex. goto 8ae3", CR, LF
-	db TAB, "call:", TAB, "calls a subroutine to be executed.", CR, LF
-	db TAB, TAB, TAB, "ex. call f43d", CR, LF
-	db TAB, "iram:", TAB, "displays the contents of the internal memory area.", CR, LF, 0
-	db TAB, "sfr:", TAB, "displays the special function registers.", CR, LF, 0
+commands:
+	help_cmd:			db	"help:", 0
+	help_cmd_descr:		db	"displays list of available commands.", 0
+	ls_cmd:				db	"ls:", 0
+	ls_cmd_descr:		db	"displays available applications.", 0
+	peek_cmd:			db	"peek:", 0
+	peek_cmd_descr:		db	"examine a single memory cell.", CR, LF, TAB, TAB, TAB, "ex. peek 1b2c", 0
+	poke_cmd:			db	"poke:", 0
+	poke_cmd_descr:		db	"modify a single memory cell.", CR, LF, TAB, TAB, TAB, "ex. poke 1b2c 55", 0
+	dump_cmd:			db	"dump:", 0
+	dump_cmd_descr:		db	"displays a 256 memory block.", CR, LF, TAB, TAB, TAB, "ex. dump 12", 0
+	clear_cmd:			db	"clear:", 0
+	clear_cmd_descr:	db	"clear screen and homes the cursor.", 0
+	reset_cmd:			db	"reset:", 0
+	reset_cmd_descr:	db	"perform a soft-reset of the system.", 0
+	fill_cmd:			db	"fill:", 0
+	fill_cmd_descr:		db	"initializes a memory block with a specific byte.", CR, LF, TAB, TAB, TAB, "ex. fill 1ab7 ff 1a", 0
+	copy_cmd:			db	"copy:", 0
+	copy_cmd_descr:		db	"copies a block of data from one memory location to another.", CR, LF, TAB, TAB, TAB, "ex. move 2d4f 83bd a5", 0
+	goto_cmd:			db	"goto:", 0
+	goto_cmd_descr:		db	"jumps to a location in program memory to execute code.", CR, LF, TAB, TAB, TAB, "ex. goto 8ae3", 0
+	call_cmd:			db	"call:", 0
+	call_cmd_descr:		db	"calls a subroutine to be executed.", CR, LF, TAB, TAB, TAB, "ex. call f43d", 0
+	iram_cmd:			db	"iram:", 0
+	iram_cmd_descr:		db	"displays the contents of the internal memory area.", 0
+	sfr_cmd:			db	"sfr:", 0
+	sfr_cmd_descr:		db	"displays the special function registers.", 0
 
-ls_str:		
-	db TAB, "Application 1: description of application 1.", CR, LF 
-	db TAB, "Application 2: description of application 2.", CR, LF
-	db TAB, "Application 3: description of application 3.", CR, LF
-	db TAB, "Application 4: description of application 4.", CR, LF
-	db TAB, "Application 5: description of application 5.", CR, LF, 0
+help_table:
+	dw	help_cmd, help_cmd_descr
+	dw	ls_cmd, ls_cmd_descr
+	dw	peek_cmd, peek_cmd_descr
+	dw	poke_cmd, poke_cmd_descr
+	dw	dump_cmd, dump_cmd_descr
+	dw	clear_cmd, clear_cmd_descr
+	dw	reset_cmd, reset_cmd_descr
+	dw	fill_cmd, fill_cmd_descr
+	dw	copy_cmd, copy_cmd_descr
+	dw	goto_cmd, goto_cmd_descr
+	dw	call_cmd, call_cmd_descr
+	dw	iram_cmd, iram_cmd_descr
+	dw	sfr_cmd, sfr_cmd_descr
+	dw	0, 0	
 
 help_txt:	
 	db	"help", 0
@@ -80,3 +94,22 @@ mem_test_fail_msg:
 
 mem_test_success_msg:
 	db "Memory test succeeded.", 0
+
+lcd_app_name:
+	db "lcd", 0
+
+lcd_app_descr:
+	db "Allows testing of the lcd screen in P1, P3", 0
+
+pwm_app_name:
+	db "pwm", 0
+
+pwm_app_descr:
+	db "Allows testing of the pwm application.", 0
+
+app_table:
+	dw lcd_app_name, lcd_app_descr, lcd_app
+	dw pwm_app_name, pwm_app_descr, pwm_app
+	dw 0, 0, 0									; end of table
+
+

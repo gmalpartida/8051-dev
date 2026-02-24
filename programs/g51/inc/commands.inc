@@ -1,14 +1,99 @@
 cseg 
+
 do_help:
 	call println
-    mov dptr, #help_str
-    call uart_tx_string
+	mov dptr, #help_table
+do_help_loop:
+	clr a
+	movc a, @a + dptr		; high byte of command
+	mov r7, a				
+	mov a, #1
+	movc a, @a + dptr		; low byte of command
+	mov r6, a
+	orl a, r7
+	jz do_help_exit
+	mov a, #TAB
+	call uart_tx_char
+	push dph				; save table pointer
+	push dpl
+	mov dph, r7				; get address of command
+	mov dpl, r6
+	call uart_tx_string		; send command to uart
+	mov a, #TAB
+	call uart_tx_char
+	call uart_tx_char
+	pop dpl
+	pop dph
+	inc dptr				; advance to command description
+	inc dptr
+	clr a
+	movc a, @a + dptr
+	mov r7, a
+	mov a, #1
+	movc a, @a + dptr
+	mov r6, a
+	push dph
+	push dpl
+	mov dph, r7
+	mov dpl, r6
+	call uart_tx_string
+	call println
+	pop dpl					; restore table pointer
+	pop dph
+	inc dptr				; advance to next record in table
+	inc dptr
+	jmp do_help_loop
+do_help_exit:
 	ret
 
 do_ls:
 	call println
-    mov dptr, #ls_str
-    call uart_tx_string
+	mov dptr, #app_table
+do_ls_loop:
+	clr a
+	movc a, @a + dptr		; high byte of app_name
+	mov r7, a				
+	mov a, #1
+	movc a, @a + dptr		; low byte of app_name
+	mov r6, a
+	orl a, r7
+	jz do_ls_exit
+	mov a, #TAB
+	call uart_tx_char
+	push dph				; save table pointer
+	push dpl
+	mov dph, r7				; get address of app_name
+	mov dpl, r6
+	call uart_tx_string		; send app_name to uart
+	mov a, #TAB
+	call uart_tx_char
+	call uart_tx_char
+	pop dpl
+	pop dph
+	inc dptr				; advance to app description
+	inc dptr
+	clr a
+	movc a, @a + dptr
+	mov r7, a
+	mov a, #1
+	movc a, @a + dptr
+	mov r6, a
+	push dph
+	push dpl
+	mov dph, r7
+	mov dpl, r6
+	call uart_tx_string
+	call println
+	pop dpl					; restore table pointer
+	pop dph
+	inc dptr				; advance to next record in table
+	inc dptr
+	inc dptr
+	inc dptr
+	jmp do_ls_loop
+	
+do_ls_exit:
+
 	ret
 
 do_peek:
