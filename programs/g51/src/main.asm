@@ -1,4 +1,3 @@
-
 cseg at 0000h
     ljmp main
 
@@ -16,6 +15,7 @@ main:
 
 	mov dptr, #title_str
 	call uart_tx_string
+	call println
 
 cmd_prompt:
 
@@ -103,18 +103,18 @@ check_fill:
 	mov dptr, #fill_txt
 	mov r2, #4
 	call strncmp
-	cjne a, #0, check_move
+	cjne a, #0, check_copy
 	call do_fill
 	jmp cmd_prompt
 
-check_move:
+check_copy:
 	mov r0, #30h
 	call skip_blanks
-	mov dptr, #move_txt
+	mov dptr, #copy_txt
 	mov r2, #4
 	call strncmp
 	cjne a, #0, check_goto
-	call do_move
+	call do_copy
 	jmp cmd_prompt
 
 check_goto:
@@ -161,11 +161,11 @@ halt:
 
 get_hex_address:
 	mov a, @r0
-	call asc2bin
+	call asc2nibble
 	inc r0
 	mov b, a
 	mov a, @r0
-	call asc2bin
+	call asc2nibble
 	swap a
 	anl a, #0f0h
 	orl a, b
@@ -185,6 +185,22 @@ skip_blanks_exit:
 println:
 	mov dptr, #newline_str
 	call uart_tx_string
+	ret
+
+; prints tab(s)
+; --> r7: how many tabs to print
+printtab:
+	mov a, #TAB
+	call uart_tx_char
+	djnz r7, printtab
+	ret
+
+; prints space(s)
+; --> r7: how many spaces to print
+printspc:
+	mov a, #' '
+	call uart_tx_char
+	djnz r7, printspc
 	ret
 
 ; performs a memory test, copying a text from program memory into several locations in data memory.
@@ -220,6 +236,7 @@ lcd_app:
 
 pwm_app:
 	ret
+
 
 $INCLUDE (constants.inc)
 $INCLUDE (uart.inc)

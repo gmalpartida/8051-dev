@@ -30,7 +30,7 @@ commands:
 	fill_cmd:			db	"fill:", 0
 	fill_cmd_descr:		db	"initializes a memory block with a specific byte.", CR, LF, TAB, TAB, TAB, "ex. fill 1ab7 ff 1a", 0
 	copy_cmd:			db	"copy:", 0
-	copy_cmd_descr:		db	"copies a block of data from one memory location to another.", CR, LF, TAB, TAB, TAB, "ex. move 2d4f 83bd a5", 0
+	copy_cmd_descr:		db	"copies a block of data from one memory location to another.", CR, LF, TAB, TAB, TAB, "ex. copy 2d4f 83bd a5", 0
 	goto_cmd:			db	"goto:", 0
 	goto_cmd_descr:		db	"jumps to a location in program memory to execute code.", CR, LF, TAB, TAB, TAB, "ex. goto 8ae3", 0
 	call_cmd:			db	"call:", 0
@@ -72,8 +72,8 @@ reset_txt:
 	db "reset", 0
 fill_txt:
 	db "fill", 0
-move_txt:
-	db "move", 0
+copy_txt:
+	db "copy", 0
 goto_txt:
 	db "goto", 0
 iram_txt:
@@ -112,4 +112,23 @@ app_table:
 	dw pwm_app_name, pwm_app_descr, pwm_app
 	dw 0, 0, 0									; end of table
 
+p0_txt: 	db "P0", 0
+sp_txt: 	db "SP", 0
+pcon_txt:	db "PCON", 0
+tcon_txt:	db "TCON", 0
+tmod_txt:	db "TMOD", 0
+tl0_txt:	db "TL0", 0
+tl1_txt:	db "TL1", 0
+th0_txt:	db "TH0", 0
+th1_txt:	db "TH1", 0
+p1_txt:		db "P1", 0
+scon_txt:	db "SCON", 0
+sbuf_txt:	db "SBUF", 0
+p2_txt:		db "P2", 0
+ie_txt:		db "IE", 0
+p3_txt:		db "P3", 0
+ip_txt:		db "IP", 0
+psw_txt:	db "PSW", 0
+acc_txt:	db "ACC", 0
+b_txt:		db "B", 0
 

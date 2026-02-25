@@ -4,7 +4,7 @@ cseg
 ; Output: Accumulator (A) = Binary value (00h-0Fh)
 ; Uses:   R0 (temporary storage)
 
-asc2bin:
+asc2nibble:
     MOV R2, A         	; Store original character in R2
     CLR C             	; Clear carry for subtraction
     SUBB A, #30H      	; Subtract 30h to handle '0'-'9'
@@ -29,20 +29,33 @@ IS_ALPHA:
 ; converts a binary value to an ascii character
 ; --> a: binary value to be converted
 ; <-- a: ascii character 
-bin2asc:
+nibble2asc:
 	clr c
 	mov r2, a
 	subb a, #0ah
-	jc bin2asc_is_digit
+	jc nibble2asc_is_digit
 	mov a, r2
 	add a, #37h
 	orl a, #00100000b	; convert to lowercase
 	ret
-bin2asc_is_digit:
+nibble2asc_is_digit:
 	mov a, r2
 	add a, #30h
 	ret
 
-
+; converts a hex value to ascii
+; --> a: hex value
+; <-- b: ascii equivalent of upper nibble
+; <-- a: ascii equivalent of lower nibble
+hex2asc:
+	mov r7, a
+	swap a
+	anl a, #0fh
+	call nibble2asc
+	mov b, a
+	mov a, r7
+	anl a, #0fh
+	call nibble2asc
+	ret
 
 

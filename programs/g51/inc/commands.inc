@@ -112,11 +112,11 @@ do_peek:
 	mov b, a
 	swap a
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, b
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	call println
 	ret
@@ -171,11 +171,11 @@ print_row_data_loop:
 	mov b, a
 	swap a
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, b
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, #' '
 	call uart_tx_char
@@ -187,20 +187,20 @@ print_row_address:
 	mov a, r7
 	swap a
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, r7
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, r6
 	swap a
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, r6
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, #' '
 	call uart_tx_char
@@ -223,7 +223,7 @@ print_dump_header_loop:
 	call uart_tx_char
 	mov a, r4
 	anl a, #0fh
-	call bin2asc
+	call nibble2asc
 	call uart_tx_char
 	mov a, #' '
 	call uart_tx_char
@@ -254,8 +254,8 @@ do_fill:
 	call memset
 	ret
 
-; moves a memory block from one location to another
-do_move:
+; copies a memory block from one location to another
+do_copy:
 	call println
 	call skip_blanks
 	call get_hex_address
@@ -275,7 +275,6 @@ do_move:
 	call get_hex_address
 	mov r3, a
 	call memcpy
-
 	ret
 
 ; jumps to a memory address in program memory
@@ -297,62 +296,140 @@ do_goto:
 
 do_iram:
 	call println
-	mov r1, #80h
-	mov r0, #00h
-	mov r2, #10h
-do_iram_loop:
-	push 02h
-	mov a, @r0
-	mov b, a
-	swap a
-	anl a, #0fh
-	call bin2asc
+	mov a, p0
 	call uart_tx_char
-	mov a, b
-	anl a, #0fh
-	call bin2asc
-	call uart_tx_char
-	mov a, #' '
-	call uart_tx_char
-	call uart_tx_char
-	pop 02h
-	djnz r2, do_iram_continue
 	call println
-	mov r2, #10h
-do_iram_continue:
-	inc r0
-	djnz r1, do_iram_loop
+	mov a, pcon
+	call uart_tx_char
 	call println
+	mov a, tcon
+	call uart_tx_char
+	call println
+	mov a, tmod
 	ret
 
 
 do_sfr:
 	call println
-	mov r1, #80h
-	mov r0, #80h
-	mov r2, #10h
-do_sfr_loop:
-	push 02h
-	mov a, @r0
-	mov b, a
-	swap a
-	anl a, #0fh
-	call bin2asc
-	call uart_tx_char
-	mov a, b
-	anl a, #0fh
-	call bin2asc
-	call uart_tx_char
-	mov a, #' '
-	call uart_tx_char
-	call uart_tx_char
-	pop 02h
-	djnz r2, do_sfr_continue
+
+	mov dptr, #p0_txt
+	mov a, p0
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #p1_txt
+
+	mov a, p1
+	call print_sfr_reg
+	mov dptr, #p2_txt
+	mov r7, #1
+	call printtab
+
+	mov a, p2
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+
+	mov dptr, #p3_txt
+	mov a, p3
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+
 	call println
-	mov r2, #10h
-do_sfr_continue:
-	inc r0
-	djnz r1, do_sfr_loop
+
+	mov dptr, #pcon_txt
+	mov a, pcon
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	
+	mov dptr, #psw_txt
+	mov a, psw
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+
+	mov dptr, #ip_txt
+	mov a, ip
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+
+	mov dptr, #ie_txt
+	mov a, ie
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	call println
+
+	mov dptr, #tcon_txt
+	mov a, tcon
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #tmod_txt
+	mov a, tmod
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #tl0_txt
+	mov a, tl0
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #tl1_txt
+	mov a, tl1
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #th0_txt
+	mov a, th0
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #th1_txt
+	mov a, th1
+	call print_sfr_reg
+	call println
+
+	mov dptr, #scon_txt
+	mov a, scon
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #sbuf_txt
+	mov a, sbuf
+	call print_sfr_reg
+	call println
+
+	mov dptr, #acc_txt
+	call print_sfr_reg
+	mov r7, #1
+	call printtab
+	mov dptr, #b_txt
+	mov a, b
+	call print_sfr_reg
+	call println
+
 	call println
 	ret
 
+; prints the contents of an sfr register
+; --> dptr: address of register name
+; --> a: contents of register
+; <-- none
+print_sfr_reg:
+	push 0e0h					; save contents of a register
+	call uart_tx_string
+	mov a, #TAB
+	call uart_tx_char
+	pop 0e0h
+	call hex2asc
+	push 0e0h
+	mov a, b
+	call uart_tx_char
+	pop 0e0h
+	call uart_tx_char
+	
+	ret
