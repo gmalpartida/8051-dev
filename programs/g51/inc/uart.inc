@@ -48,6 +48,14 @@ chk_lf:
     cjne a, #0ah, save_char ; is it lf?
     sjmp str_term       ; yes, terminate
 save_char:
+	cjne a, #BS, confirm_save
+	dec r0
+	mov a, #SPC
+	call uart_tx_char
+	mov a, #BS
+	call uart_tx_char
+	jmp rx_loop
+confirm_save:
     mov @r0, a          ; store char in ram
     inc r0
     sjmp rx_loop

@@ -143,10 +143,20 @@ check_sfr:
 	mov dptr, #sfr_txt
 	mov r2, #3
 	call strncmp
-	cjne a, #0, unknown
+	cjne a, #0, check_write
 	call do_sfr
 	jmp cmd_prompt
 
+check_write:
+	mov r0, #30h
+	call skip_blanks
+	mov dptr, #write_txt
+	mov r2, #5
+	call strncmp
+	cjne a, #0, unknown
+	call do_write
+	jmp cmd_prompt
+	
     ; Unknown command
 unknown:
 	call println
@@ -191,6 +201,7 @@ println:
 ; --> r7: how many tabs to print
 printtab:
 	mov a, #TAB
+
 	call uart_tx_char
 	djnz r7, printtab
 	ret
@@ -244,6 +255,6 @@ $INCLUDE (g51-logo.inc)
 $include (string.inc)
 $include (ascii.inc)
 $include (commands.inc)
-
+$include (vt102.inc)
 end
 

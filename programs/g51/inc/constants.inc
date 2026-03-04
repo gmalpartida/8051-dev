@@ -1,9 +1,11 @@
 cseg
 
-CR		equ 	0dh
-LF		equ 	0ah
-TAB		equ 	09h
-NULL 	equ		00h 
+CR			equ 	0dh
+LF			equ 	0ah
+TAB			equ 	09h
+NULL 		equ		00h 
+BS 			equ		08h
+SPC			equ		20h
 
 title_str: 
 	db TAB, TAB, TAB, "Copyright 2025 Gino Malpartida", CR, LF, 0
@@ -80,9 +82,9 @@ iram_txt:
 	db "iram", 0
 sfr_txt:
 	db "sfr", 0
+write_txt:
+	db "write", 0
 
-clear_screen_seq:	
-	db	1BH, '[', 'H', 1BH, '[', '2', 'J', 0
 msg_err:    
 	db "Unknown Command", 0
 

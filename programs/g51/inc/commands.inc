@@ -48,6 +48,12 @@ do_help_exit:
 
 do_ls:
 	call println
+	mov dptr, #VT102_UP
+	call uart_tx_string
+	call uart_tx_string
+	mov dptr, #VT102_RIGHT
+	call uart_tx_string
+	call uart_tx_string
 	mov dptr, #app_table
 do_ls_loop:
 	clr a
@@ -183,6 +189,7 @@ print_row_data_loop:
 	inc dptr
 	djnz r4, print_row_data_loop
 	ret
+
 print_row_address:
 	mov a, r7
 	swap a
@@ -210,7 +217,7 @@ print_row_address:
 	ret
 
 clear_screen:
-	mov dptr, #clear_screen_seq
+	mov dptr, #VT102_CLEAR_SCREEN
 	call uart_tx_string
 	ret
 
@@ -296,18 +303,47 @@ do_goto:
 
 do_iram:
 	call println
-	mov a, p0
-	call uart_tx_char
+	mov r7, #01h
+	call printtab
+	call print_dump_header
 	call println
-	mov a, pcon
+	mov r7, #08h				; how many rows
+	mov r0, #00h				; starting address
+do_iram_row_loop:
+	mov r6, #10h				; how many columns
+	mov a, r0
+	mov b, a
+	swap a
+	anl a, #0fh
+	call nibble2asc
 	call uart_tx_char
-	call println
-	mov a, tcon
+	mov a, b
+	anl a, #0fh
+	call nibble2asc
 	call uart_tx_char
+	push 07h
+	mov r7, #01h
+	call printtab
+	pop 07h
+do_iram_col_loop:
+	mov a, @r0
+	mov b, a
+	swap a
+	anl a, #0fh
+	call nibble2asc
+	call uart_tx_char
+	mov a, b
+	anl a, #0fh
+	call nibble2asc
+	call uart_tx_char
+	mov a, #SPC
+	call uart_tx_char
+	call uart_tx_char
+	inc r0
+	djnz r6, do_iram_col_loop
 	call println
-	mov a, tmod
+	djnz r7, do_iram_row_loop
 	ret
-
 
 do_sfr:
 	call println
@@ -433,3 +469,26 @@ print_sfr_reg:
 	call uart_tx_char
 	
 	ret
+
+do_write:
+	call println
+	call skip_blanks
+	
+	mov r2, #2
+	mov dptr, #p0_txt
+	call strncmp
+	cjne a, #0, do_write_error
+	call skip_blanks
+	call get_hex_address
+	call hex2asc
+
+do_write_error:
+	setb c
+
+
+	ret
+
+
+
+
+
