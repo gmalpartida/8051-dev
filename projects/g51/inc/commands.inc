@@ -48,12 +48,6 @@ do_help_exit:
 
 do_ls:
 	call println
-	mov dptr, #VT102_UP
-	call uart_tx_string
-	call uart_tx_string
-	mov dptr, #VT102_RIGHT
-	call uart_tx_string
-	call uart_tx_string
 	mov dptr, #app_table
 do_ls_loop:
 	clr a
@@ -99,7 +93,6 @@ do_ls_loop:
 	jmp do_ls_loop
 	
 do_ls_exit:
-
 	ret
 
 do_peek:
@@ -473,19 +466,53 @@ print_sfr_reg:
 do_write:
 	call println
 	call skip_blanks
-	
-	mov r2, #2
-	mov dptr, #p0_txt
-	call strncmp
-	cjne a, #0, do_write_error
+	mov a, @r0
+	cjne a, #'p', do_write_error
+	inc r0
+	mov a, @r0
+	inc r0
+	cjne a, #'0', do_write_not_0
 	call skip_blanks
 	call get_hex_address
-	call hex2asc
-
+	mov p0, a
+	jmp do_write_exit
+do_write_not_0:
+	cjne a, #'1', do_write_not_1
+	call skip_blanks
+	call get_hex_address
+	mov p1, a
+	jmp do_write_exit
+do_write_not_1:
+	cjne a, #'2', do_write_not_2
+	call skip_blanks
+	call get_hex_address
+	mov p2, a
+	jmp do_write_exit
+do_write_not_2:
+	cjne a, #'3', do_write_not_3
+	call skip_blanks
+	call get_hex_address
+	mov p3, a
+	jmp do_write_exit
+do_write_not_3:
+	cjne a, #'c', do_write_not_pcon
+	inc r0
+	mov a, @r0
+	cjne a, #'o', do_write_error
+	inc r0
+	mov a, @r0
+	cjne a, #'n', do_write_error
+	inc r0
+	call skip_blanks
+	call get_hex_address
+	mov pcon, a
+	jmp do_write_exit
+do_write_not_pcon:
 do_write_error:
 	setb c
-
-
+	ret
+do_write_exit:
+	clr c
 	ret
 
 

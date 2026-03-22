@@ -41,6 +41,8 @@ commands:
 	iram_cmd_descr:		db	"displays the contents of the internal memory area.", 0
 	sfr_cmd:			db	"sfr:", 0
 	sfr_cmd_descr:		db	"displays the special function registers.", 0
+	write_cmd:			db	"write", 0
+	write_cmd_descr:	db	"modify an sfr register,", CR, LF, TAB, TAB, TAB, "ex. write p1 55", 0
 
 help_table:
 	dw	help_cmd, help_cmd_descr
@@ -56,6 +58,7 @@ help_table:
 	dw	call_cmd, call_cmd_descr
 	dw	iram_cmd, iram_cmd_descr
 	dw	sfr_cmd, sfr_cmd_descr
+	dw	write_cmd, write_cmd_descr
 	dw	0, 0	
 
 help_txt:	
@@ -109,9 +112,16 @@ pwm_app_name:
 pwm_app_descr:
 	db "Allows testing of the pwm application.", 0
 
+vt102_app_name:
+	db "vt102", 0
+
+vt102_app_descr:
+	db "Allows testing the VT102 escape sequences.", 0
+
 app_table:
 	dw lcd_app_name, lcd_app_descr, lcd_app
 	dw pwm_app_name, pwm_app_descr, pwm_app
+	dw vt102_app_name, vt102_app_descr, vt102_app
 	dw 0, 0, 0									; end of table
 
 p0_txt: 	db "P0", 0

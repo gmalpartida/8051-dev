@@ -160,14 +160,17 @@ check_write:
     ; Unknown command
 unknown:
 	call println
+	mov r0, #30h
+	mov a, @r0
+	jz unknown_cmd_prompt
     mov dptr, #msg_err
     call uart_tx_string
 	call println
+unknown_cmd_prompt:
     jmp cmd_prompt
 
 halt:
 	jmp halt
-
 
 get_hex_address:
 	mov a, @r0
@@ -242,12 +245,6 @@ mem_test_fail:
 	call uart_tx_string
 	ret
 
-lcd_app:
-	ret
-
-pwm_app:
-	ret
-
 
 $INCLUDE (constants.inc)
 $INCLUDE (uart.inc)
@@ -256,5 +253,7 @@ $include (string.inc)
 $include (ascii.inc)
 $include (commands.inc)
 $include (vt102.inc)
+$include (apps.inc)
+
 end
 
