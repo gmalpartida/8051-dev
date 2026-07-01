@@ -254,6 +254,6 @@ $include (ascii.inc)
 $include (commands.inc)
 $include (vt102.inc)
 $include (apps.inc)
-
+$include (cmd_dispatch.inc)
 end
 

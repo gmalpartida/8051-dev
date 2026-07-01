@@ -6,3 +6,4 @@ programs/gboot51/bin/
 *.bin
 *.sym
 *.rel
+tags

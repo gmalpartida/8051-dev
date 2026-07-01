@@ -14,9 +14,10 @@ SRC_DIR=src
 BIN_DIR=bin
 CFG_DIR=cfg
 
-MAIN_FILE=$(SRC_DIR)/main.asm
-HEX_FILE=$(BIN_DIR)/$(TARGET).hex
+MAIN_FILE=$(SRC_DIR)/$(TARGET).asm
+HEX_FILE=$(BIN_DIR)/$(TARGET).ihx
 DIS_FILE=$(BIN_DIR)/$(TARGET).dis
+LST_FILE=$(BIN_DIR)/$(TARGET).lst
 VPORT0=/tmp/ttyV0
 VPORT1=/tmp/ttyV1
 BIN_FILE=$(BIN_DIR)/$(TARGET).bin
@@ -35,7 +36,7 @@ OBJCOPY_FLAGS=-I ihex -O binary $(HEX_FILE)
 all: build
 
 build:
-	$(AS) $(AS_FLAGS) $(MAIN_FILE) $(HEX_FILE)
+	$(AS) $(AS_FLAGS) $(MAIN_FILE) $(HEX_FILE) $(LST_FILE)
 
 sim: build
 	$(UCSIM) $(UCSIM_FLAGS) $(HEX_FILE)
