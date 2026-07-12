@@ -1,5 +1,3 @@
-; uart library for 8051 (polling method)
-; includes: uart_init, uart_rx_char, uart_rx_string, uart_tx_char, uart_tx_string
 cseg
 
 uart_init:
@@ -40,8 +38,8 @@ uart_rx_string:
     ; receives string into ram at r0. terminates on cr (0x0d) or lf (0x0a).
     ; replaces terminator with 0x00 (asciiz).
 rx_loop:
-    acall uart_rx_char  ; get char
-    acall uart_tx_char  ; echo char back to minicom (optional but helpful)
+    lcall uart_rx_char  ; get char
+    lcall uart_tx_char  ; echo char back to minicom (optional but helpful)
     cjne a, #0dh, chk_lf ; is it cr?
     sjmp str_term       ; yes, terminate
 chk_lf:
@@ -51,10 +49,10 @@ save_char:
 	cjne a, #BS, confirm_save
 	dec r0
 	mov a, #SPC
-	call uart_tx_char
+	lcall uart_tx_char
 	mov a, #BS
-	call uart_tx_char
-	jmp rx_loop
+	lcall uart_tx_char
+	sjmp rx_loop
 confirm_save:
     mov @r0, a          ; store char in ram
     inc r0
@@ -64,7 +62,7 @@ str_term:
     ret
 
 xseg
-uart_rx_buffer_cur:	ds 01h
-uart_rx_buffer: ds 100h				; 256-byte buffer
+uart_rx_buffer_cur:		ds 01h
+uart_rx_buffer:			ds 100h				; 256-byte buffer
 
 

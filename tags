@@ -4,6 +4,8 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+$INCLUDE	projects/g51/src/g51.asm	/^$INCLUDE (constants.inc)$/;"	l
+$INCLUDE	projects/g51/src/g51.asm	/^$INCLUDE (g51-logo.inc)$/;"	l
 $INCLUDE	projects/test_polling/src/main.asm	/^$INCLUDE (8051.mcu)         ; ASEM-51 specific MCU definition$/;"	l
 $INCLUDE	projects/test_polling/src/main.asm	/^$INCLUDE (uart.inc)         ; Include UART support functions$/;"	l
 $MOD51	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/EXAMP01.ASM	/^$MOD51$/;"	l
@@ -19,6 +21,12 @@ $MOD51	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples
 $MOD51	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP05.ASM	/^$MOD51$/;"	l
 $MOD51	projects/monitorb/src/example01.asm	/^$MOD51$/;"	l
 $MOD51	projects/monitorb/src/monitorb.asm	/^$MOD51$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (apps.inc)$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (ascii.inc)$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (commands.inc)$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (string.inc)$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (uart.inc)$/;"	l
+$include	projects/g51/src/g51.asm	/^$include (vt102.inc)$/;"	l
 $nomod51	projects/test_polling/src/main.asm	/^$nomod51$/;"	l
 A2LT10	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/ASC2HEX.ASM	/^A2LT10:  MOV    A,B$/;"	l
 A2LT10	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/ASC2HEX.ASM	/^A2LT10:  MOV    A,B$/;"	l
@@ -26,12 +34,14 @@ A2LT10	projects/monitorb/src/asc2hex.asm	/^A2LT10:  MOV    A,B$/;"	l
 AEND	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP05.ASM	/^AEND     EQU  07FH              ; This is the end address. $/;"	d
 AS	projects/blink_led/Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
 AS	projects/blink_led2/Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
-AS	projects/g51/Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
+AS	projects/g51/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
+AS	projects/g51_sdcc/Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
 AS	projects/lcd_test/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
 AS	projects/mem_test/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
 AS	projects/monitorb/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
 AS	projects/rom_test/Makefile	/^AS=\/opt\/sdcc\/bin\/sdas8051$/;"	m
 AS	projects/test_polling/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
+AS	projects/uart_test/Makefile	/^AS=\/opt\/asem51\/asem$/;"	m
 ASC2HEX	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/ASC2HEX.ASM	/^ASC2HEX: CLR    CY$/;"	l
 ASC2HEX	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/ASC2HEX.ASM	/^ASC2HEX: CLR    CY$/;"	l
 ASC2HEX	projects/monitorb/src/asc2hex.asm	/^ASC2HEX: CLR    CY$/;"	l
@@ -50,8 +60,10 @@ ASFLAGS	projects/mem_test/Makefile	/^ASFLAGS= -iinc\/ -i..\/shared\/inc\/ -v$/;"
 ASFLAGS	projects/monitorb/Makefile	/^ASFLAGS= -i -v$/;"	m
 ASFLAGS	projects/rom_test/Makefile	/^ASFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 ASTART	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP05.ASM	/^ASTART   EQU  030H              ; This is the start address.$/;"	d
-AS_FLAGS	projects/g51/Makefile	/^AS_FLAGS=-I$(INC_DIR) -plosgff$/;"	m
+AS_FLAGS	projects/g51/Makefile	/^AS_FLAGS= -i$(INC_DIR)$/;"	m
+AS_FLAGS	projects/g51_sdcc/Makefile	/^AS_FLAGS=-los -Iinc $/;"	m
 AS_FLAGS	projects/test_polling/Makefile	/^AS_FLAGS= -i inc -i \/opt\/asem51\/mcu -v $/;"	m
+AS_FLAGS	projects/uart_test/Makefile	/^AS_FLAGS= $($/;"	m
 A_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^A_RUN:  ACALL  WT_STRING$/;"	l
 A_RUN	projects/monitorb/src/monitorb.asm	/^A_RUN:  ACALL  WT_STRING$/;"	l
 A_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^A_TEST: CJNE   A,#'A',X_TEST; If Not A, Then Repeat Menu$/;"	l
@@ -60,8 +72,12 @@ A_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char A_save;$/;"	v
 BANNER	projects/cmon51-1.2/cmon51.h	20;"	d
 BAUD	projects/cmon51-1.2/examples/tetris52.c	32;"	d	file:
 BIN_DIR	projects/g51/Makefile	/^BIN_DIR=bin$/;"	m
+BIN_DIR	projects/g51_sdcc/Makefile	/^BIN_DIR=bin$/;"	m
 BIN_DIR	projects/test_polling/Makefile	/^BIN_DIR=bin$/;"	m
+BIN_DIR	projects/uart_test/Makefile	/^BIN_DIR=bin$/;"	m
 BIN_FILE	projects/g51/Makefile	/^BIN_FILE=$(BIN_DIR)\/$(TARGET).bin$/;"	m
+BIN_FILE	projects/g51_sdcc/Makefile	/^BIN_FILE=$(BIN_DIR)\/$(TARGET).bin$/;"	m
+BIN_FILE	projects/uart_test/Makefile	/^BIN_FILE=$(BIN_DIR)\/$(TARGET).bin$/;"	m
 BITRATE	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^BITRATE  equ    0FDH   ; For 9600 Baud Rate$/;"	d
 BITRATE	projects/monitorb/src/monitorb.asm	/^BITRATE  equ    0FDH   ; For 9600 Baud Rate$/;"	d
 BKF_WTB	projects/cmon51-1.2/examples/tetris52.c	85;"	d	file:
@@ -86,6 +102,8 @@ CDTIM1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples
 CDTIM1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^CDTIM1   EQU  0FFH        ; Countdown Timer 1 Initial Value for delay. $/;"	d
 CDTIM2	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^CDTIM2   EQU  080H        ; Countdown Timer 2 Initial Value for delay.$/;"	d
 CFG_DIR	projects/g51/Makefile	/^CFG_DIR=cfg$/;"	m
+CFG_DIR	projects/g51_sdcc/Makefile	/^CFG_DIR=cfg$/;"	m
+CFG_DIR	projects/uart_test/Makefile	/^CFG_DIR=cfg$/;"	m
 CFLAGS	projects/nop_test/Makefile	/^CFLAGS= -los -I$(INC) $(TARGET).rel$/;"	m
 CHECK_LF	projects/test_polling/src/main.asm	/^CHECK_LF:$/;"	l
 CKSUM	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^CKSUM    equ    010H$/;"	d
@@ -142,8 +160,14 @@ DIR_RT	projects/cmon51-1.2/examples/tetris52.c	63;"	d	file:
 DIR_RT2	projects/cmon51-1.2/examples/tetris52.c	67;"	d	file:
 DIR_UP	projects/cmon51-1.2/examples/tetris52.c	60;"	d	file:
 DIR_UP2	projects/cmon51-1.2/examples/tetris52.c	64;"	d	file:
+DIS51	projects/g51/Makefile	/^DIS51=\/opt\/dis51\/dis51$/;"	m
+DIS51	projects/g51_sdcc/Makefile	/^DIS51=\/opt\/dis51\/dis51$/;"	m
 DIS51	projects/test_polling/Makefile	/^DIS51=\/opt\/dis51\/dis51$/;"	m
+DIS51	projects/uart_test/Makefile	/^DIS51=\/opt\/dis51\/dis51$/;"	m
+DIS_FILE	projects/g51/Makefile	/^DIS_FILE=$(BIN_DIR)\/$(TARGET).dis$/;"	m
+DIS_FILE	projects/g51_sdcc/Makefile	/^DIS_FILE=$(BIN_DIR)\/$(TARGET).dis$/;"	m
 DIS_FILE	projects/test_polling/Makefile	/^DIS_FILE=$(BIN_DIR)\/$(TARGET).dis$/;"	m
+DIS_FILE	projects/uart_test/Makefile	/^DIS_FILE=$(BIN_DIR)\/$(TARGET).dis$/;"	m
 DO_HELP	projects/test_polling/src/main.asm	/^DO_HELP:$/;"	l
 DO_LS	projects/test_polling/src/main.asm	/^DO_LS:$/;"	l
 DPH_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  DPH_save;$/;"	v
@@ -215,6 +239,7 @@ HEXDUMP	projects/blink_led/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/blink_led2/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/boot-51/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/g51/Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP	projects/g51_sdcc/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/lcd_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/mcs-basic-52/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/mem_test/Makefile	/^HEXDUMP=hexdump$/;"	m
@@ -222,11 +247,17 @@ HEXDUMP	projects/monitorb/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/nop_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/rom_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP	projects/test_port1/Makefile	/^HEXDUMP=hexdump$/;"	m
+HEXDUMP	projects/uart_test/Makefile	/^HEXDUMP=hexdump$/;"	m
 HEXDUMP_FLAGS	projects/boot-51/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
-HEXDUMP_FLAGS	projects/g51/Makefile	/^HEXDUMP_FLAGS=-C$/;"	m
+HEXDUMP_FLAGS	projects/g51/Makefile	/^HEXDUMP_FLAGS = -C$/;"	m
+HEXDUMP_FLAGS	projects/g51_sdcc/Makefile	/^HEXDUMP_FLAGS = -C$/;"	m
 HEXDUMP_FLAGS	projects/mcs-basic-52/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
 HEXDUMP_FLAGS	projects/test_port1/Makefile	/^HEXDUMP_FLAGS=-C $/;"	m
+HEXDUMP_FLAGS	projects/uart_test/Makefile	/^HEXDUMP_FLAGS = -C$/;"	m
+HEX_FILE	projects/g51/Makefile	/^HEX_FILE=$(BIN_DIR)\/$(TARGET).hex$/;"	m
+HEX_FILE	projects/g51_sdcc/Makefile	/^HEX_FILE=$(BIN_DIR)\/$(TARGET).hex$/;"	m
 HEX_FILE	projects/test_polling/Makefile	/^HEX_FILE=$(BIN_DIR)\/$(TARGET).hex$/;"	m
+HEX_FILE	projects/uart_test/Makefile	/^HEX_FILE=$(BIN_DIR)\/$(TARGET).hex$/;"	m
 H_1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_1:    ACALL  RD_CHAR$/;"	l
 H_1	projects/monitorb/src/monitorb.asm	/^H_1:    ACALL  RD_CHAR$/;"	l
 H_2	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^H_2:    ACALL  READHEX    ; Read Data$/;"	l
@@ -277,7 +308,8 @@ ID_trace	projects/cmon51-1.2/cmon51.h	/^	ID_trace,$/;"	e	enum:cmd_is
 ID_trace_reg	projects/cmon51-1.2/cmon51.h	/^	ID_trace_reg,$/;"	e	enum:cmd_is
 ID_unassemble	projects/cmon51-1.2/cmon51.h	/^	ID_unassemble,$/;"	e	enum:cmd_is
 IE_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char IE_save;$/;"	v
-IHX_FILE	projects/g51/Makefile	/^IHX_FILE=$(BIN_DIR)\/$(TARGET).ihx$/;"	m
+IHX_FILE	projects/g51_sdcc/Makefile	/^IHX_FILE=$(BIN_DIR)\/$(TARGET).ihx$/;"	m
+IHX_FILE	projects/uart_test/Makefile	/^IHX_FILE=$(BIN_DIR)\/$(TARGET).ihx$/;"	m
 INC	projects/blink_led/Makefile	/^INC=inc$/;"	m
 INC	projects/blink_led2/Makefile	/^INC=inc$/;"	m
 INC	projects/lcd_test/Makefile	/^INC=inc$/;"	m
@@ -286,6 +318,9 @@ INC	projects/monitorb/Makefile	/^INC=inc$/;"	m
 INC	projects/nop_test/Makefile	/^INC=inc$/;"	m
 INC	projects/rom_test/Makefile	/^INC=inc$/;"	m
 INC_DIR	projects/g51/Makefile	/^INC_DIR=inc$/;"	m
+INC_DIR	projects/g51_sdcc/Makefile	/^INC_DIR=inc$/;"	m
+INC_DIR	projects/uart_test/Makefile	/^INC_DIR=inc$/;"	m
+IS_ALPHA	projects/g51_sdcc/src/ascii.asm	/^IS_ALPHA:$/;"	l
 J_MENU	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^J_MENU: ACALL  WAIT         ; Wait then show menu$/;"	l
 J_MENU	projects/monitorb/src/monitorb.asm	/^J_MENU: ACALL  WAIT         ; Wait then show menu$/;"	l
 J_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^J_RUN:  LJMP   NEWPROG$/;"	l
@@ -345,11 +380,11 @@ LABEL4	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples
 LABEL5	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03B.ASM	/^LABEL5:  JZ   LABEL4      ; If A is zero then incement the binary counter R1.$/;"	l
 LD	projects/blink_led/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
 LD	projects/blink_led2/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
-LD	projects/g51/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
+LD	projects/g51_sdcc/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
 LD	projects/nop_test/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
 LD	projects/rom_test/Makefile	/^LD=\/opt\/sdcc\/bin\/sdld$/;"	m
-LD_FILE	projects/g51/Makefile	/^LD_FILE=$(CFG_DIR)\/$(TARGET).ld$/;"	m
-LD_FLAGS	projects/g51/Makefile	/^LD_FLAGS= -f $(LD_FILE) -mjwxi$/;"	m
+LD_FLAGS	projects/g51_sdcc/Makefile	/^LD_FLAGS=-imjw -b VECTORS=0x0000 -b CSEG=0x0030 -b _XSEG=0x0000 -M$/;"	m
+LD_FLAGS	projects/uart_test/Makefile	/^LD_FLAGS=-imjw -b VECTORS=0x0000 -b CSEG=0x0030 -b _XSEG=0x0000 -M$/;"	m
 LF	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^LF       EQU   10$/;"	d
 LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02A.ASM	/^LF       EQU   10          ; Line Feed.$/;"	d
 LF	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^LF       EQU   10               ; Line Feed.$/;"	d
@@ -363,13 +398,14 @@ LL	projects/cmon51-1.2/8052.mak	/^LL = \/opt\/sdcc\/bin\/sdcc$/;"	m
 LL	projects/cmon51-1.2/at89c51rd2.mak	/^LL = sdcc$/;"	m
 LL	projects/cmon51-1.2/p89v51rd2.mak	/^LL = sdcc$/;"	m
 Level	projects/cmon51-1.2/examples/tetris52.c	/^unsigned int Level=0;$/;"	v
+MAIN_FILE	projects/g51/Makefile	/^MAIN_FILE=$(SRC_DIR)\/$(TARGET).asm$/;"	m
 MAIN_FILE	projects/test_polling/Makefile	/^MAIN_FILE=$(SRC_DIR)\/main.asm$/;"	m
 MAIN_LOOP	projects/test_polling/src/main.asm	/^MAIN_LOOP:$/;"	l
 MAKEBIN	projects/blink_led/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
 MAKEBIN	projects/blink_led2/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
 MAKEBIN	projects/nop_test/Makefile	/^MAKEBIN=makebin$/;"	m
 MAKEBIN	projects/rom_test/Makefile	/^MAKEBIN=\/opt\/sdcc\/bin\/makebin$/;"	m
-MAP_FILE	projects/g51/Makefile	/^MAP_FILE=$(BIN_DIR)\/$(TARGET).map$/;"	m
+MATCH	projects/g51_sdcc/src/string.asm	/^MATCH:$/;"	l
 MEMSIZE	projects/cmon51-1.2/bigblock.c	6;"	d	file:
 MENU	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^MENU:   LCALL  WT_STRING$/;"	l
 MENU	projects/monitorb/src/monitorb.asm	/^MENU:   LCALL  WT_STRING$/;"	l
@@ -380,6 +416,7 @@ MINICOM	projects/blink_led/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/blink_led2/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/boot-51/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/g51/Makefile	/^MINICOM=minicom$/;"	m
+MINICOM	projects/g51_sdcc/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/lcd_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/mcs-basic-52/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/mem_test/Makefile	/^MINICOM=minicom$/;"	m
@@ -388,14 +425,21 @@ MINICOM	projects/nop_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/rom_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/test_polling/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM	projects/test_port1/Makefile	/^MINICOM=minicom$/;"	m
+MINICOM	projects/uart_test/Makefile	/^MINICOM=minicom$/;"	m
 MINICOM_FLAGS	projects/boot-51/Makefile	/^MINICOM_FLAGS= boot-51$/;"	m
-MINICOM_FLAGS	projects/g51/Makefile	/^MINICOM_FLAGS=-D \/dev\/ttyUSB0 -b 57600$/;"	m
+MINICOM_FLAGS	projects/g51/Makefile	/^MINICOM_FLAGS=-D $(VPORT1)$/;"	m
+MINICOM_FLAGS	projects/g51_sdcc/Makefile	/^MINICOM_FLAGS=-D $(VPORT1)$/;"	m
 MINICOM_FLAGS	projects/mcs-basic-52/Makefile	/^MINICOM_FLAGS= -D \/dev\/ttyUSB0 -b 57600$/;"	m
 MINICOM_FLAGS	projects/monitorb/Makefile	/^MINICOM_FLAGS=-D \/dev\/ttyUSB0 -b 9600$/;"	m
 MINICOM_FLAGS	projects/test_polling/Makefile	/^MINICOM_FLAGS=-D $(VPORT1)$/;"	m
 MINICOM_FLAGS	projects/test_port1/Makefile	/^MINICOM_FLAGS= 8051$/;"	m
-MINIPRO	projects/g51/Makefile	/^MINIPRO=minipro$/;"	m
-MINIPRO_FLAGS	projects/g51/Makefile	/^MINIPRO_FLAGS= -p $(ROM) -w $(BIN_FILE)$/;"	m
+MINICOM_FLAGS	projects/uart_test/Makefile	/^MINICOM_FLAGS=-D $(VPORT1)$/;"	m
+MINIPRO	projects/g51_sdcc/Makefile	/^MINIPRO=minipro$/;"	m
+MINIPRO	projects/uart_test/Makefile	/^MINIPRO=minipro$/;"	m
+MINIPRO_FLAGS	projects/g51_sdcc/Makefile	/^MINIPRO_FLAGS=-p $(ROM) -w $(HEX_FILE)$/;"	m
+MINIPRO_FLAGS	projects/uart_test/Makefile	/^MINIPRO_FLAGS=-p $(ROM) -w $(HEX_FILE)$/;"	m
+MKDIR	projects/g51/Makefile	/^MKDIR=mkdir$/;"	m
+MKDIR_FLAGS	projects/g51/Makefile	/^MKDIR_FLAGS=-p$/;"	m
 MONITOR_LOC	projects/cmon51-1.2/at89c51rd2.c	29;"	d	file:
 MONITOR_LOC	projects/cmon51-1.2/p89v51rd2.c	29;"	d	file:
 MSG_HELP	projects/test_polling/src/main.asm	/^MSG_HELP: DB 0DH, 0AH, 'Commands: ls, help', 0DH, 0AH, 0$/;"	d
@@ -410,6 +454,7 @@ NEQUAL	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples
 NEQUAL	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04B.ASM	/^NEQUAL:  JC    L03              ; IF R4 is Greater THEN VALUE.$/;"	l
 NEWPROG	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^NEWPROG  equ   0800H$/;"	d
 NEWPROG	projects/monitorb/src/monitorb.asm	/^NEWPROG  equ   8000H$/;"	d
+NO_MATCH	projects/g51_sdcc/src/string.asm	/^NO_MATCH:$/;"	l
 NUMBYTES	projects/cmon51-1.2/bigblock.c	41;"	d	file:
 NZERO1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^NZERO1:  DJNZ R1,NZERO1   ; Countdown the 1st timer until zero.$/;"	l
 N_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^N_RUN:  ACALL  WT_STRING$/;"	l
@@ -417,10 +462,14 @@ N_RUN	projects/monitorb/src/monitorb.asm	/^N_RUN:  ACALL  WT_STRING$/;"	l
 N_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu$/;"	l
 N_TEST	projects/monitorb/src/monitorb.asm	/^N_TEST: CJNE   A,#'N',A_TEST; If Not N, Then Repeat Menu$/;"	l
 OBJCOPY	projects/g51/Makefile	/^OBJCOPY=\/opt\/sdcc\/bin\/sdobjcopy$/;"	m
+OBJCOPY	projects/g51_sdcc/Makefile	/^OBJCOPY=\/opt\/sdcc\/bin\/sdobjcopy$/;"	m
+OBJCOPY	projects/uart_test/Makefile	/^OBJCOPY=\/opt\/sdcc\/bin\/sdobjcopy$/;"	m
 OBJCOPY_FLAGS	projects/boot-51/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
-OBJCOPY_FLAGS	projects/g51/Makefile	/^OBJCOPY_FLAGS= -I ihex -O binary $(IHX_FILE)$/;"	m
+OBJCOPY_FLAGS	projects/g51/Makefile	/^OBJCOPY_FLAGS=-I ihex -O binary $(HEX_FILE)$/;"	m
+OBJCOPY_FLAGS	projects/g51_sdcc/Makefile	/^OBJCOPY_FLAGS=-I ihex -O binary $(HEX_FILE)$/;"	m
 OBJCOPY_FLAGS	projects/mcs-basic-52/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
 OBJCOPY_FLAGS	projects/test_port1/Makefile	/^OBJCOPY_FLAGS= -C$/;"	m
+OBJCOPY_FLAGS	projects/uart_test/Makefile	/^OBJCOPY_FLAGS=-I ihex -O binary $(HEX_FILE)$/;"	m
 OBJS	projects/cmon51-1.2/8052.mak	/^OBJS= 8052.rel cmon51.rel d51.rel step.rel$/;"	m
 OBJS	projects/cmon51-1.2/at89c51rd2.mak	/^OBJS= at89c51rd2.rel cmon51.rel d51.rel step.rel$/;"	m
 OBJS	projects/cmon51-1.2/p89v51rd2.mak	/^OBJS= p89v51rd2.rel cmon51.rel d51.rel step.rel$/;"	m
@@ -436,8 +485,10 @@ PACK	projects/cmon51-1.2/at89c51rd2.mak	/^PACK = packihx$/;"	m
 PACK	projects/cmon51-1.2/p89v51rd2.mak	/^PACK = packihx$/;"	m
 PACKIHX	projects/blink_led/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	projects/blink_led2/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
+PACKIHX	projects/g51_sdcc/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	projects/nop_test/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PACKIHX	projects/rom_test/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
+PACKIHX	projects/uart_test/Makefile	/^PACKIHX=\/opt\/sdcc\/bin\/packihx$/;"	m
 PC_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  PC_save;$/;"	v
 PROCESS_COMMAND	projects/test_polling/src/main.asm	/^PROCESS_COMMAND:$/;"	l
 PSW_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char PSW_save;$/;"	v
@@ -448,19 +499,26 @@ RD_CHAR	projects/monitorb/src/rd_char.asm	/^RD_CHAR:  JNB    RI,RD_CHAR$/;"	l
 READHEX	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/READHEX.ASM	/^READHEX:$/;"	l
 READHEX	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/READHEX.ASM	/^READHEX:$/;"	l
 READHEX	projects/monitorb/src/readhex.asm	/^READHEX:$/;"	l
-RELS	projects/g51/Makefile	/^RELS = $(patsubst $(SRC_DIR)\/%.asm, $(BIN_DIR)\/%.rel, $(SRCS))$/;"	m
-REL_FILE	projects/g51/Makefile	/^REL_FILE=$(BIN_DIR)\/$(TARGET).rel$/;"	m
+RELS	projects/g51_sdcc/Makefile	/^RELS = $(patsubst $(SRC_DIR)\/%.asm, $(BIN_DIR)\/%.rel, $(SRCS))$/;"	m
+RELS	projects/uart_test/Makefile	/^RELS = $(patsubst $(SRC_DIR)\/%.asm, $(BIN_DIR)\/%.rel, $(SRCS))$/;"	m
 RESET	projects/blink_led/src/blink_led.asm	/^RESET:$/;"	l
 RESET	projects/blink_led2/src/blink_led2.asm	/^RESET:$/;"	l
 RESET	projects/nop_test/src/nop_test.asm	/^RESET:$/;"	l
+RM	projects/g51/Makefile	/^RM=rm$/;"	m
+RM	projects/g51_sdcc/Makefile	/^RM=rm$/;"	m
+RM	projects/uart_test/Makefile	/^RM=rm$/;"	m
+RM_FLAGS	projects/g51/Makefile	/^RM_FLAGS=-rf$/;"	m
+RM_FLAGS	projects/g51_sdcc/Makefile	/^RM_FLAGS=-rf$/;"	m
+RM_FLAGS	projects/uart_test/Makefile	/^RM_FLAGS=-rf$/;"	m
 ROM	projects/blink_led/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
 ROM	projects/blink_led2/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
-ROM	projects/g51/Makefile	/^ROM= "AT28C64B"$/;"	m
+ROM	projects/g51_sdcc/Makefile	/^ROM="upd27c256a@dip28"$/;"	m
 ROM	projects/lcd_test/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
 ROM	projects/mem_test/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
 ROM	projects/monitorb/Makefile	/^ROM='UPD27C256A@DIP28'$/;"	m
 ROM	projects/nop_test/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
 ROM	projects/rom_test/Makefile	/^ROM='AT28C16@DIP24'$/;"	m
+ROM	projects/uart_test/Makefile	/^ROM="upd27c256a@dip28"$/;"	m
 R_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^R_RUN:  ACALL  WT_STRING$/;"	l
 R_RUN	projects/monitorb/src/monitorb.asm	/^R_RUN:  ACALL  WT_STRING$/;"	l
 R_TEST	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^R_TEST: CJNE   A,#'R',W_TEST; If Not R, Then Repeat Menu$/;"	l
@@ -470,13 +528,23 @@ ReadHexFile	projects/cmon51-1.2/bigblock.c	/^int ReadHexFile(char * filename)$/;
 SCN_HT	projects/cmon51-1.2/examples/tetris52.c	57;"	d	file:
 SCN_WID	projects/cmon51-1.2/examples/tetris52.c	56;"	d	file:
 SCREEN	projects/g51/Makefile	/^SCREEN=screen$/;"	m
+SCREEN	projects/g51_sdcc/Makefile	/^SCREEN=screen$/;"	m
 SCREEN	projects/test_polling/Makefile	/^SCREEN=screen$/;"	m
+SCREEN	projects/uart_test/Makefile	/^SCREEN=screen$/;"	m
+SCREEN_FLAGS	projects/g51/Makefile	/^SCREEN_FLAGS= -S sim_uart$/;"	m
+SCREEN_FLAGS	projects/g51_sdcc/Makefile	/^SCREEN_FLAGS= -S sim_uart$/;"	m
 SCREEN_FLAGS	projects/test_polling/Makefile	/^SCREEN_FLAGS= -S sim_uart$/;"	m
+SCREEN_FLAGS	projects/uart_test/Makefile	/^SCREEN_FLAGS= -S sim_uart$/;"	m
 SETP1	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP03D.ASM	/^SETP1:   MOV  P1,R3       ; Set P1 to R3.$/;"	l
 SFR_CODE_LOC	projects/cmon51-1.2/8052.c	28;"	d	file:
 SOCAT	projects/g51/Makefile	/^SOCAT=socat$/;"	m
+SOCAT	projects/g51_sdcc/Makefile	/^SOCAT=socat$/;"	m
 SOCAT	projects/test_polling/Makefile	/^SOCAT=socat$/;"	m
+SOCAT	projects/uart_test/Makefile	/^SOCAT=socat$/;"	m
+SOCAT_FLAGS	projects/g51/Makefile	/^SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0$/;"	m
+SOCAT_FLAGS	projects/g51_sdcc/Makefile	/^SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0$/;"	m
 SOCAT_FLAGS	projects/test_polling/Makefile	/^SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0$/;"	m
+SOCAT_FLAGS	projects/uart_test/Makefile	/^SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0$/;"	m
 SP_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char SP_save;$/;"	v
 SRC	projects/asem51_demo/Makefile	/^SRC=src\/demo.a51$/;"	m
 SRC	projects/blink_led/Makefile	/^SRC=src\/blink_led.asm$/;"	m
@@ -489,12 +557,16 @@ SRC	projects/monitorb/Makefile	/^SRC=src\/monitorb.asm$/;"	m
 SRC	projects/nop_test/Makefile	/^SRC=src\/nop_test.asm$/;"	m
 SRC	projects/rom_test/Makefile	/^SRC=src\/rom_test.asm$/;"	m
 SRC	projects/test_port1/Makefile	/^SRC=src\/test_port1.asm$/;"	m
-SRCS	projects/g51/sources.mk	/^SRCS =\\$/;"	m
+SRCS	projects/g51_sdcc/sources.mk	/^SRCS=\\$/;"	m
+SRCS	projects/uart_test/sources.mk	/^SRCS=\\$/;"	m
 SRC_DIR	projects/g51/Makefile	/^SRC_DIR=src$/;"	m
+SRC_DIR	projects/g51_sdcc/Makefile	/^SRC_DIR=src$/;"	m
 SRC_DIR	projects/test_polling/Makefile	/^SRC_DIR=src$/;"	m
-SRC_FILE	projects/g51/Makefile	/^SRC_FILE=$(SRC_DIR)\/$(TARGET).asm$/;"	m
+SRC_DIR	projects/uart_test/Makefile	/^SRC_DIR=src$/;"	m
 START	projects/test_polling/src/main.asm	/^START:$/;"	l
 STORE_CHAR	projects/test_polling/src/main.asm	/^STORE_CHAR:$/;"	l
+STRCMP	projects/g51_sdcc/src/string.asm	/^STRCMP:$/;"	l
+STRCMP_LOOP	projects/g51_sdcc/src/string.asm	/^STRCMP_LOOP:$/;"	l
 STR_COMPARE_XRAM	projects/test_polling/src/main.asm	/^STR_COMPARE_XRAM:$/;"	l
 S_RUN	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/MONITORB.ASM	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
 S_RUN	projects/monitorb/src/monitorb.asm	/^S_RUN:  ACALL  WT_STRING  ; Display SFR Routine$/;"	l
@@ -508,6 +580,7 @@ TARGET	projects/blink_led/Makefile	/^TARGET=bin\/blink_led$/;"	m
 TARGET	projects/blink_led2/Makefile	/^TARGET=bin\/blink_led2$/;"	m
 TARGET	projects/boot-51/Makefile	/^TARGET=bin\/boot51$/;"	m
 TARGET	projects/g51/Makefile	/^TARGET=$(notdir $(CURDIR))$/;"	m
+TARGET	projects/g51_sdcc/Makefile	/^TARGET=$(notdir $(CURDIR))$/;"	m
 TARGET	projects/lcd_test/Makefile	/^TARGET=bin\/lcd_test$/;"	m
 TARGET	projects/mcs-basic-52/Makefile	/^TARGET=bin\/g51$/;"	m
 TARGET	projects/mem_test/Makefile	/^TARGET=bin\/mem_test$/;"	m
@@ -516,6 +589,7 @@ TARGET	projects/nop_test/Makefile	/^TARGET=bin\/nop_test$/;"	m
 TARGET	projects/rom_test/Makefile	/^TARGET=bin\/rom_test$/;"	m
 TARGET	projects/test_polling/Makefile	/^TARGET=$(notdir $(CURDIR))$/;"	m
 TARGET	projects/test_port1/Makefile	/^TARGET=bin\/test_port1$/;"	m
+TARGET	projects/uart_test/Makefile	/^TARGET=$(notdir $(CURDIR))$/;"	m
 TERM_STRING	projects/test_polling/src/main.asm	/^TERM_STRING:$/;"	l
 TEXT_POS	projects/cmon51-1.2/examples/tetris52.c	435;"	d	file:
 TIMER1_K1_1200	projects/cmon51-1.2/baud.h	7;"	d
@@ -551,22 +625,28 @@ TRUE	projects/cmon51-1.2/bigblock.c	7;"	d	file:
 UCSIM	projects/blink_led/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/blink_led2/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/g51/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM	projects/g51_sdcc/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/lcd_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/mem_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/monitorb/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/rom_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM	projects/test_polling/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
+UCSIM	projects/uart_test/Makefile	/^UCSIM=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	projects/boot-51/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	projects/mcs-basic-52/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51	projects/test_port1/Makefile	/^UCSIM_51=\/opt\/sdcc\/bin\/ucsim_51$/;"	m
 UCSIM_51_FLAGS	projects/boot-51/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000, $(TARGET).hex$/;"	m
 UCSIM_51_FLAGS	projects/mcs-basic-52/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
 UCSIM_51_FLAGS	projects/test_port1/Makefile	/^UCSIM_51_FLAGS= -S uart=0,port=10000,raw $(TARGET).hex$/;"	m
-UCSIM_FLAGS	projects/g51/Makefile	/^UCSIM_FLAGS= -t 51 -C $(UC_SIM_FILE) -X 12M$/;"	m
+UCSIM_FILE	projects/g51/Makefile	/^UCSIM_FILE=$(CFG_DIR)\/$(TARGET).ucsim$/;"	m
+UCSIM_FILE	projects/g51_sdcc/Makefile	/^UCSIM_FILE=$(CFG_DIR)\/$(TARGET).ucsim$/;"	m
+UCSIM_FILE	projects/uart_test/Makefile	/^UCSIM_FILE=$(CFG_DIR)\/$(TARGET).ucsim$/;"	m
+UCSIM_FLAGS	projects/g51/Makefile	/^UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 $/;"	m
+UCSIM_FLAGS	projects/g51_sdcc/Makefile	/^UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 $/;"	m
 UCSIM_FLAGS	projects/lcd_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 UCSIM_FLAGS	projects/mem_test/Makefile	/^UCSIM_FLAGS = $(TARGET).hex$/;"	m
 UCSIM_FLAGS	projects/test_polling/Makefile	/^UCSIM_FLAGS= -s $(VPORT0) -X 11.0592 $/;"	m
-UC_SIM_FILE	projects/g51/Makefile	/^UC_SIM_FILE=$(CFG_DIR)\/$(TARGET).ucsim$/;"	m
+UCSIM_FLAGS	projects/uart_test/Makefile	/^UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 $/;"	m
 VALUE	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02.ASM	/^VALUE    EQU  0AAH        ; The value to set all the external data ram.$/;"	d
 VALUE	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP02A.ASM	/^VALUE    EQU   0AAH        ; The value to set all the external data ram.$/;"	d
 VALUE	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_Support/EXAMP04.ASM	/^VALUE    EQU   080H             ; Compare to this Value.$/;"	d
@@ -576,7 +656,8 @@ VALUE	Rudley Development Board/0004-8031-Assembly_Language_Programming_Examples_
 VI	projects/blink_led/Makefile	/^VI=vi$/;"	m
 VI	projects/blink_led2/Makefile	/^VI=vi$/;"	m
 VI	projects/boot-51/Makefile	/^VI=vi$/;"	m
-VI	projects/g51/Makefile	/^VI=vi$/;"	m
+VI	projects/g51/Makefile	/^VI=vim$/;"	m
+VI	projects/g51_sdcc/Makefile	/^VI=vim$/;"	m
 VI	projects/lcd_test/Makefile	/^VI=vi$/;"	m
 VI	projects/mcs-basic-52/Makefile	/^VI=vi$/;"	m
 VI	projects/mem_test/Makefile	/^VI=vi$/;"	m
@@ -584,8 +665,20 @@ VI	projects/monitorb/Makefile	/^VI=vi$/;"	m
 VI	projects/rom_test/Makefile	/^VI=vi$/;"	m
 VI	projects/test_polling/Makefile	/^VI=vim$/;"	m
 VI	projects/test_port1/Makefile	/^VI=vi$/;"	m
+VI	projects/uart_test/Makefile	/^VI=vim$/;"	m
+VPORT0	projects/g51/Makefile	/^VPORT0=\/tmp\/ttyV0$/;"	m
+VPORT0	projects/g51_sdcc/Makefile	/^VPORT0=\/tmp\/ttyV0$/;"	m
 VPORT0	projects/test_polling/Makefile	/^VPORT0=\/tmp\/ttyV0$/;"	m
+VPORT0	projects/uart_test/Makefile	/^VPORT0=\/tmp\/ttyV0$/;"	m
+VPORT1	projects/g51/Makefile	/^VPORT1=\/tmp\/ttyV1$/;"	m
+VPORT1	projects/g51_sdcc/Makefile	/^VPORT1=\/tmp\/ttyV1$/;"	m
 VPORT1	projects/test_polling/Makefile	/^VPORT1=\/tmp\/ttyV1$/;"	m
+VPORT1	projects/uart_test/Makefile	/^VPORT1=\/tmp\/ttyV1$/;"	m
+VT102_CLEAR_SCREEN	projects/g51_sdcc/src/vt102.asm	/^VT102_CLEAR_SCREEN:	.db		VT102_ESC, '[', 'H', VT102_ESC, '[', '2', 'J', 0$/;"	l
+VT102_DOWN	projects/g51_sdcc/src/vt102.asm	/^VT102_DOWN:			.db		VT102_ESC, '[', 'B', 0$/;"	l
+VT102_LEFT	projects/g51_sdcc/src/vt102.asm	/^VT102_LEFT:			.db		VT102_ESC, '[', 'D', 0$/;"	l
+VT102_RIGHT	projects/g51_sdcc/src/vt102.asm	/^VT102_RIGHT:		.db		VT102_ESC, '[', 'C', 0$/;"	l
+VT102_UP	projects/g51_sdcc/src/vt102.asm	/^VT102_UP:			.db		VT102_ESC, '[', 'A', 0$/;"	l
 WAIT	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/WAIT.ASM	/^WAIT:   MOV    A,#10$/;"	l
 WAIT	projects/monitorb/src/wait.asm	/^WAIT:   MOV    A,#10$/;"	l
 WAIT1	Rudley Development Board/0003-8031_Assembly_Language_Programming_Intro_Support/programs/WAIT.ASM	/^WAIT1:  MOV    B,#0FFH$/;"	l
@@ -1275,7 +1368,9 @@ _sdcc_external_startup	projects/cmon51-1.2/p89v51rd2.c	/^unsigned char _sdcc_ext
 _set_timer1_priority	projects/cmon51-1.2/8052.asm	/^_set_timer1_priority:$/;"	l
 _sfrn	projects/cmon51-1.2/8052.asm	/^_sfrn:$/;"	l
 _write_sfr	projects/cmon51-1.2/8052.asm	/^_write_sfr:$/;"	l
+a_short_text	projects/g51_sdcc/src/constants.asm	/^a_short_text:$/;"	l
 a_short_text	projects/mem_test/inc/mem_diag.asm	/^a_short_text:$/;"	l
+acc_txt	projects/g51_sdcc/src/constants.asm	/^acc_txt:	.asciz	"ACC"$/;"	l
 add0	projects/rom_test/src/rom_test.asm	/^add0:$/;"	l
 add1	projects/rom_test/src/rom_test.asm	/^add1:$/;"	l
 add10	projects/rom_test/src/rom_test.asm	/^add10:	$/;"	l
@@ -1295,6 +1390,7 @@ addbyte	projects/cmon51-1.2/d51.c	/^void addbyte (unsigned char x)$/;"	f
 addchar	projects/cmon51-1.2/d51.c	32;"	d	file:
 addstr	projects/cmon51-1.2/d51.c	/^void addstr(unsigned char * x)$/;"	f
 addword	projects/cmon51-1.2/d51.c	/^void addword (unsigned int x)$/;"	f
+app_table	projects/g51_sdcc/src/constants.asm	/^app_table:$/;"	l
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.asm	/^	ar0 = 0x00$/;"	d
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.asm	/^	ar0 = 0x00$/;"	d
 ar0	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.asm	/^	ar0 = 0x00$/;"	d
@@ -1343,7 +1439,9 @@ ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/AD
 ar7	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADDFLT01/ADDFLT01.asm	/^	ar7 = 0x07$/;"	d
 ar7	Rudley Development Board/0007-Using_SDCC_with_In_Line_Assembly_on_the_8031_Support/ADD8B07/ADD8B07.asm	/^	ar7 = 0x07$/;"	d
 ar7	projects/cmon51-1.2/8052.asm	/^	ar7 = 0x07$/;"	d
+asc2nibble	projects/g51_sdcc/src/ascii.asm	/^asc2nibble:$/;"	l
 at89c51rd2_CODELOC	projects/cmon51-1.2/at89c51rd2.mak	/^at89c51rd2_CODELOC = 0xd800$/;"	m
+b_txt	projects/g51_sdcc/src/constants.asm	/^b_txt:		.asciz	"B"$/;"	l
 bitn	projects/cmon51-1.2/8052.c	/^__code unsigned char bitn[] =$/;"	v
 bitn	projects/cmon51-1.2/at89c51rd2.c	/^code unsigned char bitn[] =$/;"	v
 bitn	projects/cmon51-1.2/p89v51rd2.c	/^code unsigned char bitn[] =$/;"	v
@@ -1356,22 +1454,68 @@ breakpoint	projects/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq
 buff	projects/cmon51-1.2/cmon51.c	/^char buff[BUFFSIZE];$/;"	v
 buff_hasdot	projects/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
 buff_haseq	projects/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
+call_cmd	projects/g51_sdcc/src/constants.asm	/^	call_cmd:			.asciz	"call:"$/;"	l
+call_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	call_cmd_descr:		.asciz	"calls a subroutine to be executed."$/;"	l
+call_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	call_cmd_ex:		.asciz	"ex. call f43d"$/;"	l
 chartohex	projects/cmon51-1.2/cmon51.c	/^unsigned char chartohex(char c)$/;"	f
+check_clear	projects/g51/src/g51.asm	/^check_clear:$/;"	l
+check_clear	projects/g51_sdcc/src/g51_sdcc.asm	/^check_clear:$/;"	l
+check_copy	projects/g51/src/g51.asm	/^check_copy:$/;"	l
+check_copy	projects/g51_sdcc/src/g51_sdcc.asm	/^check_copy:$/;"	l
+check_dump	projects/g51/src/g51.asm	/^check_dump:$/;"	l
+check_dump	projects/g51_sdcc/src/g51_sdcc.asm	/^check_dump:$/;"	l
+check_fill	projects/g51/src/g51.asm	/^check_fill:$/;"	l
+check_fill	projects/g51_sdcc/src/g51_sdcc.asm	/^check_fill:$/;"	l
+check_goto	projects/g51/src/g51.asm	/^check_goto:$/;"	l
+check_goto	projects/g51_sdcc/src/g51_sdcc.asm	/^check_goto:$/;"	l
+check_help	projects/g51/src/g51.asm	/^check_help:$/;"	l
+check_help	projects/g51_sdcc/src/g51_sdcc.asm	/^check_help:$/;"	l
+check_iram	projects/g51/src/g51.asm	/^check_iram:$/;"	l
+check_iram	projects/g51_sdcc/src/g51_sdcc.asm	/^check_iram:$/;"	l
+check_ls	projects/g51/src/g51.asm	/^check_ls:$/;"	l
+check_ls	projects/g51_sdcc/src/g51_sdcc.asm	/^check_ls:$/;"	l
+check_peek	projects/g51/src/g51.asm	/^check_peek:$/;"	l
+check_peek	projects/g51_sdcc/src/g51_sdcc.asm	/^check_peek:$/;"	l
+check_poke	projects/g51/src/g51.asm	/^check_poke:$/;"	l
+check_poke	projects/g51_sdcc/src/g51_sdcc.asm	/^check_poke:$/;"	l
+check_reset	projects/g51/src/g51.asm	/^check_reset:$/;"	l
+check_reset	projects/g51_sdcc/src/g51_sdcc.asm	/^check_reset:$/;"	l
+check_sfr	projects/g51/src/g51.asm	/^check_sfr:$/;"	l
+check_sfr	projects/g51_sdcc/src/g51_sdcc.asm	/^check_sfr:$/;"	l
+check_write	projects/g51/src/g51.asm	/^check_write:$/;"	l
+check_write	projects/g51_sdcc/src/g51_sdcc.asm	/^check_write:$/;"	l
 cleanbuff	projects/cmon51-1.2/cmon51.c	/^void cleanbuff (void)$/;"	f
+clear_cmd	projects/g51_sdcc/src/constants.asm	/^	clear_cmd:			.asciz	"clear:"$/;"	l
+clear_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	clear_cmd_descr:	.asciz	"clear screen and homes the cursor."$/;"	l
+clear_screen	projects/g51_sdcc/src/commands.asm	/^clear_screen:$/;"	l
+clear_txt	projects/g51_sdcc/src/constants.asm	/^clear_txt:	$/;"	l
 clearline	projects/cmon51-1.2/cmon51.c	/^void clearline (void)$/;"	f
 cmd_is	projects/cmon51-1.2/cmon51.h	/^typedef enum cmd_is {$/;"	g
+cmd_line_buffer	projects/uart_test/src/uart_test.asm	/^cmd_line_buffer:		ds		0100h$/;"	d
+cmd_prompt	projects/g51/src/g51.asm	/^cmd_prompt:$/;"	l
+cmd_prompt	projects/g51_sdcc/src/g51_sdcc.asm	/^cmd_prompt:$/;"	l
 cmd_prompt	projects/test_polling/src/main.asm	/^cmd_prompt: DB 'g51> ', 0$/;"	d
+cmd_prompt	projects/uart_test/src/uart_test.asm	/^cmd_prompt:$/;"	l
+cmd_prompt_str	projects/uart_test/src/uart_test.asm	/^cmd_prompt_str:			db		"uart test> ", 0$/;"	d
 cmdlst	projects/cmon51-1.2/cmon51.h	/^code unsigned char cmdlst[]={$/;"	v
 collapse	projects/cmon51-1.2/examples/tetris52.c	/^void collapse(void)$/;"	f
+command_prompt_str	projects/g51_sdcc/src/constants.asm	/^command_prompt_str: $/;"	l
+commands	projects/g51_sdcc/src/constants.asm	/^commands:$/;"	l
+copy_cmd	projects/g51_sdcc/src/constants.asm	/^	copy_cmd:			.asciz	"copy:"$/;"	l
+copy_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	copy_cmd_descr:		.asciz	"copies a block of data from one memory location to another."$/;"	l
+copy_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	copy_cmd_ex:		.asciz	"ex. copy 2d4f 83bd a5"$/;"	l
 copy_loop	projects/mem_test/src/mem_test.asm	/^copy_loop:$/;"	l
 copy_rom_to_ram	projects/mem_test/inc/mem_diag.asm	/^copy_rom_to_ram:$/;"	l
 copy_rom_to_ram_loop	projects/mem_test/inc/mem_diag.asm	/^copy_rom_to_ram_loop:$/;"	l
 copy_text_from_rom_to_ram	projects/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram:$/;"	l
 copy_text_from_rom_to_ram_exit	projects/mem_test/inc/mem_diag.asm	/^copy_text_from_rom_to_ram_exit:$/;"	l
+copy_txt	projects/g51_sdcc/src/constants.asm	/^copy_txt:$/;"	l
 cpuid	projects/cmon51-1.2/8052.c	/^void cpuid (void)$/;"	f
 cpuid	projects/cmon51-1.2/at89c51rd2.c	/^void cpuid (void)$/;"	f
 cpuid	projects/cmon51-1.2/p89v51rd2.c	/^void cpuid (void)$/;"	f
+cseg	projects/g51/src/g51.asm	/^cseg$/;"	l
 cseg	projects/mem_test/src/mem_test.asm	/^cseg at 00h$/;"	l
+cseg	projects/uart_test/src/uart_test.asm	/^cseg at 0000h$/;"	l
 cur	projects/cmon51-1.2/d51.c	/^unsigned char cur;$/;"	v
 cursor	projects/cmon51-1.2/cmon51.c	/^unsigned char cursor;$/;"	v
 db	projects/mem_test/inc/mem_diag.asm	/^db	"A fountain, a gable, a gateway.", CR, LF$/;"	l
@@ -1394,7 +1538,37 @@ delay_1_sec	projects/mem_test/inc/delay.asm	/^delay_1_sec:$/;"	l
 discnt	projects/cmon51-1.2/d51.c	/^unsigned int discnt;$/;"	v
 disp_regs	projects/cmon51-1.2/cmon51.c	/^void disp_regs(void)$/;"	f
 dispmem	projects/cmon51-1.2/cmon51.c	/^void dispmem(unsigned char * begin,  unsigned int len, char loc)$/;"	f
+do_backspace	projects/g51_sdcc/src/uart.asm	/^do_backspace:$/;"	l
 do_cmd	projects/cmon51-1.2/cmon51.c	/^void do_cmd (void)$/;"	f
+do_copy	projects/g51_sdcc/src/commands.asm	/^do_copy:$/;"	l
+do_dump	projects/g51_sdcc/src/commands.asm	/^do_dump:$/;"	l
+do_dump_loop	projects/g51_sdcc/src/commands.asm	/^do_dump_loop:$/;"	l
+do_fill	projects/g51_sdcc/src/commands.asm	/^do_fill:$/;"	l
+do_goto	projects/g51_sdcc/src/commands.asm	/^do_goto:$/;"	l
+do_help	projects/g51_sdcc/src/commands.asm	/^do_help:$/;"	l
+do_help_exit	projects/g51_sdcc/src/commands.asm	/^do_help_exit:$/;"	l
+do_help_loop	projects/g51_sdcc/src/commands.asm	/^do_help_loop:$/;"	l
+do_iram	projects/g51_sdcc/src/commands.asm	/^do_iram:$/;"	l
+do_iram_col_loop	projects/g51_sdcc/src/commands.asm	/^do_iram_col_loop:$/;"	l
+do_iram_row_loop	projects/g51_sdcc/src/commands.asm	/^do_iram_row_loop:$/;"	l
+do_ls	projects/g51_sdcc/src/commands.asm	/^do_ls:$/;"	l
+do_ls_exit	projects/g51_sdcc/src/commands.asm	/^do_ls_exit:$/;"	l
+do_ls_loop	projects/g51_sdcc/src/commands.asm	/^do_ls_loop:$/;"	l
+do_peek	projects/g51_sdcc/src/commands.asm	/^do_peek:$/;"	l
+do_poke	projects/g51_sdcc/src/commands.asm	/^do_poke:$/;"	l
+do_sfr	projects/g51_sdcc/src/commands.asm	/^do_sfr:$/;"	l
+do_write	projects/g51_sdcc/src/commands.asm	/^do_write:$/;"	l
+do_write_error	projects/g51_sdcc/src/commands.asm	/^do_write_error:$/;"	l
+do_write_exit	projects/g51_sdcc/src/commands.asm	/^do_write_exit:$/;"	l
+do_write_not_0	projects/g51_sdcc/src/commands.asm	/^do_write_not_0:$/;"	l
+do_write_not_1	projects/g51_sdcc/src/commands.asm	/^do_write_not_1:$/;"	l
+do_write_not_2	projects/g51_sdcc/src/commands.asm	/^do_write_not_2:$/;"	l
+do_write_not_3	projects/g51_sdcc/src/commands.asm	/^do_write_not_3:$/;"	l
+do_write_not_pcon	projects/g51_sdcc/src/commands.asm	/^do_write_not_pcon:$/;"	l
+dump_cmd	projects/g51_sdcc/src/constants.asm	/^	dump_cmd:			.asciz	"dump:"$/;"	l
+dump_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	dump_cmd_descr:		.asciz	"displays a 256 memory block."$/;"	l
+dump_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	dump_cmd_ex:		.asciz	"ex. dump 12"$/;"	l
+dump_txt	projects/g51_sdcc/src/constants.asm	/^dump_txt:	$/;"	l
 end_of_program	projects/mem_test/src/mem_test.asm	/^end_of_program:$/;"	l
 erasesector	projects/cmon51-1.2/at89c51rd2.c	/^void erasesector (unsigned int sector)$/;"	f
 erasesector	projects/cmon51-1.2/p89v51rd2.c	/^void erasesector (unsigned int address)$/;"	f
@@ -1402,10 +1576,17 @@ exit	projects/cmon51-1.2/examples/tetris52.c	/^void exit (void)$/;"	f
 exit_isr	projects/blink_led/src/blink_led.asm	/^exit_isr:$/;"	l
 exit_isr	projects/blink_led2/src/blink_led2.asm	/^exit_isr:$/;"	l
 filesize	projects/cmon51-1.2/bigblock.c	/^long filesize(FILE *stream)$/;"	f
+fill_cmd	projects/g51_sdcc/src/constants.asm	/^	fill_cmd:			.asciz	"fill:"$/;"	l
+fill_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	fill_cmd_descr:		.asciz	"initializes a memory block with a specific byte."$/;"	l
+fill_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	fill_cmd_ex:		.asciz	"ex. fill 1ab7 ff 1a"$/;"	l
+fill_txt	projects/g51_sdcc/src/constants.asm	/^fill_txt:$/;"	l
 fill_xram	projects/mem_test/inc/mem_diag.asm	/^fill_xram:$/;"	l
 fill_xram_loop	projects/mem_test/inc/mem_diag.asm	/^fill_xram_loop:$/;"	l
 fillmem	projects/cmon51-1.2/cmon51.c	/^void fillmem(unsigned char * begin,  unsigned int len, unsigned char val)$/;"	f
+g51_logo	projects/g51_sdcc/src/logo.asm	/^g51_logo: $/;"	l
 getKey	projects/cmon51-1.2/examples/tetris52.c	/^char getKey(void)$/;"	f
+get_hex_address	projects/g51/src/g51.asm	/^get_hex_address:$/;"	l
+get_hex_address	projects/g51_sdcc/src/conio.asm	/^get_hex_address:$/;"	l
 getbyte	projects/cmon51-1.2/cmon51.c	/^unsigned char getbyte (void)$/;"	f
 getbytene	projects/cmon51-1.2/cmon51.c	/^unsigned char getbytene (void)$/;"	f
 getchar	projects/cmon51-1.2/8052.c	/^char getchar(void)$/;"	f
@@ -1415,18 +1596,45 @@ getsn	projects/cmon51-1.2/cmon51.c	/^void getsn (void)$/;"	f
 getwordn	projects/cmon51-1.2/cmon51.c	/^unsigned int getwordn(void)$/;"	f
 gostep	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gostep;$/;"	v
 gotbreak	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char gotbreak;$/;"	v
+goto_cmd	projects/g51_sdcc/src/constants.asm	/^	goto_cmd:			.asciz	"goto:"$/;"	l
+goto_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	goto_cmd_descr:		.asciz	"jumps to a location in program memory to execute code."$/;"	l
+goto_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	goto_cmd_ex:		.asciz	"ex. goto 8ae3"$/;"	l
+goto_txt	projects/g51_sdcc/src/constants.asm	/^goto_txt:$/;"	l
+halt	projects/g51/src/g51.asm	/^halt:$/;"	l
+halt	projects/g51_sdcc/src/g51_sdcc.asm	/^halt:$/;"	l
 halt	projects/mem_test/src/mem_test.asm	/^halt:$/;"	l
 halt	projects/test_port1/src/test_port1.asm	/^halt:$/;"	l
+halt	projects/uart_test/src/uart_test.asm	/^halt:$/;"	l
+help_cmd	projects/g51_sdcc/src/constants.asm	/^	help_cmd:			.asciz	"help:"$/;"	l
+help_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	help_cmd_descr:		.asciz	"displays list of available commands."$/;"	l
+help_table	projects/g51_sdcc/src/constants.asm	/^help_table:$/;"	l
+help_txt	projects/g51_sdcc/src/constants.asm	/^help_txt:	$/;"	l
+hex2asc	projects/g51_sdcc/src/ascii.asm	/^hex2asc:$/;"	l
 hex2dec	projects/cmon51-1.2/bigblock.c	/^int hex2dec (char hex_digit)$/;"	f
 hexval	projects/cmon51-1.2/cmon51.c	/^const char hexval[]="0123456789ABCDEF";$/;"	v
 highof	projects/cmon51-1.2/cmon51.h	24;"	d
 hitanykey	projects/cmon51-1.2/cmon51.c	/^unsigned char hitanykey (void)$/;"	f
+ie0_isr	projects/g51_sdcc/src/g51_sdcc.asm	/^ie0_isr:$/;"	l
+ie0_isr	projects/uart_test/src/uart_test.asm	/^ie0_isr:$/;"	l
+ie1_isr	projects/g51_sdcc/src/g51_sdcc.asm	/^ie1_isr:$/;"	l
+ie1_isr	projects/uart_test/src/uart_test.asm	/^ie1_isr:$/;"	l
+ie_txt	projects/g51_sdcc/src/constants.asm	/^ie_txt:		.asciz	"IE"$/;"	l
+ip_txt	projects/g51_sdcc/src/constants.asm	/^ip_txt:		.asciz	"IP"$/;"	l
+iram_cmd	projects/g51_sdcc/src/constants.asm	/^	iram_cmd:			.asciz	"iram:"$/;"	l
+iram_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	iram_cmd_descr:		.asciz	"displays the contents of the internal memory area."$/;"	l
 iram_save	projects/cmon51-1.2/cmon51.c	/^volatile xdata char iram_save[128];$/;"	v
+iram_txt	projects/g51_sdcc/src/constants.asm	/^iram_txt:$/;"	l
 keepediting	projects/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
+lcd_app	projects/g51_sdcc/src/apps.asm	/^lcd_app:$/;"	l
+lcd_app_descr	projects/g51_sdcc/src/constants.asm	/^lcd_app_descr:$/;"	l
+lcd_app_name	projects/g51_sdcc/src/constants.asm	/^lcd_app_name:$/;"	l
 loadintelhex	projects/cmon51-1.2/8052.c	/^void loadintelhex (void)$/;"	f
 loadintelhex	projects/cmon51-1.2/at89c51rd2.c	/^void loadintelhex (void)$/;"	f
 loadintelhex	projects/cmon51-1.2/p89v51rd2.c	/^void loadintelhex (void)$/;"	f
 lowof	projects/cmon51-1.2/cmon51.h	23;"	d
+ls_cmd	projects/g51_sdcc/src/constants.asm	/^	ls_cmd:				.asciz	"ls:"$/;"	l
+ls_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	ls_cmd_descr:		.asciz	"displays available applications."$/;"	l
+ls_txt	projects/g51_sdcc/src/constants.asm	/^ls_txt:		$/;"	l
 main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ void main(void)$/;"	f
 main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ void main(void)$/;"	f
 main	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD8B02/ADD8B02.C	/^ void main(void)$/;"	f
@@ -1441,39 +1649,105 @@ main	projects/cmon51-1.2/bigblock.c	/^int main(int argc, char **argv)$/;"	f
 main	projects/cmon51-1.2/examples/tetris52.c	/^void main(void)$/;"	f
 main	projects/cmon51-1.2/p89v51rd2.c	/^void main (void)$/;"	f
 main	projects/g51/src/g51.asm	/^main:$/;"	l
+main	projects/g51_sdcc/src/g51_sdcc.asm	/^main:$/;"	l
 main	projects/mem_test/src/mem_test.asm	/^main:$/;"	l
 main	projects/nop_test/src/nop_test.asm	/^main:$/;"	l
 main	projects/rom_test/src/rom_test.asm	/^main:$/;"	l
 main	projects/test_port1/src/test_port1.asm	/^main:$/;"	l
+main	projects/uart_test/src/uart_test.asm	/^main:$/;"	l
 maskbit	projects/cmon51-1.2/cmon51.c	/^const unsigned char maskbit[]={0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};$/;"	v
 mem_test	projects/mem_test/src/mem_test.asm	/^mem_test:$/;"	l
+mem_test_fail_msg	projects/g51_sdcc/src/constants.asm	/^mem_test_fail_msg:$/;"	l
+mem_test_success_msg	projects/g51_sdcc/src/constants.asm	/^mem_test_success_msg:$/;"	l
+memchr	projects/g51_sdcc/src/string.asm	/^memchr:$/;"	l
+memchr_c	projects/g51_sdcc/src/string.asm	/^memchr_c:$/;"	l
+memchr_loop	projects/g51_sdcc/src/string.asm	/^memchr_loop:$/;"	l
+memchr_loop_c	projects/g51_sdcc/src/string.asm	/^memchr_loop_c:$/;"	l
+memchr_match	projects/g51_sdcc/src/string.asm	/^memchr_match:$/;"	l
+memchr_match_c	projects/g51_sdcc/src/string.asm	/^memchr_match_c:$/;"	l
+memchr_no_match	projects/g51_sdcc/src/string.asm	/^memchr_no_match:$/;"	l
+memchr_no_match_c	projects/g51_sdcc/src/string.asm	/^memchr_no_match_c:$/;"	l
+memcmp_c	projects/g51_sdcc/src/string.asm	/^memcmp_c:$/;"	l
+memcmp_loop_c	projects/g51_sdcc/src/string.asm	/^memcmp_loop_c:$/;"	l
+memcmp_match_c	projects/g51_sdcc/src/string.asm	/^memcmp_match_c:$/;"	l
+memcmp_no_match_c	projects/g51_sdcc/src/string.asm	/^memcmp_no_match_c:$/;"	l
+memcmp_no_match_less_c	projects/g51_sdcc/src/string.asm	/^memcmp_no_match_less_c:$/;"	l
+memcpy	projects/g51_sdcc/src/string.asm	/^memcpy:$/;"	l
+memcpy_c	projects/g51_sdcc/src/string.asm	/^memcpy_c:$/;"	l
+memcpy_c_loop	projects/g51_sdcc/src/string.asm	/^memcpy_c_loop:$/;"	l
+memset	projects/g51_sdcc/src/string.asm	/^memset:$/;"	l
+memset_loop	projects/g51_sdcc/src/string.asm	/^memset_loop:$/;"	l
 mnem	projects/cmon51-1.2/d51.h	/^code char * code mnem[]={$/;"	v
 mnemtbl	projects/cmon51-1.2/d51.h	/^code char mnemtbl[] =$/;"	v
 modifymem	projects/cmon51-1.2/cmon51.c	/^void modifymem(unsigned char * ptr,  char loc)$/;"	f
+msg_err	projects/g51_sdcc/src/constants.asm	/^msg_err:    $/;"	l
+newline_str	projects/g51_sdcc/src/constants.asm	/^newline_str:	$/;"	l
+nibble2asc	projects/g51_sdcc/src/ascii.asm	/^nibble2asc:$/;"	l
+nibble2asc_is_digit	projects/g51_sdcc/src/ascii.asm	/^nibble2asc_is_digit:$/;"	l
 nlist	projects/cmon51-1.2/cmon51.c	/^unsigned char nlist (unsigned char * slist)$/;"	f
 outbyte	projects/cmon51-1.2/cmon51.c	/^void outbyte(unsigned char x)$/;"	f
 outword	projects/cmon51-1.2/cmon51.c	/^void outword(unsigned int x)$/;"	f
 outwordnl	projects/cmon51-1.2/cmon51.c	/^void outwordnl (unsigned int val)$/;"	f
+p0_txt	projects/g51_sdcc/src/constants.asm	/^p0_txt: 	.asciz	"P0"$/;"	l
+p1_txt	projects/g51_sdcc/src/constants.asm	/^p1_txt:		.asciz	"P1"$/;"	l
+p2_txt	projects/g51_sdcc/src/constants.asm	/^p2_txt:		.asciz	"P2"$/;"	l
+p3_txt	projects/g51_sdcc/src/constants.asm	/^p3_txt:		.asciz	"P3"$/;"	l
+pcon_txt	projects/g51_sdcc/src/constants.asm	/^pcon_txt:	.asciz	"PCON"$/;"	l
+peek_cmd	projects/g51_sdcc/src/constants.asm	/^	peek_cmd:			.asciz	"peek:"$/;"	l
+peek_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	peek_cmd_descr:		.asciz	"examine a single memory cell."$/;"	l
+peek_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	peek_cmd_ex:		.asciz	"ex. peek 1b2c"$/;"	l
+peek_txt	projects/g51_sdcc/src/constants.asm	/^peek_txt:	$/;"	l
+poke_cmd	projects/g51_sdcc/src/constants.asm	/^	poke_cmd:			.asciz	"poke:"$/;"	l
+poke_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	poke_cmd_descr:		.asciz	"modify a single memory cell."$/;"	l
+poke_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	poke_cmd_ex:		.asciz	"ex. poke 1b2c 55"$/;"	l
+poke_txt	projects/g51_sdcc/src/constants.asm	/^poke_txt:	$/;"	l
+print_dump_header	projects/g51_sdcc/src/commands.asm	/^print_dump_header:$/;"	l
+print_dump_header_loop	projects/g51_sdcc/src/commands.asm	/^print_dump_header_loop:$/;"	l
+print_logo	projects/g51_sdcc/src/logo.asm	/^print_logo:$/;"	l
+print_row_address	projects/g51_sdcc/src/commands.asm	/^print_row_address:$/;"	l
+print_row_data	projects/g51_sdcc/src/commands.asm	/^print_row_data:$/;"	l
+print_row_data_loop	projects/g51_sdcc/src/commands.asm	/^print_row_data_loop:$/;"	l
+print_sfr_reg	projects/g51_sdcc/src/commands.asm	/^print_sfr_reg:$/;"	l
 printf	projects/cmon51-1.2/examples/tetris52.c	38;"	d	file:
+println	projects/g51/src/g51.asm	/^println:$/;"	l
+println	projects/g51_sdcc/src/conio.asm	/^println:$/;"	l
+println	projects/uart_test/src/uart_test.asm	/^println:$/;"	l
+printspc	projects/g51/src/g51.asm	/^printspc:$/;"	l
+printspc	projects/g51_sdcc/src/conio.asm	/^printspc:$/;"	l
+printtab	projects/g51/src/g51.asm	/^printtab:$/;"	l
+printtab	projects/g51_sdcc/src/conio.asm	/^printtab:$/;"	l
+psw_txt	projects/g51_sdcc/src/constants.asm	/^psw_txt:	.asciz	"PSW"$/;"	l
 putc	projects/cmon51-1.2/proto.h	20;"	d
 putchar	projects/cmon51-1.2/examples/tetris52.c	/^void putchar(char c)$/;"	f
 putnl	projects/cmon51-1.2/8052.c	/^void putnl (void)$/;"	f
 putnl	projects/cmon51-1.2/at89c51rd2.c	/^void putnl (void)$/;"	f
 putnl	projects/cmon51-1.2/p89v51rd2.c	/^void putnl (void)$/;"	f
 putsp	projects/cmon51-1.2/cmon51.c	/^void putsp(unsigned char * x)$/;"	f
+pwm_app	projects/g51_sdcc/src/apps.asm	/^pwm_app:$/;"	l
+pwm_app_descr	projects/g51_sdcc/src/constants.asm	/^pwm_app_descr:$/;"	l
+pwm_app_name	projects/g51_sdcc/src/constants.asm	/^pwm_app_name:$/;"	l
 read_sfr	projects/cmon51-1.2/8052.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
 read_sfr	projects/cmon51-1.2/at89c51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
 read_sfr	projects/cmon51-1.2/p89v51rd2.c	/^unsigned char read_sfr (unsigned char x)$/;"	f
 refresh	projects/cmon51-1.2/examples/tetris52.c	/^void refresh(void)$/;"	f
-reset	projects/g51/src/g51.asm	/^reset:$/;"	l
+reset_cmd	projects/g51_sdcc/src/constants.asm	/^	reset_cmd:			.asciz	"reset:"$/;"	l
+reset_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	reset_cmd_descr:	.asciz	"perform a soft-reset of the system."$/;"	l
 reset_isr	projects/test_port1/src/test_port1.asm	/^reset_isr:$/;"	l
 reset_ivt	projects/mem_test/src/mem_test.asm	/^reset_ivt:$/;"	l
+reset_txt	projects/g51_sdcc/src/constants.asm	/^reset_txt:$/;"	l
 restorePC	projects/cmon51-1.2/8052.c	/^void restorePC (void)$/;"	f
 restorePC	projects/cmon51-1.2/at89c51rd2.c	/^void restorePC (void)$/;"	f
 restorePC	projects/cmon51-1.2/p89v51rd2.c	/^void restorePC (void)$/;"	f
+return_uart_rx_buffer	projects/g51_sdcc/src/uart.asm	/^return_uart_rx_buffer:$/;"	l
+return_uart_rx_buffer	projects/uart_test/src/uart_test.asm	/^return_uart_rx_buffer:$/;"	l
 rscr	projects/cmon51-1.2/examples/tetris52.c	/^unsigned char rscr (unsigned char x, unsigned char y)$/;"	f
+rst_isr	projects/uart_test/src/uart_test.asm	/^rst_isr:$/;"	l
+rx_backspace	projects/g51_sdcc/src/uart.asm	/^rx_backspace:$/;"	l
+rx_terminate	projects/g51_sdcc/src/uart.asm	/^rx_terminate:$/;"	l
 saved_int	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char saved_int[3];$/;"	v
 saved_jmp	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char saved_jmp[3];$/;"	v
+sbuf_txt	projects/g51_sdcc/src/constants.asm	/^sbuf_txt:	.asciz	"SBUF"$/;"	l
+scon_txt	projects/g51_sdcc/src/constants.asm	/^scon_txt:	.asciz	"SCON"$/;"	l
 screenInit	projects/cmon51-1.2/examples/tetris52.c	/^void screenInit(void)$/;"	f
 sdcc_atomic_compare_exchange_idata_impl	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_compare_exchange_idata_impl:$/;"	l
 sdcc_atomic_compare_exchange_pdata_impl	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_compare_exchange_pdata_impl:$/;"	l
@@ -1482,6 +1756,11 @@ sdcc_atomic_exchange_exit	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_exchange_ex
 sdcc_atomic_exchange_idata_impl	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_exchange_idata_impl:$/;"	l
 sdcc_atomic_exchange_pdata_impl	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_exchange_pdata_impl:$/;"	l
 sdcc_atomic_exchange_xdata_impl	projects/cmon51-1.2/8052.asm	/^sdcc_atomic_exchange_xdata_impl:$/;"	l
+ser_isr	projects/g51_sdcc/src/g51_sdcc.asm	/^ser_isr:$/;"	l
+ser_isr	projects/uart_test/src/uart_test.asm	/^ser_isr:$/;"	l
+sfr_cmd	projects/g51_sdcc/src/constants.asm	/^	sfr_cmd:			.asciz	"sfr:"$/;"	l
+sfr_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	sfr_cmd_descr:		.asciz	"displays the special function registers."$/;"	l
+sfr_txt	projects/g51_sdcc/src/constants.asm	/^sfr_txt:$/;"	l
 sfrn	projects/cmon51-1.2/8052.c	/^__code unsigned char sfrn[] =$/;"	v
 sfrn	projects/cmon51-1.2/at89c51rd2.c	/^code unsigned char sfrn[] =$/;"	v
 sfrn	projects/cmon51-1.2/p89v51rd2.c	/^code unsigned char sfrn[] =$/;"	v
@@ -1490,11 +1769,75 @@ shapeDraw	projects/cmon51-1.2/examples/tetris52.c	/^void shapeDraw(char XPos, ch
 shapeErase	projects/cmon51-1.2/examples/tetris52.c	/^void shapeErase(char XPos, char YPos, char WhichShape)$/;"	f
 shapeHit	projects/cmon51-1.2/examples/tetris52.c	/^char shapeHit(char XPos, char YPos, char WhichShape)$/;"	f
 showreg	projects/cmon51-1.2/cmon51.c	/^void showreg(char * name, unsigned char val)$/;"	f
+skip_blanks	projects/g51/src/g51.asm	/^skip_blanks:$/;"	l
+skip_blanks	projects/g51_sdcc/src/conio.asm	/^skip_blanks:$/;"	l
+skip_blanks_exit	projects/g51/src/g51.asm	/^skip_blanks_exit:$/;"	l
+skip_blanks_exit	projects/g51_sdcc/src/conio.asm	/^skip_blanks_exit:$/;"	l
+skip_dph_dec	projects/g51_sdcc/src/uart.asm	/^skip_dph_dec:$/;"	l
+sp_txt	projects/g51_sdcc/src/constants.asm	/^sp_txt: 	.asciz	"SP"$/;"	l
 step_start	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned int  step_start;$/;"	v
+stop	projects/g51_sdcc/src/g51_sdcc.asm	/^stop:$/;"	l
+strncmp	projects/g51_sdcc/src/string.asm	/^strncmp:$/;"	l
+strncmp_loop	projects/g51_sdcc/src/string.asm	/^strncmp_loop:$/;"	l
+strncmp_match	projects/g51_sdcc/src/string.asm	/^strncmp_match:$/;"	l
+strncmp_no_match	projects/g51_sdcc/src/string.asm	/^strncmp_no_match:$/;"	l
+tcon_txt	projects/g51_sdcc/src/constants.asm	/^tcon_txt:	.asciz	"TCON"$/;"	l
+tf0_isr	projects/g51_sdcc/src/g51_sdcc.asm	/^tf0_isr:$/;"	l
+tf0_isr	projects/uart_test/src/uart_test.asm	/^tf0_isr:$/;"	l
+tf1_isr	projects/g51_sdcc/src/g51_sdcc.asm	/^tf1_isr:$/;"	l
+tf1_isr	projects/uart_test/src/uart_test.asm	/^tf1_isr:$/;"	l
+th0_txt	projects/g51_sdcc/src/constants.asm	/^th0_txt:	.asciz	"TH0"$/;"	l
+th1_txt	projects/g51_sdcc/src/constants.asm	/^th1_txt:	.asciz	"TH1"$/;"	l
 timer_isr	projects/blink_led/src/blink_led.asm	/^timer_isr:$/;"	l
 timer_isr	projects/blink_led2/src/blink_led2.asm	/^timer_isr:$/;"	l
+title_str	projects/g51_sdcc/src/constants.asm	/^title_str: $/;"	l
+tl0_txt	projects/g51_sdcc/src/constants.asm	/^tl0_txt:	.asciz	"TL0"$/;"	l
+tl1_txt	projects/g51_sdcc/src/constants.asm	/^tl1_txt:	.asciz	"TL1"$/;"	l
+tmod_txt	projects/g51_sdcc/src/constants.asm	/^tmod_txt:	.asciz	"TMOD"$/;"	l
 trace_type	projects/cmon51-1.2/cmon51.c	/^volatile xdata unsigned char trace_type;$/;"	v
+uart_init	projects/g51_sdcc/src/uart.asm	/^uart_init:$/;"	l
+uart_init	projects/uart_test/src/uart_test.asm	/^uart_init:$/;"	l
+uart_rx_asciz	projects/g51_sdcc/src/uart.asm	/^uart_rx_asciz:$/;"	l
+uart_rx_asciz	projects/uart_test/src/uart_test.asm	/^uart_rx_asciz:$/;"	l
+uart_rx_asciz2	projects/g51_sdcc/src/uart.asm	/^uart_rx_asciz2:$/;"	l
+uart_rx_asciz_exit	projects/g51_sdcc/src/uart.asm	/^uart_rx_asciz_exit:$/;"	l
+uart_rx_asciz_exit	projects/uart_test/src/uart_test.asm	/^uart_rx_asciz_exit:$/;"	l
+uart_rx_asciz_process_char	projects/g51_sdcc/src/uart.asm	/^uart_rx_asciz_process_char:$/;"	l
+uart_rx_asciz_process_char	projects/uart_test/src/uart_test.asm	/^uart_rx_asciz_process_char:$/;"	l
+uart_rx_buffer	projects/uart_test/src/uart_test.asm	/^uart_rx_buffer:			ds		0100h$/;"	d
+uart_rx_buffer_head	projects/uart_test/src/uart_test.asm	/^uart_rx_buffer_head:	ds		01h$/;"	d
+uart_rx_buffer_size	projects/g51_sdcc/src/uart.asm	/^uart_rx_buffer_size:$/;"	l
+uart_rx_buffer_size	projects/uart_test/src/uart_test.asm	/^uart_rx_buffer_size:$/;"	l
+uart_rx_buffer_tail	projects/uart_test/src/uart_test.asm	/^uart_rx_buffer_tail:	ds		01h$/;"	d
+uart_rx_char	projects/g51_sdcc/src/uart.asm	/^uart_rx_char:$/;"	l
+uart_rx_char	projects/uart_test/src/uart_test.asm	/^uart_rx_char:$/;"	l
+uart_rx_char_skip_dph	projects/g51_sdcc/src/uart.asm	/^uart_rx_char_skip_dph:$/;"	l
+uart_rx_char_skip_dph	projects/uart_test/src/uart_test.asm	/^uart_rx_char_skip_dph:$/;"	l
+uart_rx_handler	projects/uart_test/src/uart_test.asm	/^uart_rx_handler:$/;"	l
+uart_rx_isr	projects/g51_sdcc/src/uart.asm	/^uart_rx_isr:$/;"	l
+uart_rx_isr	projects/uart_test/src/uart_test.asm	/^uart_rx_isr:$/;"	l
+uart_rx_isr_exit	projects/g51_sdcc/src/uart.asm	/^uart_rx_isr_exit:$/;"	l
+uart_rx_isr_exit	projects/uart_test/src/uart_test.asm	/^uart_rx_isr_exit:$/;"	l
+uart_rx_isr_skip_dph	projects/g51_sdcc/src/uart.asm	/^uart_rx_isr_skip_dph:$/;"	l
+uart_rx_isr_skip_dph	projects/uart_test/src/uart_test.asm	/^uart_rx_isr_skip_dph:$/;"	l
+uart_rx_loop	projects/g51_sdcc/src/uart.asm	/^uart_rx_loop:$/;"	l
+uart_rx_process_char	projects/g51_sdcc/src/uart.asm	/^uart_rx_process_char:$/;"	l
+uart_rx_process_char	projects/uart_test/src/uart_test.asm	/^uart_rx_process_char:$/;"	l
+uart_rx_wait_loop	projects/g51_sdcc/src/uart.asm	/^uart_rx_wait_loop:$/;"	l
+uart_rx_wait_loop	projects/uart_test/src/uart_test.asm	/^uart_rx_wait_loop:$/;"	l
+uart_tx_asciz	projects/g51_sdcc/src/uart.asm	/^uart_tx_asciz:$/;"	l
+uart_tx_asciz	projects/uart_test/src/uart_test.asm	/^uart_tx_asciz:$/;"	l
+uart_tx_asciz_exit	projects/g51_sdcc/src/uart.asm	/^uart_tx_asciz_exit:$/;"	l
+uart_tx_asciz_exit	projects/uart_test/src/uart_test.asm	/^uart_tx_asciz_exit:$/;"	l
+uart_tx_asciz_xram	projects/uart_test/src/uart_test.asm	/^uart_tx_asciz_xram:$/;"	l
+uart_tx_asciz_xram_exit	projects/uart_test/src/uart_test.asm	/^uart_tx_asciz_xram_exit:$/;"	l
+uart_tx_char	projects/g51_sdcc/src/uart.asm	/^uart_tx_char:$/;"	l
+uart_tx_char	projects/uart_test/src/uart_test.asm	/^uart_tx_char:$/;"	l
 unassemble	projects/cmon51-1.2/d51.c	/^void unassemble (unsigned int address)$/;"	f
+unknown	projects/g51/src/g51.asm	/^unknown:$/;"	l
+unknown	projects/g51_sdcc/src/g51_sdcc.asm	/^unknown:$/;"	l
+unknown_cmd_prompt	projects/g51/src/g51.asm	/^unknown_cmd_prompt:$/;"	l
+unknown_cmd_prompt	projects/g51_sdcc/src/g51_sdcc.asm	/^unknown_cmd_prompt:$/;"	l
 validbyte	projects/cmon51-1.2/cmon51.c	/^bit validbyte, keepediting, buff_haseq, buff_hasdot, breakpoint;$/;"	v
 var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B01/ADD16B01.C	/^ int var1 = 5;$/;"	v
 var1	Rudley Development Board/0006-Using_the_SDCC_Complier_on_the_8031_Support/ADD16B02/ADD16B02.C	/^ int var1 = 5;$/;"	v
@@ -1517,11 +1860,21 @@ verify_success	projects/mem_test/src/mem_test.asm	/^verify_success:$/;"	l
 verify_text_from_rom_to_ram	projects/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram:$/;"	l
 verify_text_from_rom_to_ram_error	projects/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_error:$/;"	l
 verify_text_from_rom_to_ram_exit	projects/mem_test/inc/mem_diag.asm	/^verify_text_from_rom_to_ram_exit:$/;"	l
+vt102_app	projects/g51_sdcc/src/apps.asm	/^vt102_app:$/;"	l
+vt102_app_descr	projects/g51_sdcc/src/constants.asm	/^vt102_app_descr:$/;"	l
+vt102_app_name	projects/g51_sdcc/src/constants.asm	/^vt102_app_name:$/;"	l
+vt102_line_to	projects/g51_sdcc/src/vt102.asm	/^vt102_line_to:$/;"	l
 wait	projects/blink_led/inc/delay.asm	/^wait:$/;"	l
 wait	projects/blink_led2/inc/delay.asm	/^wait:$/;"	l
 wait	projects/mem_test/inc/delay.asm	/^wait:$/;"	l
+wait_for_tx_done	projects/g51_sdcc/src/uart.asm	/^wait_for_tx_done:$/;"	l
 wastetime	projects/cmon51-1.2/examples/tetris52.c	/^void wastetime(int j)$/;"	f
+write_cmd	projects/g51_sdcc/src/constants.asm	/^	write_cmd:			.asciz	"write"$/;"	l
+write_cmd_descr	projects/g51_sdcc/src/constants.asm	/^	write_cmd_descr:	.asciz	"modify an sfr register,"$/;"	l
+write_cmd_ex	projects/g51_sdcc/src/constants.asm	/^	write_cmd_ex:		.asciz	"ex. write p1 55"$/;"	l
 write_sfr	projects/cmon51-1.2/8052.c	/^void write_sfr (unsigned char val)$/;"	f
 write_sfr	projects/cmon51-1.2/at89c51rd2.c	/^void write_sfr (unsigned char val)$/;"	f
 write_sfr	projects/cmon51-1.2/p89v51rd2.c	/^void write_sfr (unsigned char val)$/;"	f
+write_txt	projects/g51_sdcc/src/constants.asm	/^write_txt:$/;"	l
 wscr	projects/cmon51-1.2/examples/tetris52.c	/^void wscr (unsigned char x, unsigned char y, unsigned char val)$/;"	f
+xseg	projects/uart_test/src/uart_test.asm	/^xseg$/;"	l

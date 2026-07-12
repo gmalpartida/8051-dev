@@ -7,14 +7,17 @@ MINICOM=minicom
 SCREEN=screen
 HEXDUMP=hexdump
 OBJCOPY=/opt/sdcc/bin/sdobjcopy
+MKDIR=mkdir
+RM=rm
 
 TARGET=$(notdir $(CURDIR))
 
 SRC_DIR=src
 BIN_DIR=bin
 CFG_DIR=cfg
+INC_DIR=inc
 
-MAIN_FILE=$(SRC_DIR)/main.asm
+MAIN_FILE=$(SRC_DIR)/$(TARGET).asm
 HEX_FILE=$(BIN_DIR)/$(TARGET).hex
 DIS_FILE=$(BIN_DIR)/$(TARGET).dis
 VPORT0=/tmp/ttyV0
@@ -22,26 +25,29 @@ VPORT1=/tmp/ttyV1
 BIN_FILE=$(BIN_DIR)/$(TARGET).bin
 UCSIM_FILE=$(CFG_DIR)/$(TARGET).ucsim
 
-AS_FLAGS= -i inc -v 
+AS_FLAGS= -i$(INC_DIR)
 UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 
 SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0
 MINICOM_FLAGS=-D $(VPORT1)
 SCREEN_FLAGS= -S sim_uart
 HEXDUMP_FLAGS = -C
 OBJCOPY_FLAGS=-I ihex -O binary $(HEX_FILE)
+MKDIR_FLAGS=-p
+RM_FLAGS=-rf
 
 .PHONY: all, build, clean, edit, dis, bridge, uart, screen, dump, bin, sim
 
 all: build
 
-build:
+build :
+	$(MKDIR) $(MKDIR_FLAGS) $(BIN_DIR)
 	$(AS) $(AS_FLAGS) $(MAIN_FILE) $(HEX_FILE)
 
 sim: build
 	$(UCSIM) $(UCSIM_FLAGS) $(HEX_FILE)
 
 edit: 
-	$(VI) $(MAIN_FILE)
+	$(VI) $(SRC_DIR)/$(TARGET).asm
 
 dis: build
 	$(DIS51) $(DIS51_FLAGS)	< $(HEX_FILE) > $(DIS_FILE)
@@ -62,6 +68,6 @@ bin: build
 	$(OBJCOPY) $(OBJCOPY_FLAGS) $(BIN_FILE)
 
 clean:
-	rm -rf $(BIN_DIR)/*
+	$(RM) $(RM_FLAGS) $(BIN_DIR)/*
 
 

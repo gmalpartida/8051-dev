@@ -1,9 +1,9 @@
 cseg
 
-CR			equ 	0dh
-LF			equ 	0ah
-TAB			equ 	09h
-NULL 		equ		00h 
+CR			equ		0dh
+LF			equ		0ah
+TAB			equ	 	09h
+NULL 		equ		00h
 BS 			equ		08h
 SPC			equ		20h
 
@@ -90,15 +90,6 @@ write_txt:
 
 msg_err:    
 	db "Unknown Command", 0
-
-a_short_text:
-	db "The quick brown fox jumps over the lazy dog.", 0
-
-mem_test_fail_msg:
-	db "Memory test failed.", 0
-
-mem_test_success_msg:
-	db "Memory test succeeded.", 0
 
 lcd_app_name:
 	db "lcd", 0

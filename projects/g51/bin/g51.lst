@@ -10,7 +10,7 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
 
 
-	Source File:	src/main.asm
+	Source File:	src/g51.asm
 	Object File:	bin/g51.hex
 	List File:	bin/g51.lst
 
@@ -18,49 +18,49 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-    1:		N      0000	cseg at 0000h
-    2:	  0000	02 00 30	    ljmp main
+    1:				cseg
+    2:	  0000	02 00 03	    ljmp main
     3:
-    4:		N      0030	cseg at 0030h
-    5:	  0030			main:
-    6:	  0030	75 81 60	    mov sp, #60h        ; Initialize Stack
-    7:	  0033	12 06 E5	    call uart_init     ; Setup UART
-    8:
-    9:	  0036	12 0B C0		call clear_screen
-   10:
-   11:	  0039	90 07 34		mov dptr, #g51_logo
-   12:	  003C	12 06 FF		call uart_tx_string
-   13:
-   14:	  003F	12 01 93		call println
-   15:
-   16:	  0042	90 01 D4		mov dptr, #title_str
-   17:	  0045	12 06 FF		call uart_tx_string
-   18:	  0048	12 01 93		call println
-   19:
-   20:	  004B			cmd_prompt:
-   21:
-   22:	  004B	90 01 FB	    mov dptr, #command_prompt_str
-   23:	  004E	12 06 FF	    call uart_tx_string
-   24:
-   25:				    ; Setup Buffer for input (starting at RAM 30H)
-   26:	  0051	78 30		    mov r0, #30H
-   27:	  0053	12 07 11	    call uart_rx_string
-   28:
-   29:				    ; --- COMMAND PARSER ---
-   30:				    ; Check for "help"
-   31:	  0056			check_help:
-   32:	  0056	78 30		    MOV R0, #30H
-   33:	  0058	12 01 89		call skip_blanks
-   34:	  005B	90 05 51	    MOV DPTR, #help_txt
-   35:	  005E	7A 04			mov r2, #4
-   36:	  0060	12 09 76	    call strncmp
-   37:	  0063	B4 00 05		cjne a, #0, check_ls
-   38:	  0066	12 0A 5A	    call do_help
-   39:	  0069	80 E0			jmp cmd_prompt
-   40:
-   41:				    ; Check for "ls"
-   42:	  006B			check_ls:
-   43:	  006B	78 30		    mov r0, #30H
+    4:	  0003			main:
+    5:	  0003	75 81 60	    mov sp, #60h						; Initialize Stack
+    6:	  0006	12 0D 23	    call uart_init						; Setup UART
+    7:
+    8:	  0009	12 0A C2		call clear_screen
+    9:
+   10:	  000C	90 06 36		mov dptr, #g51_logo
+   11:	  000F	12 0D 3D		call uart_tx_string
+   12:
+   13:	  0012	12 01 66		call println
+   14:
+   15:	  0015	90 01 7D		mov dptr, #title_str
+   16:	  0018	12 0D 3D		call uart_tx_string
+   17:	  001B	12 01 66		call println
+   18:
+   19:	  001E			cmd_prompt:
+   20:
+   21:	  001E	90 01 A4	    mov dptr, #command_prompt_str
+   22:	  0021	12 0D 3D	    call uart_tx_string
+   23:
+   24:				    ; Setup Buffer for input (starting at RAM 30H)
+   25:	  0024	78 30		    mov r0, #30H
+   26:	  0026	12 0D 4F	    call uart_rx_string
+   27:
+   28:				    ; --- COMMAND PARSER ---
+   29:				    ; Check for "help"
+   30:	  0029			check_help:
+   31:	  0029	78 30		    MOV R0, #30H
+   32:	  002B	12 01 5C		call skip_blanks
+   33:	  002E	90 04 FA	    MOV DPTR, #help_txt
+   34:	  0031	7A 04			mov r2, #4
+   35:	  0033	12 08 78	    call strncmp
+   36:	  0036	B4 00 05		cjne a, #0, check_ls
+   37:	  0039	12 09 5C	    call do_help
+   38:	  003C	80 E0			jmp cmd_prompt
+   39:
+   40:				    ; Check for "ls"
+   41:	  003E			check_ls:
+   42:	  003E	78 30		    mov r0, #30H
+   43:	  0040	12 01 5C		call skip_blanks
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
 
@@ -68,62 +68,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-   44:	  006D	12 01 89		call skip_blanks
-   45:	  0070	90 05 56	    mov dptr, #ls_txt
-   46:	  0073	7A 02			mov r2, #2
-   47:	  0075	12 09 76	    call strncmp
-   48:	  0078	B4 00 05		cjne a, #0, check_peek
-   49:	  007B	12 0A A6	    call do_ls
-   50:	  007E	80 CB			jmp cmd_prompt
-   51:
-   52:	  0080			check_peek:
-   53:	  0080	78 30			mov r0, #30h
-   54:	  0082	12 01 89		call skip_blanks
-   55:	  0085	90 05 59		mov dptr, #peek_txt
-   56:	  0088	7A 04			mov r2, #4
-   57:	  008A	12 09 76		call strncmp
-   58:	  008D	B4 00 05		cjne a, #0, check_poke
-   59:	  0090	12 0A F4		call do_peek
-   60:	  0093	80 B6			jmp cmd_prompt
-   61:
-   62:	  0095			check_poke:
-   63:	  0095	78 30			mov r0, #30h
-   64:	  0097	12 01 89		call skip_blanks
-   65:	  009A	90 05 5E		mov dptr, #poke_txt
-   66:	  009D	7A 04			mov r2, #4
-   67:	  009F	12 09 76		call strncmp
-   68:	  00A2	B4 00 05		cjne a, #0, check_dump
-   69:	  00A5	12 0B 1F		call do_poke
-   70:	  00A8	80 A1			jmp cmd_prompt
-   71:
-   72:	  00AA			check_dump:
-   73:	  00AA	78 30			mov r0, #30h
-   74:	  00AC	12 01 89		call skip_blanks
-   75:	  00AF	90 05 63		mov dptr, #dump_txt
-   76:	  00B2	7A 04			mov r2, #4
-   77:	  00B4	12 09 76		call strncmp
-   78:	  00B7	B4 00 05		cjne a, #0, check_reset
-   79:	  00BA	12 0B 40		call do_dump
-   80:	  00BD	80 8C			jmp cmd_prompt
-   81:
-   82:	  00BF			check_reset:
-   83:	  00BF	78 30			mov r0, #30h
-   84:	  00C1	12 01 89		call skip_blanks
-   85:	  00C4	90 05 6E		mov dptr, #reset_txt
-   86:	  00C7	7A 05			mov r2, #5
-   87:	  00C9	12 09 76		call strncmp
-   88:	  00CC	B4 00 02		cjne a, #0, check_clear
-   89:	  00CF	01 30			jmp main
-   90:
-   91:	  00D1			check_clear:
-   92:	  00D1	78 30			mov r0, #30h
-   93:	  00D3	12 01 89		call skip_blanks
-   94:	  00D6	90 05 68		mov dptr, #clear_txt
-   95:	  00D9	12 09 63		call strcmp
-   96:	  00DC	B4 00 05		cjne a, #0, check_fill
-   97:	  00DF	12 0B C0		call clear_screen
-   98:	  00E2	01 4B			jmp cmd_prompt
-   99:
+   44:	  0043	90 04 FF	    mov dptr, #ls_txt
+   45:	  0046	7A 02			mov r2, #2
+   46:	  0048	12 08 78	    call strncmp
+   47:	  004B	B4 00 05		cjne a, #0, check_peek
+   48:	  004E	12 09 A8	    call do_ls
+   49:	  0051	80 CB			jmp cmd_prompt
+   50:
+   51:	  0053			check_peek:
+   52:	  0053	78 30			mov r0, #30h
+   53:	  0055	12 01 5C		call skip_blanks
+   54:	  0058	90 05 02		mov dptr, #peek_txt
+   55:	  005B	7A 04			mov r2, #4
+   56:	  005D	12 08 78		call strncmp
+   57:	  0060	B4 00 05		cjne a, #0, check_poke
+   58:	  0063	12 09 F6		call do_peek
+   59:	  0066	80 B6			jmp cmd_prompt
+   60:
+   61:	  0068			check_poke:
+   62:	  0068	78 30			mov r0, #30h
+   63:	  006A	12 01 5C		call skip_blanks
+   64:	  006D	90 05 07		mov dptr, #poke_txt
+   65:	  0070	7A 04			mov r2, #4
+   66:	  0072	12 08 78		call strncmp
+   67:	  0075	B4 00 05		cjne a, #0, check_dump
+   68:	  0078	12 0A 21		call do_poke
+   69:	  007B	80 A1			jmp cmd_prompt
+   70:
+   71:	  007D			check_dump:
+   72:	  007D	78 30			mov r0, #30h
+   73:	  007F	12 01 5C		call skip_blanks
+   74:	  0082	90 05 0C		mov dptr, #dump_txt
+   75:	  0085	7A 04			mov r2, #4
+   76:	  0087	12 08 78		call strncmp
+   77:	  008A	B4 00 05		cjne a, #0, check_reset
+   78:	  008D	12 0A 42		call do_dump
+   79:	  0090	80 8C			jmp cmd_prompt
+   80:
+   81:	  0092			check_reset:
+   82:	  0092	78 30			mov r0, #30h
+   83:	  0094	12 01 5C		call skip_blanks
+   84:	  0097	90 05 17		mov dptr, #reset_txt
+   85:	  009A	7A 05			mov r2, #5
+   86:	  009C	12 08 78		call strncmp
+   87:	  009F	B4 00 02		cjne a, #0, check_clear
+   88:	  00A2	01 03			jmp main
+   89:
+   90:	  00A4			check_clear:
+   91:	  00A4	78 30			mov r0, #30h
+   92:	  00A6	12 01 5C		call skip_blanks
+   93:	  00A9	90 05 11		mov dptr, #clear_txt
+   94:	  00AC	12 08 65		call strcmp
+   95:	  00AF	B4 00 05		cjne a, #0, check_fill
+   96:	  00B2	12 0A C2		call clear_screen
+   97:	  00B5	01 1E			jmp cmd_prompt
+   98:
+   99:	  00B7			check_fill:
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
 
@@ -131,62 +131,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  100:	  00E4			check_fill:
-  101:	  00E4	78 30			mov r0, #30h
-  102:	  00E6	12 01 89		call skip_blanks
-  103:	  00E9	90 05 74		mov dptr, #fill_txt
-  104:	  00EC	7A 04			mov r2, #4
-  105:	  00EE	12 09 76		call strncmp
-  106:	  00F1	B4 00 05		cjne a, #0, check_copy
-  107:	  00F4	12 0B E6		call do_fill
-  108:	  00F7	01 4B			jmp cmd_prompt
-  109:
-  110:	  00F9			check_copy:
-  111:	  00F9	78 30			mov r0, #30h
-  112:	  00FB	12 01 89		call skip_blanks
-  113:	  00FE	90 05 79		mov dptr, #copy_txt
-  114:	  0101	7A 04			mov r2, #4
-  115:	  0103	12 09 76		call strncmp
-  116:	  0106	B4 00 05		cjne a, #0, check_goto
-  117:	  0109	12 0C 08		call do_copy
-  118:	  010C	01 4B			jmp cmd_prompt
-  119:
-  120:	  010E			check_goto:
-  121:	  010E	78 30			mov r0, #30h
-  122:	  0110	12 01 89		call skip_blanks
-  123:	  0113	90 05 7E		mov dptr, #goto_txt
-  124:	  0116	7A 04			mov r2, #4
-  125:	  0118	12 09 76		call strncmp
-  126:	  011B	B4 00 05		cjne a, #0, check_iram
-  127:	  011E	12 0C 2F		call do_goto
-  128:	  0121	01 4B			jmp cmd_prompt
-  129:
-  130:	  0123			check_iram:
-  131:	  0123	78 30			mov r0, #30h
-  132:	  0125	12 01 89		call skip_blanks
-  133:	  0128	90 05 83		mov dptr, #iram_txt
-  134:	  012B	7A 04			mov r2, #4
-  135:	  012D	12 09 76		call strncmp
-  136:	  0130	B4 00 05		cjne a, #0, check_sfr
-  137:	  0133	12 0C 44		call do_iram
-  138:	  0136	01 4B			jmp cmd_prompt
-  139:
-  140:	  0138			check_sfr:
-  141:	  0138	78 30			mov r0, #30h
-  142:	  013A	12 01 89		call skip_blanks
-  143:	  013D	90 05 88		mov dptr, #sfr_txt
-  144:	  0140	7A 03			mov r2, #3
-  145:	  0142	12 09 76		call strncmp
-  146:	  0145	B4 00 05		cjne a, #0, check_write
-  147:	  0148	12 0C 99		call do_sfr
-  148:	  014B	01 4B			jmp cmd_prompt
-  149:
-  150:	  014D			check_write:
-  151:	  014D	78 30			mov r0, #30h
-  152:	  014F	12 01 89		call skip_blanks
-  153:	  0152	90 05 8C		mov dptr, #write_txt
-  154:	  0155	7A 05			mov r2, #5
-  155:	  0157	12 09 76		call strncmp
+  100:	  00B7	78 30			mov r0, #30h
+  101:	  00B9	12 01 5C		call skip_blanks
+  102:	  00BC	90 05 1D		mov dptr, #fill_txt
+  103:	  00BF	7A 04			mov r2, #4
+  104:	  00C1	12 08 78		call strncmp
+  105:	  00C4	B4 00 05		cjne a, #0, check_copy
+  106:	  00C7	12 0A E8		call do_fill
+  107:	  00CA	01 1E			jmp cmd_prompt
+  108:
+  109:	  00CC			check_copy:
+  110:	  00CC	78 30			mov r0, #30h
+  111:	  00CE	12 01 5C		call skip_blanks
+  112:	  00D1	90 05 22		mov dptr, #copy_txt
+  113:	  00D4	7A 04			mov r2, #4
+  114:	  00D6	12 08 78		call strncmp
+  115:	  00D9	B4 00 05		cjne a, #0, check_goto
+  116:	  00DC	12 0B 0A		call do_copy
+  117:	  00DF	01 1E			jmp cmd_prompt
+  118:
+  119:	  00E1			check_goto:
+  120:	  00E1	78 30			mov r0, #30h
+  121:	  00E3	12 01 5C		call skip_blanks
+  122:	  00E6	90 05 27		mov dptr, #goto_txt
+  123:	  00E9	7A 04			mov r2, #4
+  124:	  00EB	12 08 78		call strncmp
+  125:	  00EE	B4 00 05		cjne a, #0, check_iram
+  126:	  00F1	12 0B 31		call do_goto
+  127:	  00F4	01 1E			jmp cmd_prompt
+  128:
+  129:	  00F6			check_iram:
+  130:	  00F6	78 30			mov r0, #30h
+  131:	  00F8	12 01 5C		call skip_blanks
+  132:	  00FB	90 05 2C		mov dptr, #iram_txt
+  133:	  00FE	7A 04			mov r2, #4
+  134:	  0100	12 08 78		call strncmp
+  135:	  0103	B4 00 05		cjne a, #0, check_sfr
+  136:	  0106	12 0B 46		call do_iram
+  137:	  0109	01 1E			jmp cmd_prompt
+  138:
+  139:	  010B			check_sfr:
+  140:	  010B	78 30			mov r0, #30h
+  141:	  010D	12 01 5C		call skip_blanks
+  142:	  0110	90 05 31		mov dptr, #sfr_txt
+  143:	  0113	7A 03			mov r2, #3
+  144:	  0115	12 08 78		call strncmp
+  145:	  0118	B4 00 05		cjne a, #0, check_write
+  146:	  011B	12 0B 9B		call do_sfr
+  147:	  011E	01 1E			jmp cmd_prompt
+  148:
+  149:	  0120			check_write:
+  150:	  0120	78 30			mov r0, #30h
+  151:	  0122	12 01 5C		call skip_blanks
+  152:	  0125	90 05 35		mov dptr, #write_txt
+  153:	  0128	7A 05			mov r2, #5
+  154:	  012A	12 08 78		call strncmp
+  155:	  012D	B4 00 05		cjne a, #0, unknown
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
 
@@ -194,62 +194,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  156:	  015A	B4 00 05		cjne a, #0, unknown
-  157:	  015D	12 0D A3		call do_write
-  158:	  0160	01 4B			jmp cmd_prompt
-  159:
-  160:				    ; Unknown command
-  161:	  0162			unknown:
-  162:	  0162	12 01 93		call println
-  163:	  0165	78 30			mov r0, #30h
-  164:	  0167	E6			mov a, @r0
-  165:	  0168	60 09			jz unknown_cmd_prompt
-  166:	  016A	90 05 92	    mov dptr, #msg_err
-  167:	  016D	12 06 FF	    call uart_tx_string
-  168:	  0170	12 01 93		call println
-  169:	  0173			unknown_cmd_prompt:
-  170:	  0173	01 4B		    jmp cmd_prompt
-  171:
-  172:	  0175			halt:
-  173:	  0175	80 FE			jmp halt
-  174:
-  175:	  0177			get_hex_address:
-  176:	  0177	E6			mov a, @r0
-  177:	  0178	12 0A 2A		call asc2nibble
-  178:	  017B	08			inc r0
-  179:	  017C	F5 F0			mov b, a
-  180:	  017E	E6			mov a, @r0
-  181:	  017F	12 0A 2A		call asc2nibble
-  182:	  0182	C4			swap a
-  183:	  0183	54 F0			anl a, #0f0h
-  184:	  0185	45 F0			orl a, b
-  185:	  0187	C4			swap a
-  186:	  0188	22			ret
-  187:
-  188:	  0189			skip_blanks:
-  189:	  0189	E6			mov a, @r0
-  190:	  018A	60 06			jz skip_blanks_exit
-  191:	  018C	B4 20 03		cjne a, #' ', skip_blanks_exit
-  192:	  018F	08			inc r0
-  193:	  0190	80 F7			jmp skip_blanks
-  194:
-  195:	  0192			skip_blanks_exit:
-  196:	  0192	22			ret
-  197:
-  198:	  0193			println:
-  199:	  0193	90 01 F8		mov dptr, #newline_str
-  200:	  0196	12 06 FF		call uart_tx_string
-  201:	  0199	22			ret
-  202:
-  203:				; prints tab(s)
-  204:				; --> r7: how many tabs to print
-  205:	  019A			printtab:
-  206:	  019A	74 09			mov a, #TAB
-  207:
-  208:	  019C	12 06 F7		call uart_tx_char
-  209:	  019F	DF F9			djnz r7, printtab
-  210:	  01A1	22			ret
-  211:
+  156:	  0130	12 0C A5		call do_write
+  157:	  0133	01 1E			jmp cmd_prompt
+  158:
+  159:				    ; Unknown command
+  160:	  0135			unknown:
+  161:	  0135	12 01 66		call println
+  162:	  0138	78 30			mov r0, #30h
+  163:	  013A	E6			mov a, @r0
+  164:	  013B	60 09			jz unknown_cmd_prompt
+  165:	  013D	90 05 3B	    mov dptr, #msg_err
+  166:	  0140	12 0D 3D	    call uart_tx_string
+  167:	  0143	12 01 66		call println
+  168:	  0146			unknown_cmd_prompt:
+  169:	  0146	01 1E		    jmp cmd_prompt
+  170:
+  171:	  0148			halt:
+  172:	  0148	80 FE			jmp halt
+  173:
+  174:	  014A			get_hex_address:
+  175:	  014A	E6			mov a, @r0
+  176:	  014B	12 09 2C		call asc2nibble
+  177:	  014E	08			inc r0
+  178:	  014F	F5 F0			mov b, a
+  179:	  0151	E6			mov a, @r0
+  180:	  0152	12 09 2C		call asc2nibble
+  181:	  0155	C4			swap a
+  182:	  0156	54 F0			anl a, #0f0h
+  183:	  0158	45 F0			orl a, b
+  184:	  015A	C4			swap a
+  185:	  015B	22			ret
+  186:
+  187:	  015C			skip_blanks:
+  188:	  015C	E6			mov a, @r0
+  189:	  015D	60 06			jz skip_blanks_exit
+  190:	  015F	B4 20 03		cjne a, #' ', skip_blanks_exit
+  191:	  0162	08			inc r0
+  192:	  0163	80 F7			jmp skip_blanks
+  193:
+  194:	  0165			skip_blanks_exit:
+  195:	  0165	22			ret
+  196:
+  197:	  0166			println:
+  198:	  0166	90 01 A1		mov dptr, #newline_str
+  199:	  0169	12 0D 3D		call uart_tx_string
+  200:	  016C	22			ret
+  201:
+  202:				; prints tab(s)
+  203:				; --> r7: how many tabs to print
+  204:	  016D			printtab:
+  205:	  016D	74 09			mov a, #TAB
+  206:
+  207:	  016F	12 0D 35		call uart_tx_char
+  208:	  0172	DF F9			djnz r7, printtab
+  209:	  0174	22			ret
+  210:
+  211:				; prints space(s)
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
 
@@ -257,62 +257,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-  212:				; prints space(s)
-  213:				; --> r7: how many spaces to print
-  214:	  01A2			printspc:
-  215:	  01A2	74 20			mov a, #' '
-  216:	  01A4	12 06 F7		call uart_tx_char
-  217:	  01A7	DF F9			djnz r7, printspc
-  218:	  01A9	22			ret
+  212:				; --> r7: how many spaces to print
+  213:	  0175			printspc:
+  214:	  0175	74 20			mov a, #' '
+  215:	  0177	12 0D 35		call uart_tx_char
+  216:	  017A	DF F9			djnz r7, printspc
+  217:	  017C	22			ret
+  218:
   219:
-  220:				; performs a memory test, copying a text from program memory into several locations in data memory.
-  221:				; then they are verified.
-  222:				; --> none
-  223:				; <-- none
-  224:	  01AA			mem_test:
-  225:	  01AA	7E 05			mov r6, #high(a_short_text)
-  226:	  01AC	7F A2			mov r7, #low(a_short_text)
-  227:	  01AE	7C 10			mov r4, #10h
-  228:	  01B0	7D 00			mov r5, #00h
-  229:	  01B2	7B 2C			mov r3, #44
-  230:	  01B4	12 09 ED		call memcpy_c
-  231:
-  232:	  01B7	7E 05			mov r6, #high(a_short_text)
-  233:	  01B9	7F A2			mov r7, #low(a_short_text)
-  234:	  01BB	7C 10			mov r4, #10h
-  235:	  01BD	7D 00			mov r5, #00h
-  236:	  01BF	7B 2C			mov r3, #44
-  237:	  01C1	12 09 BD		call memcmp_c
-  238:
-  239:	  01C4	BF 00 06		cjne r7, #00h, mem_test_fail
-  240:	  01C7	90 05 E3		mov dptr, #mem_test_success_msg
-  241:	  01CA	12 06 FF		call uart_tx_string
-  242:
-  243:	  01CD			mem_test_fail:
-  244:	  01CD	90 05 CF		mov dptr, #mem_test_fail_msg
-  245:	  01D0	12 06 FF		call uart_tx_string
-  246:	  01D3	22			ret
-  247:
-  248:
-  249:				$INCLUDE (constants.inc)
-  250: 1			cseg
-  251: 1
-  252: 1	N      000D	CR			equ 	0dh
-  253: 1	N      000A	LF			equ 	0ah
-  254: 1	N      0009	TAB			equ 	09h
-  255: 1	N      0000	NULL 		equ		00h
-  256: 1	N      0008	BS 			equ		08h
-  257: 1	N      0020	SPC			equ		20h
-  258: 1
-  259: 1  01D4			title_str:
-  260: 1  01D4	09 09 09 43		db TAB, TAB, TAB, "Copyright 2025 Gino Malpartida", CR, LF, 0
-       1  01D8	6F 70 79 72
-       1  01DC	69 67 68 74
-       1  01E0	20 32 30 32
-       1  01E4	35 20 47 69
-       1  01E8	6E 6F 20 4D
-       1  01EC	61 6C 70 61
-       1  01F0	72 74 69 64
+  220:				$INCLUDE (constants.inc)
+  221: 1			cseg
+  222: 1
+  223: 1	N      000D	CR			equ		0dh
+  224: 1	N      000A	LF			equ		0ah
+  225: 1	N      0009	TAB			equ	 	09h
+  226: 1	N      0000	NULL 		equ		00h
+  227: 1	N      0008	BS 			equ		08h
+  228: 1	N      0020	SPC			equ		20h
+  229: 1
+  230: 1  017D			title_str:
+  231: 1  017D	09 09 09 43		db TAB, TAB, TAB, "Copyright 2025 Gino Malpartida", CR, LF, 0
+       1  0181	6F 70 79 72
+       1  0185	69 67 68 74
+       1  0189	20 32 30 32
+       1  018D	35 20 47 69
+       1  0191	6E 6F 20 4D
+       1  0195	61 6C 70 61
+       1  0199	72 74 69 64
+       1  019D	61 0D 0A 00
+  232: 1  01A1			newline_str:
+  233: 1  01A1	0D 0A 00		db CR, LF,0
+  234: 1  01A4			command_prompt_str:
+  235: 1  01A4	67 35 31 3E		db "g51> ", 0
+       1  01A8	20 00
+  236: 1
+  237: 1  01AA			commands:
+  238: 1  01AA	68 65 6C 70		help_cmd:			db	"help:", 0
+       1  01AE	3A 00
+  239: 1  01B0	64 69 73 70		help_cmd_descr:		db	"displays list of available commands.", 0
+       1  01B4	6C 61 79 73
+       1  01B8	20 6C 69 73
+       1  01BC	74 20 6F 66
+       1  01C0	20 61 76 61
+       1  01C4	69 6C 61 62
+       1  01C8	6C 65 20 63
+       1  01CC	6F 6D 6D 61
+       1  01D0	6E 64 73 2E
+       1  01D4	00
+  240: 1  01D5	6C 73 3A 00		ls_cmd:				db	"ls:", 0
+  241: 1  01D9	64 69 73 70		ls_cmd_descr:		db	"displays available applications.", 0
+       1  01DD	6C 61 79 73
+       1  01E1	20 61 76 61
+       1  01E5	69 6C 61 62
+       1  01E9	6C 65 20 61
+       1  01ED	70 70 6C 69
+       1  01F1	63 61 74 69
+       1  01F5	6F 6E 73 2E
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
 
@@ -320,62 +320,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  01F4	61 0D 0A 00
-  261: 1  01F8			newline_str:
-  262: 1  01F8	0D 0A 00		db CR, LF,0
-  263: 1  01FB			command_prompt_str:
-  264: 1  01FB	67 35 31 3E		db "g51> ", 0
-       1  01FF	20 00
-  265: 1
-  266: 1  0201			commands:
-  267: 1  0201	68 65 6C 70		help_cmd:			db	"help:", 0
-       1  0205	3A 00
-  268: 1  0207	64 69 73 70		help_cmd_descr:		db	"displays list of available commands.", 0
-       1  020B	6C 61 79 73
-       1  020F	20 6C 69 73
-       1  0213	74 20 6F 66
-       1  0217	20 61 76 61
-       1  021B	69 6C 61 62
-       1  021F	6C 65 20 63
-       1  0223	6F 6D 6D 61
-       1  0227	6E 64 73 2E
-       1  022B	00
-  269: 1  022C	6C 73 3A 00		ls_cmd:				db	"ls:", 0
-  270: 1  0230	64 69 73 70		ls_cmd_descr:		db	"displays available applications.", 0
-       1  0234	6C 61 79 73
-       1  0238	20 61 76 61
-       1  023C	69 6C 61 62
-       1  0240	6C 65 20 61
-       1  0244	70 70 6C 69
-       1  0248	63 61 74 69
-       1  024C	6F 6E 73 2E
-       1  0250	00
-  271: 1  0251	70 65 65 6B		peek_cmd:			db	"peek:", 0
-       1  0255	3A 00
-  272: 1  0257	65 78 61 6D		peek_cmd_descr:		db	"examine a single memory cell.", CR, LF, TAB, TAB, TAB, "ex.
-       1  025B	69 6E 65 20	 peek 1b2c", 0
-       1  025F	61 20 73 69
-       1  0263	6E 67 6C 65
-       1  0267	20 6D 65 6D
-       1  026B	6F 72 79 20
-       1  026F	63 65 6C 6C
-       1  0273	2E 0D 0A 09
-       1  0277	09 09 65 78
-       1  027B	2E 20 70 65
-       1  027F	65 6B 20 31
-       1  0283	62 32 63 00
-  273: 1  0287	70 6F 6B 65		poke_cmd:			db	"poke:", 0
-       1  028B	3A 00
-  274: 1  028D	6D 6F 64 69		poke_cmd_descr:		db	"modify a single memory cell.", CR, LF, TAB, TAB, TAB, "ex.
-       1  0291	66 79 20 61	poke 1b2c 55", 0
-       1  0295	20 73 69 6E
-       1  0299	67 6C 65 20
-       1  029D	6D 65 6D 6F
-       1  02A1	72 79 20 63
-       1  02A5	65 6C 6C 2E
-       1  02A9	0D 0A 09 09
-       1  02AD	09 65 78 2E
-       1  02B1	20 70 6F 6B
+       1  01F9	00
+  242: 1  01FA	70 65 65 6B		peek_cmd:			db	"peek:", 0
+       1  01FE	3A 00
+  243: 1  0200	65 78 61 6D		peek_cmd_descr:		db	"examine a single memory cell.", CR, LF, TAB, TAB, TAB, "ex.
+       1  0204	69 6E 65 20	 peek 1b2c", 0
+       1  0208	61 20 73 69
+       1  020C	6E 67 6C 65
+       1  0210	20 6D 65 6D
+       1  0214	6F 72 79 20
+       1  0218	63 65 6C 6C
+       1  021C	2E 0D 0A 09
+       1  0220	09 09 65 78
+       1  0224	2E 20 70 65
+       1  0228	65 6B 20 31
+       1  022C	62 32 63 00
+  244: 1  0230	70 6F 6B 65		poke_cmd:			db	"poke:", 0
+       1  0234	3A 00
+  245: 1  0236	6D 6F 64 69		poke_cmd_descr:		db	"modify a single memory cell.", CR, LF, TAB, TAB, TAB, "ex.
+       1  023A	66 79 20 61	poke 1b2c 55", 0
+       1  023E	20 73 69 6E
+       1  0242	67 6C 65 20
+       1  0246	6D 65 6D 6F
+       1  024A	72 79 20 63
+       1  024E	65 6C 6C 2E
+       1  0252	0D 0A 09 09
+       1  0256	09 65 78 2E
+       1  025A	20 70 6F 6B
+       1  025E	65 20 31 62
+       1  0262	32 63 20 35
+       1  0266	35 00
+  246: 1  0268	64 75 6D 70		dump_cmd:			db	"dump:", 0
+       1  026C	3A 00
+  247: 1  026E	64 69 73 70		dump_cmd_descr:		db	"displays a 256 memory block.", CR, LF, TAB, TAB, TAB, "ex.
+       1  0272	6C 61 79 73	dump 12", 0
+       1  0276	20 61 20 32
+       1  027A	35 36 20 6D
+       1  027E	65 6D 6F 72
+       1  0282	79 20 62 6C
+       1  0286	6F 63 6B 2E
+       1  028A	0D 0A 09 09
+       1  028E	09 65 78 2E
+       1  0292	20 64 75 6D
+       1  0296	70 20 31 32
+       1  029A	00
+  248: 1  029B	63 6C 65 61		clear_cmd:			db	"clear:", 0
+       1  029F	72 3A 00
+  249: 1  02A2	63 6C 65 61		clear_cmd_descr:	db	"clear screen and homes the cursor.", 0
+       1  02A6	72 20 73 63
+       1  02AA	72 65 65 6E
+       1  02AE	20 61 6E 64
+       1  02B2	20 68 6F 6D
+       1  02B6	65 73 20 74
+       1  02BA	68 65 20 63
+       1  02BE	75 72 73 6F
+       1  02C2	72 2E 00
+  250: 1  02C5	72 65 73 65		reset_cmd:			db	"reset:", 0
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 7
 
@@ -383,62 +383,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  02B5	65 20 31 62
-       1  02B9	32 63 20 35
-       1  02BD	35 00
-  275: 1  02BF	64 75 6D 70		dump_cmd:			db	"dump:", 0
-       1  02C3	3A 00
-  276: 1  02C5	64 69 73 70		dump_cmd_descr:		db	"displays a 256 memory block.", CR, LF, TAB, TAB, TAB, "ex.
-       1  02C9	6C 61 79 73	dump 12", 0
-       1  02CD	20 61 20 32
-       1  02D1	35 36 20 6D
-       1  02D5	65 6D 6F 72
-       1  02D9	79 20 62 6C
-       1  02DD	6F 63 6B 2E
-       1  02E1	0D 0A 09 09
-       1  02E5	09 65 78 2E
-       1  02E9	20 64 75 6D
-       1  02ED	70 20 31 32
-       1  02F1	00
-  277: 1  02F2	63 6C 65 61		clear_cmd:			db	"clear:", 0
-       1  02F6	72 3A 00
-  278: 1  02F9	63 6C 65 61		clear_cmd_descr:	db	"clear screen and homes the cursor.", 0
-       1  02FD	72 20 73 63
-       1  0301	72 65 65 6E
-       1  0305	20 61 6E 64
-       1  0309	20 68 6F 6D
-       1  030D	65 73 20 74
-       1  0311	68 65 20 63
-       1  0315	75 72 73 6F
-       1  0319	72 2E 00
-  279: 1  031C	72 65 73 65		reset_cmd:			db	"reset:", 0
-       1  0320	74 3A 00
-  280: 1  0323	70 65 72 66		reset_cmd_descr:	db	"perform a soft-reset of the system.", 0
-       1  0327	6F 72 6D 20
-       1  032B	61 20 73 6F
-       1  032F	66 74 2D 72
-       1  0333	65 73 65 74
-       1  0337	20 6F 66 20
-       1  033B	74 68 65 20
-       1  033F	73 79 73 74
-       1  0343	65 6D 2E 00
-  281: 1  0347	66 69 6C 6C		fill_cmd:			db	"fill:", 0
-       1  034B	3A 00
-  282: 1  034D	69 6E 69 74		fill_cmd_descr:		db	"initializes a memory block with a specific byte.", CR, LF,
-       1  0351	69 61 6C 69	TAB, TAB, TAB, "ex. fill 1ab7 ff 1a", 0
-       1  0355	7A 65 73 20
-       1  0359	61 20 6D 65
-       1  035D	6D 6F 72 79
-       1  0361	20 62 6C 6F
-       1  0365	63 6B 20 77
-       1  0369	69 74 68 20
-       1  036D	61 20 73 70
-       1  0371	65 63 69 66
-       1  0375	69 63 20 62
-       1  0379	79 74 65 2E
-       1  037D	0D 0A 09 09
-       1  0381	09 65 78 2E
-       1  0385	20 66 69 6C
+       1  02C9	74 3A 00
+  251: 1  02CC	70 65 72 66		reset_cmd_descr:	db	"perform a soft-reset of the system.", 0
+       1  02D0	6F 72 6D 20
+       1  02D4	61 20 73 6F
+       1  02D8	66 74 2D 72
+       1  02DC	65 73 65 74
+       1  02E0	20 6F 66 20
+       1  02E4	74 68 65 20
+       1  02E8	73 79 73 74
+       1  02EC	65 6D 2E 00
+  252: 1  02F0	66 69 6C 6C		fill_cmd:			db	"fill:", 0
+       1  02F4	3A 00
+  253: 1  02F6	69 6E 69 74		fill_cmd_descr:		db	"initializes a memory block with a specific byte.", CR, LF,
+       1  02FA	69 61 6C 69	TAB, TAB, TAB, "ex. fill 1ab7 ff 1a", 0
+       1  02FE	7A 65 73 20
+       1  0302	61 20 6D 65
+       1  0306	6D 6F 72 79
+       1  030A	20 62 6C 6F
+       1  030E	63 6B 20 77
+       1  0312	69 74 68 20
+       1  0316	61 20 73 70
+       1  031A	65 63 69 66
+       1  031E	69 63 20 62
+       1  0322	79 74 65 2E
+       1  0326	0D 0A 09 09
+       1  032A	09 65 78 2E
+       1  032E	20 66 69 6C
+       1  0332	6C 20 31 61
+       1  0336	62 37 20 66
+       1  033A	66 20 31 61
+       1  033E	00
+  254: 1  033F	63 6F 70 79		copy_cmd:			db	"copy:", 0
+       1  0343	3A 00
+  255: 1  0345	63 6F 70 69		copy_cmd_descr:		db	"copies a block of data from one memory location to another.
+       1  0349	65 73 20 61	", CR, LF, TAB, TAB, TAB, "ex. copy 2d4f 83bd a5", 0
+       1  034D	20 62 6C 6F
+       1  0351	63 6B 20 6F
+       1  0355	66 20 64 61
+       1  0359	74 61 20 66
+       1  035D	72 6F 6D 20
+       1  0361	6F 6E 65 20
+       1  0365	6D 65 6D 6F
+       1  0369	72 79 20 6C
+       1  036D	6F 63 61 74
+       1  0371	69 6F 6E 20
+       1  0375	74 6F 20 61
+       1  0379	6E 6F 74 68
+       1  037D	65 72 2E 0D
+       1  0381	0A 09 09 09
+       1  0385	65 78 2E 20
+       1  0389	63 6F 70 79
+       1  038D	20 32 64 34
+       1  0391	66 20 38 33
+       1  0395	62 64 20 61
+       1  0399	35 00
+  256: 1  039B	67 6F 74 6F		goto_cmd:			db	"goto:", 0
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 8
 
@@ -446,62 +446,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  0389	6C 20 31 61
-       1  038D	62 37 20 66
-       1  0391	66 20 31 61
-       1  0395	00
-  283: 1  0396	63 6F 70 79		copy_cmd:			db	"copy:", 0
-       1  039A	3A 00
-  284: 1  039C	63 6F 70 69		copy_cmd_descr:		db	"copies a block of data from one memory location to another.
-       1  03A0	65 73 20 61	", CR, LF, TAB, TAB, TAB, "ex. copy 2d4f 83bd a5", 0
-       1  03A4	20 62 6C 6F
-       1  03A8	63 6B 20 6F
-       1  03AC	66 20 64 61
-       1  03B0	74 61 20 66
-       1  03B4	72 6F 6D 20
-       1  03B8	6F 6E 65 20
-       1  03BC	6D 65 6D 6F
-       1  03C0	72 79 20 6C
-       1  03C4	6F 63 61 74
-       1  03C8	69 6F 6E 20
-       1  03CC	74 6F 20 61
-       1  03D0	6E 6F 74 68
-       1  03D4	65 72 2E 0D
-       1  03D8	0A 09 09 09
-       1  03DC	65 78 2E 20
-       1  03E0	63 6F 70 79
-       1  03E4	20 32 64 34
-       1  03E8	66 20 38 33
-       1  03EC	62 64 20 61
-       1  03F0	35 00
-  285: 1  03F2	67 6F 74 6F		goto_cmd:			db	"goto:", 0
-       1  03F6	3A 00
-  286: 1  03F8	6A 75 6D 70		goto_cmd_descr:		db	"jumps to a location in program memory to execute code.", CR
-       1  03FC	73 20 74 6F	, LF, TAB, TAB, TAB, "ex. goto 8ae3", 0
-       1  0400	20 61 20 6C
-       1  0404	6F 63 61 74
-       1  0408	69 6F 6E 20
-       1  040C	69 6E 20 70
-       1  0410	72 6F 67 72
-       1  0414	61 6D 20 6D
-       1  0418	65 6D 6F 72
-       1  041C	79 20 74 6F
-       1  0420	20 65 78 65
-       1  0424	63 75 74 65
-       1  0428	20 63 6F 64
-       1  042C	65 2E 0D 0A
-       1  0430	09 09 09 65
-       1  0434	78 2E 20 67
-       1  0438	6F 74 6F 20
-       1  043C	38 61 65 33
-       1  0440	00
-  287: 1  0441	63 61 6C 6C		call_cmd:			db	"call:", 0
-       1  0445	3A 00
-  288: 1  0447	63 61 6C 6C		call_cmd_descr:		db	"calls a subroutine to be executed.", CR, LF, TAB, TAB, TAB,
-       1  044B	73 20 61 20	 "ex. call f43d", 0
-       1  044F	73 75 62 72
-       1  0453	6F 75 74 69
-       1  0457	6E 65 20 74
+       1  039F	3A 00
+  257: 1  03A1	6A 75 6D 70		goto_cmd_descr:		db	"jumps to a location in program memory to execute code.", CR
+       1  03A5	73 20 74 6F	, LF, TAB, TAB, TAB, "ex. goto 8ae3", 0
+       1  03A9	20 61 20 6C
+       1  03AD	6F 63 61 74
+       1  03B1	69 6F 6E 20
+       1  03B5	69 6E 20 70
+       1  03B9	72 6F 67 72
+       1  03BD	61 6D 20 6D
+       1  03C1	65 6D 6F 72
+       1  03C5	79 20 74 6F
+       1  03C9	20 65 78 65
+       1  03CD	63 75 74 65
+       1  03D1	20 63 6F 64
+       1  03D5	65 2E 0D 0A
+       1  03D9	09 09 09 65
+       1  03DD	78 2E 20 67
+       1  03E1	6F 74 6F 20
+       1  03E5	38 61 65 33
+       1  03E9	00
+  258: 1  03EA	63 61 6C 6C		call_cmd:			db	"call:", 0
+       1  03EE	3A 00
+  259: 1  03F0	63 61 6C 6C		call_cmd_descr:		db	"calls a subroutine to be executed.", CR, LF, TAB, TAB, TAB,
+       1  03F4	73 20 61 20	 "ex. call f43d", 0
+       1  03F8	73 75 62 72
+       1  03FC	6F 75 74 69
+       1  0400	6E 65 20 74
+       1  0404	6F 20 62 65
+       1  0408	20 65 78 65
+       1  040C	63 75 74 65
+       1  0410	64 2E 0D 0A
+       1  0414	09 09 09 65
+       1  0418	78 2E 20 63
+       1  041C	61 6C 6C 20
+       1  0420	66 34 33 64
+       1  0424	00
+  260: 1  0425	69 72 61 6D		iram_cmd:			db	"iram:", 0
+       1  0429	3A 00
+  261: 1  042B	64 69 73 70		iram_cmd_descr:		db	"displays the contents of the internal memory area.", 0
+       1  042F	6C 61 79 73
+       1  0433	20 74 68 65
+       1  0437	20 63 6F 6E
+       1  043B	74 65 6E 74
+       1  043F	73 20 6F 66
+       1  0443	20 74 68 65
+       1  0447	20 69 6E 74
+       1  044B	65 72 6E 61
+       1  044F	6C 20 6D 65
+       1  0453	6D 6F 72 79
+       1  0457	20 61 72 65
+       1  045B	61 2E 00
+  262: 1  045E	73 66 72 3A		sfr_cmd:			db	"sfr:", 0
+       1  0462	00
+  263: 1  0463	64 69 73 70		sfr_cmd_descr:		db	"displays the special function registers.", 0
+       1  0467	6C 61 79 73
+       1  046B	20 74 68 65
 
 ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 9
 
@@ -509,62 +509,62 @@ ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. 
 
  Line  I  Addr  Code            Source
 
-       1  045B	6F 20 62 65
-       1  045F	20 65 78 65
-       1  0463	63 75 74 65
-       1  0467	64 2E 0D 0A
-       1  046B	09 09 09 65
-       1  046F	78 2E 20 63
-       1  0473	61 6C 6C 20
-       1  0477	66 34 33 64
-       1  047B	00
-  289: 1  047C	69 72 61 6D		iram_cmd:			db	"iram:", 0
-       1  0480	3A 00
-  290: 1  0482	64 69 73 70		iram_cmd_descr:		db	"displays the contents of the internal memory area.", 0
-       1  0486	6C 61 79 73
-       1  048A	20 74 68 65
-       1  048E	20 63 6F 6E
-       1  0492	74 65 6E 74
-       1  0496	73 20 6F 66
-       1  049A	20 74 68 65
-       1  049E	20 69 6E 74
-       1  04A2	65 72 6E 61
-       1  04A6	6C 20 6D 65
-       1  04AA	6D 6F 72 79
-       1  04AE	20 61 72 65
-       1  04B2	61 2E 00
-  291: 1  04B5	73 66 72 3A		sfr_cmd:			db	"sfr:", 0
-       1  04B9	00
-  292: 1  04BA	64 69 73 70		sfr_cmd_descr:		db	"displays the special function registers.", 0
-       1  04BE	6C 61 79 73
-       1  04C2	20 74 68 65
-       1  04C6	20 73 70 65
-       1  04CA	63 69 61 6C
-       1  04CE	20 66 75 6E
-       1  04D2	63 74 69 6F
-       1  04D6	6E 20 72 65
-       1  04DA	67 69 73 74
-       1  04DE	65 72 73 2E
-       1  04E2	00
-  293: 1  04E3	77 72 69 74		write_cmd:			db	"write", 0
-       1  04E7	65 00
-  294: 1  04E9	6D 6F 64 69		write_cmd_descr:	db	"modify an sfr register,", CR, LF, TAB, TAB, TAB, "ex. write
-       1  04ED	66 79 20 61	 p1 55", 0
-       1  04F1	6E 20 73 66
-       1  04F5	72 20 72 65
-       1  04F9	67 69 73 74
-       1  04FD	65 72 2C 0D
-       1  0501	0A 09 09 09
-       1  0505	65 78 2E 20
-       1  0509	77 72 69 74
-       1  050D	65 20 70 31
-       1  0511	20 35 35 00
-  295: 1
-  296: 1  0515			help_table:
-  297: 1  0515	02 01 02 07		dw	help_cmd, help_cmd_descr
-  298: 1  0519	02 2C 02 30		dw	ls_cmd, ls_cmd_descr
-  299: 1  051D	02 51 02 57		dw	peek_cmd, peek_cmd_descr
-  300: 1  0521	02 87 02 8D		dw	poke_cmd, poke_cmd_descr
+       1  046F	20 73 70 65
+       1  0473	63 69 61 6C
+       1  0477	20 66 75 6E
+       1  047B	63 74 69 6F
+       1  047F	6E 20 72 65
+       1  0483	67 69 73 74
+       1  0487	65 72 73 2E
+       1  048B	00
+  264: 1  048C	77 72 69 74		write_cmd:			db	"write", 0
+       1  0490	65 00
+  265: 1  0492	6D 6F 64 69		write_cmd_descr:	db	"modify an sfr register,", CR, LF, TAB, TAB, TAB, "ex. write
+       1  0496	66 79 20 61	 p1 55", 0
+       1  049A	6E 20 73 66
+       1  049E	72 20 72 65
+       1  04A2	67 69 73 74
+       1  04A6	65 72 2C 0D
+       1  04AA	0A 09 09 09
+       1  04AE	65 78 2E 20
+       1  04B2	77 72 69 74
+       1  04B6	65 20 70 31
+       1  04BA	20 35 35 00
+  266: 1
+  267: 1  04BE			help_table:
+  268: 1  04BE	01 AA 01 B0		dw	help_cmd, help_cmd_descr
+  269: 1  04C2	01 D5 01 D9		dw	ls_cmd, ls_cmd_descr
+  270: 1  04C6	01 FA 02 00		dw	peek_cmd, peek_cmd_descr
+  271: 1  04CA	02 30 02 36		dw	poke_cmd, poke_cmd_descr
+  272: 1  04CE	02 68 02 6E		dw	dump_cmd, dump_cmd_descr
+  273: 1  04D2	02 9B 02 A2		dw	clear_cmd, clear_cmd_descr
+  274: 1  04D6	02 C5 02 CC		dw	reset_cmd, reset_cmd_descr
+  275: 1  04DA	02 F0 02 F6		dw	fill_cmd, fill_cmd_descr
+  276: 1  04DE	03 3F 03 45		dw	copy_cmd, copy_cmd_descr
+  277: 1  04E2	03 9B 03 A1		dw	goto_cmd, goto_cmd_descr
+  278: 1  04E6	03 EA 03 F0		dw	call_cmd, call_cmd_descr
+  279: 1  04EA	04 25 04 2B		dw	iram_cmd, iram_cmd_descr
+  280: 1  04EE	04 5E 04 63		dw	sfr_cmd, sfr_cmd_descr
+  281: 1  04F2	04 8C 04 92		dw	write_cmd, write_cmd_descr
+  282: 1  04F6	00 00 00 00		dw	0, 0
+  283: 1
+  284: 1  04FA			help_txt:
+  285: 1  04FA	68 65 6C 70		db	"help", 0
+       1  04FE	00
+  286: 1  04FF			ls_txt:
+  287: 1  04FF	6C 73 00		db	"ls", 0
+  288: 1  0502			peek_txt:
+  289: 1  0502	70 65 65 6B		db	"peek", 0
+       1  0506	00
+  290: 1  0507			poke_txt:
+  291: 1  0507	70 6F 6B 65		db	"poke", 0
+       1  050B	00
+  292: 1  050C			dump_txt:
+  293: 1  050C	64 75 6D 70		db	"dump", 0
+       1  0510	00
+  294: 1  0511			clear_txt:
+  295: 1  0511	63 6C 65 61		db	"clear", 0
+       1  0515	72 00
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 10
 
@@ -572,62 +572,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  301: 1  0525	02 BF 02 C5		dw	dump_cmd, dump_cmd_descr
-  302: 1  0529	02 F2 02 F9		dw	clear_cmd, clear_cmd_descr
-  303: 1  052D	03 1C 03 23		dw	reset_cmd, reset_cmd_descr
-  304: 1  0531	03 47 03 4D		dw	fill_cmd, fill_cmd_descr
-  305: 1  0535	03 96 03 9C		dw	copy_cmd, copy_cmd_descr
-  306: 1  0539	03 F2 03 F8		dw	goto_cmd, goto_cmd_descr
-  307: 1  053D	04 41 04 47		dw	call_cmd, call_cmd_descr
-  308: 1  0541	04 7C 04 82		dw	iram_cmd, iram_cmd_descr
-  309: 1  0545	04 B5 04 BA		dw	sfr_cmd, sfr_cmd_descr
-  310: 1  0549	04 E3 04 E9		dw	write_cmd, write_cmd_descr
-  311: 1  054D	00 00 00 00		dw	0, 0
-  312: 1
-  313: 1  0551			help_txt:
-  314: 1  0551	68 65 6C 70		db	"help", 0
-       1  0555	00
-  315: 1  0556			ls_txt:
-  316: 1  0556	6C 73 00		db	"ls", 0
-  317: 1  0559			peek_txt:
-  318: 1  0559	70 65 65 6B		db	"peek", 0
-       1  055D	00
-  319: 1  055E			poke_txt:
-  320: 1  055E	70 6F 6B 65		db	"poke", 0
-       1  0562	00
-  321: 1  0563			dump_txt:
-  322: 1  0563	64 75 6D 70		db	"dump", 0
-       1  0567	00
-  323: 1  0568			clear_txt:
-  324: 1  0568	63 6C 65 61		db	"clear", 0
-       1  056C	72 00
-  325: 1  056E			reset_txt:
-  326: 1  056E	72 65 73 65		db "reset", 0
-       1  0572	74 00
-  327: 1  0574			fill_txt:
-  328: 1  0574	66 69 6C 6C		db "fill", 0
-       1  0578	00
-  329: 1  0579			copy_txt:
-  330: 1  0579	63 6F 70 79		db "copy", 0
-       1  057D	00
-  331: 1  057E			goto_txt:
-  332: 1  057E	67 6F 74 6F		db "goto", 0
-       1  0582	00
-  333: 1  0583			iram_txt:
-  334: 1  0583	69 72 61 6D		db "iram", 0
-       1  0587	00
-  335: 1  0588			sfr_txt:
-  336: 1  0588	73 66 72 00		db "sfr", 0
-  337: 1  058C			write_txt:
-  338: 1  058C	77 72 69 74		db "write", 0
-       1  0590	65 00
-  339: 1
-  340: 1  0592			msg_err:
-  341: 1  0592	55 6E 6B 6E		db "Unknown Command", 0
-       1  0596	6F 77 6E 20
-       1  059A	43 6F 6D 6D
-       1  059E	61 6E 64 00
-  342: 1
+  296: 1  0517			reset_txt:
+  297: 1  0517	72 65 73 65		db "reset", 0
+       1  051B	74 00
+  298: 1  051D			fill_txt:
+  299: 1  051D	66 69 6C 6C		db "fill", 0
+       1  0521	00
+  300: 1  0522			copy_txt:
+  301: 1  0522	63 6F 70 79		db "copy", 0
+       1  0526	00
+  302: 1  0527			goto_txt:
+  303: 1  0527	67 6F 74 6F		db "goto", 0
+       1  052B	00
+  304: 1  052C			iram_txt:
+  305: 1  052C	69 72 61 6D		db "iram", 0
+       1  0530	00
+  306: 1  0531			sfr_txt:
+  307: 1  0531	73 66 72 00		db "sfr", 0
+  308: 1  0535			write_txt:
+  309: 1  0535	77 72 69 74		db "write", 0
+       1  0539	65 00
+  310: 1
+  311: 1  053B			msg_err:
+  312: 1  053B	55 6E 6B 6E		db "Unknown Command", 0
+       1  053F	6F 77 6E 20
+       1  0543	43 6F 6D 6D
+       1  0547	61 6E 64 00
+  313: 1
+  314: 1  054B			lcd_app_name:
+  315: 1  054B	6C 63 64 00		db "lcd", 0
+  316: 1
+  317: 1  054F			lcd_app_descr:
+  318: 1  054F	41 6C 6C 6F		db "Allows testing of the lcd screen in P1, P3", 0
+       1  0553	77 73 20 74
+       1  0557	65 73 74 69
+       1  055B	6E 67 20 6F
+       1  055F	66 20 74 68
+       1  0563	65 20 6C 63
+       1  0567	64 20 73 63
+       1  056B	72 65 65 6E
+       1  056F	20 69 6E 20
+       1  0573	50 31 2C 20
+       1  0577	50 33 00
+  319: 1
+  320: 1  057A			pwm_app_name:
+  321: 1  057A	70 77 6D 00		db "pwm", 0
+  322: 1
+  323: 1  057E			pwm_app_descr:
+  324: 1  057E	41 6C 6C 6F		db "Allows testing of the pwm application.", 0
+       1  0582	77 73 20 74
+       1  0586	65 73 74 69
+       1  058A	6E 67 20 6F
+       1  058E	66 20 74 68
+       1  0592	65 20 70 77
+       1  0596	6D 20 61 70
+       1  059A	70 6C 69 63
+       1  059E	61 74 69 6F
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 11
 
@@ -635,62 +635,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  343: 1  05A2			a_short_text:
-  344: 1  05A2	54 68 65 20		db "The quick brown fox jumps over the lazy dog.", 0
-       1  05A6	71 75 69 63
-       1  05AA	6B 20 62 72
-       1  05AE	6F 77 6E 20
-       1  05B2	66 6F 78 20
-       1  05B6	6A 75 6D 70
-       1  05BA	73 20 6F 76
-       1  05BE	65 72 20 74
-       1  05C2	68 65 20 6C
-       1  05C6	61 7A 79 20
-       1  05CA	64 6F 67 2E
-       1  05CE	00
-  345: 1
-  346: 1  05CF			mem_test_fail_msg:
-  347: 1  05CF	4D 65 6D 6F		db "Memory test failed.", 0
-       1  05D3	72 79 20 74
-       1  05D7	65 73 74 20
-       1  05DB	66 61 69 6C
-       1  05DF	65 64 2E 00
-  348: 1
-  349: 1  05E3			mem_test_success_msg:
-  350: 1  05E3	4D 65 6D 6F		db "Memory test succeeded.", 0
-       1  05E7	72 79 20 74
-       1  05EB	65 73 74 20
-       1  05EF	73 75 63 63
-       1  05F3	65 65 64 65
-       1  05F7	64 2E 00
-  351: 1
-  352: 1  05FA			lcd_app_name:
-  353: 1  05FA	6C 63 64 00		db "lcd", 0
-  354: 1
-  355: 1  05FE			lcd_app_descr:
-  356: 1  05FE	41 6C 6C 6F		db "Allows testing of the lcd screen in P1, P3", 0
-       1  0602	77 73 20 74
-       1  0606	65 73 74 69
-       1  060A	6E 67 20 6F
-       1  060E	66 20 74 68
-       1  0612	65 20 6C 63
-       1  0616	64 20 73 63
-       1  061A	72 65 65 6E
-       1  061E	20 69 6E 20
-       1  0622	50 31 2C 20
-       1  0626	50 33 00
+       1  05A2	6E 2E 00
+  325: 1
+  326: 1  05A5			vt102_app_name:
+  327: 1  05A5	76 74 31 30		db "vt102", 0
+       1  05A9	32 00
+  328: 1
+  329: 1  05AB			vt102_app_descr:
+  330: 1  05AB	41 6C 6C 6F		db "Allows testing the VT102 escape sequences.", 0
+       1  05AF	77 73 20 74
+       1  05B3	65 73 74 69
+       1  05B7	6E 67 20 74
+       1  05BB	68 65 20 56
+       1  05BF	54 31 30 32
+       1  05C3	20 65 73 63
+       1  05C7	61 70 65 20
+       1  05CB	73 65 71 75
+       1  05CF	65 6E 63 65
+       1  05D3	73 2E 00
+  331: 1
+  332: 1  05D6			app_table:
+  333: 1  05D6	05 4B 05 4F		dw lcd_app_name, lcd_app_descr, lcd_app
+       1  05DA	0D 20
+  334: 1  05DC	05 7A 05 7E		dw pwm_app_name, pwm_app_descr, pwm_app
+       1  05E0	0D 21
+  335: 1  05E2	05 A5 05 AB		dw vt102_app_name, vt102_app_descr, vt102_app
+       1  05E6	0D 22
+  336: 1  05E8	00 00 00 00		dw 0, 0, 0									; end of tab
+       1  05EC	00 00		le
+  337: 1
+  338: 1  05EE	50 30 00	p0_txt: 	db "P0", 0
+  339: 1  05F1	53 50 00	sp_txt: 	db "SP", 0
+  340: 1  05F4	50 43 4F 4E	pcon_txt:	db "PCON", 0
+       1  05F8	00
+  341: 1  05F9	54 43 4F 4E	tcon_txt:	db "TCON", 0
+       1  05FD	00
+  342: 1  05FE	54 4D 4F 44	tmod_txt:	db "TMOD", 0
+       1  0602	00
+  343: 1  0603	54 4C 30 00	tl0_txt:	db "TL0", 0
+  344: 1  0607	54 4C 31 00	tl1_txt:	db "TL1", 0
+  345: 1  060B	54 48 30 00	th0_txt:	db "TH0", 0
+  346: 1  060F	54 48 31 00	th1_txt:	db "TH1", 0
+  347: 1  0613	50 31 00	p1_txt:		db "P1", 0
+  348: 1  0616	53 43 4F 4E	scon_txt:	db "SCON", 0
+       1  061A	00
+  349: 1  061B	53 42 55 46	sbuf_txt:	db "SBUF", 0
+       1  061F	00
+  350: 1  0620	50 32 00	p2_txt:		db "P2", 0
+  351: 1  0623	49 45 00	ie_txt:		db "IE", 0
+  352: 1  0626	50 33 00	p3_txt:		db "P3", 0
+  353: 1  0629	49 50 00	ip_txt:		db "IP", 0
+  354: 1  062C	50 53 57 00	psw_txt:	db "PSW", 0
+  355: 1  0630	41 43 43 00	acc_txt:	db "ACC", 0
+  356: 1  0634	42 00		b_txt:		db "B", 0
   357: 1
-  358: 1  0629			pwm_app_name:
-  359: 1  0629	70 77 6D 00		db "pwm", 0
-  360: 1
-  361: 1  062D			pwm_app_descr:
-  362: 1  062D	41 6C 6C 6F		db "Allows testing of the pwm application.", 0
-       1  0631	77 73 20 74
-       1  0635	65 73 74 69
-       1  0639	6E 67 20 6F
-       1  063D	66 20 74 68
-       1  0641	65 20 70 77
-       1  0645	6D 20 61 70
+  358:				$INCLUDE (g51-logo.inc)
+  359: 1			cseg
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 12
 
@@ -698,62 +698,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-       1  0649	70 6C 69 63
-       1  064D	61 74 69 6F
-       1  0651	6E 2E 00
-  363: 1
-  364: 1  0654			vt102_app_name:
-  365: 1  0654	76 74 31 30		db "vt102", 0
-       1  0658	32 00
-  366: 1
-  367: 1  065A			vt102_app_descr:
-  368: 1  065A	41 6C 6C 6F		db "Allows testing the VT102 escape sequences.", 0
-       1  065E	77 73 20 74
-       1  0662	65 73 74 69
-       1  0666	6E 67 20 74
-       1  066A	68 65 20 56
-       1  066E	54 31 30 32
-       1  0672	20 65 73 63
-       1  0676	61 70 65 20
-       1  067A	73 65 71 75
-       1  067E	65 6E 63 65
-       1  0682	73 2E 00
-  369: 1
-  370: 1  0685			app_table:
-  371: 1  0685	05 FA 05 FE		dw lcd_app_name, lcd_app_descr, lcd_app
-       1  0689	0E 1E
-  372: 1  068B	06 29 06 2D		dw pwm_app_name, pwm_app_descr, pwm_app
-       1  068F	0E 1F
-  373: 1  0691	06 54 06 5A		dw vt102_app_name, vt102_app_descr, vt102_app
-       1  0695	0E 20
-  374: 1  0697	00 00 00 00		dw 0, 0, 0									; end of tab
-       1  069B	00 00		le
-  375: 1
-  376: 1  069D	50 30 00	p0_txt: 	db "P0", 0
-  377: 1  06A0	53 50 00	sp_txt: 	db "SP", 0
-  378: 1  06A3	50 43 4F 4E	pcon_txt:	db "PCON", 0
-       1  06A7	00
-  379: 1  06A8	54 43 4F 4E	tcon_txt:	db "TCON", 0
-       1  06AC	00
-  380: 1  06AD	54 4D 4F 44	tmod_txt:	db "TMOD", 0
-       1  06B1	00
-  381: 1  06B2	54 4C 30 00	tl0_txt:	db "TL0", 0
-  382: 1  06B6	54 4C 31 00	tl1_txt:	db "TL1", 0
-  383: 1  06BA	54 48 30 00	th0_txt:	db "TH0", 0
-  384: 1  06BE	54 48 31 00	th1_txt:	db "TH1", 0
-  385: 1  06C2	50 31 00	p1_txt:		db "P1", 0
-  386: 1  06C5	53 43 4F 4E	scon_txt:	db "SCON", 0
-       1  06C9	00
-  387: 1  06CA	53 42 55 46	sbuf_txt:	db "SBUF", 0
-       1  06CE	00
-  388: 1  06CF	50 32 00	p2_txt:		db "P2", 0
-  389: 1  06D2	49 45 00	ie_txt:		db "IE", 0
-  390: 1  06D5	50 33 00	p3_txt:		db "P3", 0
-  391: 1  06D8	49 50 00	ip_txt:		db "IP", 0
-  392: 1  06DB	50 53 57 00	psw_txt:	db "PSW", 0
-  393: 1  06DF	41 43 43 00	acc_txt:	db "ACC", 0
-  394: 1  06E3	42 00		b_txt:		db "B", 0
-  395: 1
+  360: 1
+  361: 1  0636			g51_logo:
+  362: 1  0636	09 5F 5F 5F	db TAB, "_____/\\\\\\\\\\\\____/\\\\\\\\\\\\\\\_ ______/\\\_        ", CR, LF
+       1  063A	5F 5F 2F 5C
+       1  063E	5C 5C 5C 5C
+       1  0642	5C 5C 5C 5C
+       1  0646	5C 5C 5C 5F
+       1  064A	5F 5F 5F 2F
+       1  064E	5C 5C 5C 5C
+       1  0652	5C 5C 5C 5C
+       1  0656	5C 5C 5C 5C
+       1  065A	5C 5C 5C 5F
+       1  065E	20 5F 5F 5F
+       1  0662	5F 5F 5F 2F
+       1  0666	5C 5C 5C 5F
+       1  066A	20 20 20 20
+       1  066E	20 20 20 20
+       1  0672	0D 0A
+  363: 1  0674	09 20 5F 5F	db TAB, " ___/\\\//////////____\/\\\///////////__ __/\\\\\\\_       ", CR, LF
+       1  0678	5F 2F 5C 5C
+       1  067C	5C 2F 2F 2F
+       1  0680	2F 2F 2F 2F
+       1  0684	2F 2F 2F 5F
+       1  0688	5F 5F 5F 5C
+       1  068C	2F 5C 5C 5C
+       1  0690	2F 2F 2F 2F
+       1  0694	2F 2F 2F 2F
+       1  0698	2F 2F 2F 5F
+       1  069C	5F 20 5F 5F
+       1  06A0	2F 5C 5C 5C
+       1  06A4	5C 5C 5C 5C
+       1  06A8	5F 20 20 20
+       1  06AC	20 20 20 20
+       1  06B0	0D 0A
+  364: 1  06B2	09 20 20 5F	db TAB, "  __/\\\_______________\/\\\_____________ _\/////\\\_      ", CR, LF
+       1  06B6	5F 2F 5C 5C
+       1  06BA	5C 5F 5F 5F
+       1  06BE	5F 5F 5F 5F
+       1  06C2	5F 5F 5F 5F
+       1  06C6	5F 5F 5F 5F
+       1  06CA	5C 2F 5C 5C
+       1  06CE	5C 5F 5F 5F
+       1  06D2	5F 5F 5F 5F
+       1  06D6	5F 5F 5F 5F
+       1  06DA	5F 5F 20 5F
+       1  06DE	5C 2F 2F 2F
+       1  06E2	2F 2F 5C 5C
+       1  06E6	5C 5F 20 20
+       1  06EA	20 20 20 20
+       1  06EE	0D 0A
+  365: 1  06F0	09 20 20 20	db TAB, "   _\/\\\____/\\\\\\\___\/\\\\\\\\\\\\__________\/\\\_     ", CR, LF
+       1  06F4	5F 5C 2F 5C
+       1  06F8	5C 5C 5F 5F
+       1  06FC	5F 5F 2F 5C
+       1  0700	5C 5C 5C 5C
+       1  0704	5C 5C 5F 5F
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 13
 
@@ -761,62 +761,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  396:				$INCLUDE (uart.inc)
-  397: 1			; uart library for 8051 (polling method)
-  398: 1			; includes: uart_init, uart_rx_char, uart_rx_string, uart_tx_char, uart_tx_string
-  399: 1			cseg
-  400: 1
-  401: 1  06E5			uart_init:
-  402: 1  06E5	75 89 20	    mov tmod, #20h      ; timer 1, mode 2 (8-bit auto-reload)
-  403: 1  06E8	75 8D FD	    mov th1, #0fdh      ; 9600 baud at 11.0592 mhz
-  404: 1  06EB	75 98 50	    mov scon, #50h      ; mode 1 (8-bit uart), enable receiver (ren=1)
-  405: 1  06EE	D2 8E		    setb tr1            ; start timer 1
-  406: 1  06F0	90 00 00		mov dptr, #uart_rx_buffer_cur
-  407: 1  06F3	74 00			mov a, #00h
-  408: 1  06F5	F0			movx @dptr, a
-  409: 1  06F6	22		    ret
-  410: 1
-  411: 1  06F7			uart_tx_char:
-  412: 1  06F7	F5 99			mov sbuf, a             ; load character into buffer
-  413: 1  06F9			tx_wait:
-  414: 1  06F9	30 99 FD	    jnb ti, tx_wait     ; wait for transmission to complete
-  415: 1  06FC	C2 99		    clr ti              ; clear flag for next char
-  416: 1  06FE	22		    ret
-  417: 1
-  418: 1  06FF			uart_tx_string:
-  419: 1			    ; sends null-terminated string from dptr
-  420: 1  06FF	E4		    clr a
-  421: 1  0700	93		    movc a, @a+dptr     ; get char from code memory
-  422: 1  0701	60 05		    jz tx_str_done      ; if 0, end of string
-  423: 1  0703	D1 F7		    acall uart_tx_char  ; transmit char
-  424: 1  0705	A3		    inc dptr            ; next char
-  425: 1  0706	80 F7		    sjmp uart_tx_string
-  426: 1  0708			tx_str_done:
-  427: 1  0708	22		    ret
-  428: 1
-  429: 1  0709			uart_rx_char:
-  430: 1  0709	30 98 FD	    jnb ri, uart_rx_char ; wait for character
-  431: 1  070C	E5 99		    mov a, sbuf         ; read from buffer
-  432: 1  070E	C2 98		    clr ri              ; clear flag
-  433: 1  0710	22		    ret
-  434: 1
-  435: 1  0711			uart_rx_string:
-  436: 1			    ; receives string into ram at r0. terminates on cr (0x0d) or lf (0x0a).
-  437: 1			    ; replaces terminator with 0x00 (asciiz).
-  438: 1  0711			rx_loop:
-  439: 1  0711	F1 09		    acall uart_rx_char  ; get char
-  440: 1  0713	D1 F7		    acall uart_tx_char  ; echo char back to minicom (optional but helpful)
-  441: 1  0715	B4 0D 02	    cjne a, #0dh, chk_lf ; is it cr?
-  442: 1  0718	80 17		    sjmp str_term       ; yes, terminate
-  443: 1  071A			chk_lf:
-  444: 1  071A	B4 0A 02	    cjne a, #0ah, save_char ; is it lf?
-  445: 1  071D	80 12		    sjmp str_term       ; yes, terminate
-  446: 1  071F			save_char:
-  447: 1  071F	B4 08 0B		cjne a, #BS, confirm_save
-  448: 1  0722	18			dec r0
-  449: 1  0723	74 20			mov a, #SPC
-  450: 1  0725	D1 F7			call uart_tx_char
-  451: 1  0727	74 08			mov a, #BS
+       1  0708	5F 5C 2F 5C
+       1  070C	5C 5C 5C 5C
+       1  0710	5C 5C 5C 5C
+       1  0714	5C 5C 5C 5F
+       1  0718	5F 5F 5F 5F
+       1  071C	5F 5F 5F 5F
+       1  0720	5F 5C 2F 5C
+       1  0724	5C 5C 5F 20
+       1  0728	20 20 20 20
+       1  072C	0D 0A
+  366: 1  072E	09 20 20 20	db TAB, "    _\/\\\___\/////\\\___\////////////\\\________\/\\\_    ", CR, LF
+       1  0732	20 5F 5C 2F
+       1  0736	5C 5C 5C 5F
+       1  073A	5F 5F 5C 2F
+       1  073E	2F 2F 2F 2F
+       1  0742	5C 5C 5C 5F
+       1  0746	5F 5F 5C 2F
+       1  074A	2F 2F 2F 2F
+       1  074E	2F 2F 2F 2F
+       1  0752	2F 2F 2F 5C
+       1  0756	5C 5C 5F 5F
+       1  075A	5F 5F 5F 5F
+       1  075E	5F 5F 5C 2F
+       1  0762	5C 5C 5C 5F
+       1  0766	20 20 20 20
+       1  076A	0D 0A
+  367: 1  076C	09 20 20 20	db TAB, "     _\/\\\_______\/\\\______________\//\\\_______\/\\\_   ", CR, LF
+       1  0770	20 20 5F 5C
+       1  0774	2F 5C 5C 5C
+       1  0778	5F 5F 5F 5F
+       1  077C	5F 5F 5F 5C
+       1  0780	2F 5C 5C 5C
+       1  0784	5F 5F 5F 5F
+       1  0788	5F 5F 5F 5F
+       1  078C	5F 5F 5F 5F
+       1  0790	5F 5F 5C 2F
+       1  0794	2F 5C 5C 5C
+       1  0798	5F 5F 5F 5F
+       1  079C	5F 5F 5F 5C
+       1  07A0	2F 5C 5C 5C
+       1  07A4	5F 20 20 20
+       1  07A8	0D 0A
+  368: 1  07AA	09 20 20 20	db TAB, "      _\/\\\_______\/\\\___/\\\________\/\\\_______\/\\\_  ", CR, LF
+       1  07AE	20 20 20 5F
+       1  07B2	5C 2F 5C 5C
+       1  07B6	5C 5F 5F 5F
+       1  07BA	5F 5F 5F 5F
+       1  07BE	5C 2F 5C 5C
+       1  07C2	5C 5F 5F 5F
+       1  07C6	2F 5C 5C 5C
+       1  07CA	5F 5F 5F 5F
+       1  07CE	5F 5F 5F 5F
+       1  07D2	5C 2F 5C 5C
+       1  07D6	5C 5F 5F 5F
+       1  07DA	5F 5F 5F 5F
+       1  07DE	5C 2F 5C 5C
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 14
 
@@ -824,62 +824,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  452: 1  0729	D1 F7			call uart_tx_char
-  453: 1  072B	80 E4			jmp rx_loop
-  454: 1  072D			confirm_save:
-  455: 1  072D	F6		    mov @r0, a          ; store char in ram
-  456: 1  072E	08		    inc r0
-  457: 1  072F	80 E0		    sjmp rx_loop
-  458: 1  0731			str_term:
-  459: 1  0731	76 00		    mov @r0, #00h       ; add null terminator (asciiz)
-  460: 1  0733	22		    ret
-  461: 1
-  462: 1			xseg
-  463: 1  0000	N      0001	uart_rx_buffer_cur:	ds 01h
-  464: 1  0001	N      0100	uart_rx_buffer: ds 100h				; 256-byte buffer
-  465: 1
-  466: 1
-  467:				$INCLUDE (g51-logo.inc)
-  468: 1			cseg
-  469: 1
-  470: 1  0734			g51_logo:
-  471: 1  0734	09 5F 5F 5F	db TAB, "_____/\\\\\\\\\\\\____/\\\\\\\\\\\\\\\_ ______/\\\_        ", CR, LF
-       1  0738	5F 5F 2F 5C
-       1  073C	5C 5C 5C 5C
-       1  0740	5C 5C 5C 5C
-       1  0744	5C 5C 5C 5F
-       1  0748	5F 5F 5F 2F
-       1  074C	5C 5C 5C 5C
-       1  0750	5C 5C 5C 5C
-       1  0754	5C 5C 5C 5C
-       1  0758	5C 5C 5C 5F
-       1  075C	20 5F 5F 5F
-       1  0760	5F 5F 5F 2F
-       1  0764	5C 5C 5C 5F
-       1  0768	20 20 20 20
-       1  076C	20 20 20 20
-       1  0770	0D 0A
-  472: 1  0772	09 20 5F 5F	db TAB, " ___/\\\//////////____\/\\\///////////__ __/\\\\\\\_       ", CR, LF
-       1  0776	5F 2F 5C 5C
-       1  077A	5C 2F 2F 2F
-       1  077E	2F 2F 2F 2F
-       1  0782	2F 2F 2F 5F
-       1  0786	5F 5F 5F 5C
-       1  078A	2F 5C 5C 5C
-       1  078E	2F 2F 2F 2F
-       1  0792	2F 2F 2F 2F
-       1  0796	2F 2F 2F 5F
-       1  079A	5F 20 5F 5F
-       1  079E	2F 5C 5C 5C
-       1  07A2	5C 5C 5C 5C
-       1  07A6	5F 20 20 20
-       1  07AA	20 20 20 20
-       1  07AE	0D 0A
-  473: 1  07B0	09 20 20 5F	db TAB, "  __/\\\_______________\/\\\_____________ _\/////\\\_      ", CR, LF
-       1  07B4	5F 2F 5C 5C
-       1  07B8	5C 5F 5F 5F
-       1  07BC	5F 5F 5F 5F
-       1  07C0	5F 5F 5F 5F
+       1  07E2	5C 5F 20 20
+       1  07E6	0D 0A
+  369: 1  07E8	09 20 20 20	db TAB, "       _\//\\\\\\\\\\\\/___\//\\\\\\\\\\\\\/________\/\\\_ ", CR, LF
+       1  07EC	20 20 20 20
+       1  07F0	5F 5C 2F 2F
+       1  07F4	5C 5C 5C 5C
+       1  07F8	5C 5C 5C 5C
+       1  07FC	5C 5C 5C 5C
+       1  0800	2F 5F 5F 5F
+       1  0804	5C 2F 2F 5C
+       1  0808	5C 5C 5C 5C
+       1  080C	5C 5C 5C 5C
+       1  0810	5C 5C 5C 5C
+       1  0814	2F 5F 5F 5F
+       1  0818	5F 5F 5F 5F
+       1  081C	5F 5C 2F 5C
+       1  0820	5C 5C 5F 20
+       1  0824	0D 0A
+  370: 1  0826	09 20 20 20	db TAB, "        __\////////////______\/////////////__________\///_ ", CR, LF, 0
+       1  082A	20 20 20 20
+       1  082E	20 5F 5F 5C
+       1  0832	2F 2F 2F 2F
+       1  0836	2F 2F 2F 2F
+       1  083A	2F 2F 2F 2F
+       1  083E	5F 5F 5F 5F
+       1  0842	5F 5F 5C 2F
+       1  0846	2F 2F 2F 2F
+       1  084A	2F 2F 2F 2F
+       1  084E	2F 2F 2F 2F
+       1  0852	5F 5F 5F 5F
+       1  0856	5F 5F 5F 5F
+       1  085A	5F 5F 5C 2F
+       1  085E	2F 2F 5F 20
+       1  0862	0D 0A 00
+  371:				$include (string.inc)
+  372: 1			cseg
+  373: 1			; --- String Compare Utility ---
+  374: 1  0865			STRCMP:
+  375: 1			    ; Compares RAM string at R0 with CODE string at DPTR
+  376: 1			    ; Returns A=0 if match, A=1 if no match
+  377: 1  0865			STRCMP_LOOP:
+  378: 1  0865	E4		    CLR A
+  379: 1  0866	93		    MOVC A, @A+DPTR     ; Get char from CODE
+  380: 1  0867	F5 F0		    MOV B, A            ; Store in B
+  381: 1  0869	E6		    MOV A, @R0          ; Get char from RAM
+  382: 1  086A	B5 F0 08	    CJNE A, B, NO_MATCH ; Compare
+  383: 1  086D	60 04		    JZ MATCH            ; If both are 0, they match
+  384: 1  086F	08		    INC R0
+  385: 1  0870	A3		    INC DPTR
+  386: 1  0871	80 F2		    SJMP STRCMP_LOOP
+  387: 1  0873			MATCH:
+  388: 1  0873	E4		    CLR A               ; Return 0
+  389: 1  0874	22		    RET
+  390: 1  0875			NO_MATCH:
+  391: 1  0875	74 01		    MOV A, #01H         ; Return 1
+  392: 1  0877	22		    RET
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 15
 
@@ -887,62 +887,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-       1  07C4	5F 5F 5F 5F
-       1  07C8	5C 2F 5C 5C
-       1  07CC	5C 5F 5F 5F
-       1  07D0	5F 5F 5F 5F
-       1  07D4	5F 5F 5F 5F
-       1  07D8	5F 5F 20 5F
-       1  07DC	5C 2F 2F 2F
-       1  07E0	2F 2F 5C 5C
-       1  07E4	5C 5F 20 20
-       1  07E8	20 20 20 20
-       1  07EC	0D 0A
-  474: 1  07EE	09 20 20 20	db TAB, "   _\/\\\____/\\\\\\\___\/\\\\\\\\\\\\__________\/\\\_     ", CR, LF
-       1  07F2	5F 5C 2F 5C
-       1  07F6	5C 5C 5F 5F
-       1  07FA	5F 5F 2F 5C
-       1  07FE	5C 5C 5C 5C
-       1  0802	5C 5C 5F 5F
-       1  0806	5F 5C 2F 5C
-       1  080A	5C 5C 5C 5C
-       1  080E	5C 5C 5C 5C
-       1  0812	5C 5C 5C 5F
-       1  0816	5F 5F 5F 5F
-       1  081A	5F 5F 5F 5F
-       1  081E	5F 5C 2F 5C
-       1  0822	5C 5C 5F 20
-       1  0826	20 20 20 20
-       1  082A	0D 0A
-  475: 1  082C	09 20 20 20	db TAB, "    _\/\\\___\/////\\\___\////////////\\\________\/\\\_    ", CR, LF
-       1  0830	20 5F 5C 2F
-       1  0834	5C 5C 5C 5F
-       1  0838	5F 5F 5C 2F
-       1  083C	2F 2F 2F 2F
-       1  0840	5C 5C 5C 5F
-       1  0844	5F 5F 5C 2F
-       1  0848	2F 2F 2F 2F
-       1  084C	2F 2F 2F 2F
-       1  0850	2F 2F 2F 5C
-       1  0854	5C 5C 5F 5F
-       1  0858	5F 5F 5F 5F
-       1  085C	5F 5F 5C 2F
-       1  0860	5C 5C 5C 5F
-       1  0864	20 20 20 20
-       1  0868	0D 0A
-  476: 1  086A	09 20 20 20	db TAB, "     _\/\\\_______\/\\\______________\//\\\_______\/\\\_   ", CR, LF
-       1  086E	20 20 5F 5C
-       1  0872	2F 5C 5C 5C
-       1  0876	5F 5F 5F 5F
-       1  087A	5F 5F 5F 5C
-       1  087E	2F 5C 5C 5C
-       1  0882	5F 5F 5F 5F
-       1  0886	5F 5F 5F 5F
-       1  088A	5F 5F 5F 5F
-       1  088E	5F 5F 5C 2F
-       1  0892	2F 5C 5C 5C
-       1  0896	5F 5F 5F 5F
-       1  089A	5F 5F 5F 5C
+  393: 1
+  394: 1  0878			strncmp:
+  395: 1							; counter
+  396: 1  0878			strncmp_loop:
+  397: 1  0878	E4		    CLR A
+  398: 1  0879	93		    MOVC A, @A+DPTR     ; Get char from CODE
+  399: 1  087A	F5 F0		    MOV B, A            ; Store in B
+  400: 1  087C	E6		    MOV A, @R0          ; Get char from RAM
+  401: 1  087D	B5 F0 06	    CJNE A, B, strncmp_no_match ; Compare
+  402: 1  0880	08		    INC R0
+  403: 1  0881	A3		    INC DPTR
+  404: 1  0882	DA F4			djnz r2, strncmp_loop
+  405: 1
+  406: 1  0884			strncmp_match:
+  407: 1  0884	E4		    CLR A               ; Return 0
+  408: 1  0885	22		    RET
+  409: 1  0886			strncmp_no_match:
+  410: 1  0886	74 01		    MOV A, #01H         ; Return 1
+  411: 1  0888	22		    RET
+  412: 1
+  413: 1			; finds character c in the first n bytes of a memory buffer in program memory
+  414: 1			; --> r6,r7: address of memory buffer
+  415: 1			; --> r5: 	character for which to search
+  416: 1			; --> r4:	how many bytes at which to look
+  417: 1			; <-- r6,r7: address at which character was found, otherwise NULL
+  418: 1			; <-- c: clear if found, otherwise set
+  419: 1  0889			memchr_c:
+  420: 1  0889	8E 83			mov dph, r6
+  421: 1  088B	8F 82			mov dpl, r7
+  422: 1  088D			memchr_loop_c:
+  423: 1  088D	E4			clr a
+  424: 1  088E	93			movc a, @a + dptr
+  425: 1  088F	C3			clr c
+  426: 1  0890	9D			subb a, r5
+  427: 1  0891	70 05			jnz memchr_no_match_c
+  428: 1  0893	DC F8			djnz r4, memchr_loop_c
+  429: 1  0895	02 08 9E		jmp memchr_match_c
+  430: 1  0898			memchr_no_match_c:
+  431: 1  0898	7E 00			mov r6, #00h
+  432: 1  089A	7F 00			mov r7, #00h
+  433: 1  089C	D3			setb c
+  434: 1  089D	22			ret
+  435: 1  089E			memchr_match_c:
+  436: 1  089E	AE 83			mov r6, dph
+  437: 1  08A0	AF 82			mov r7, dpl
+  438: 1  08A2	C3			clr c
+  439: 1  08A3	22			ret
+  440: 1
+  441: 1			; finds character c in the first n bytes of a memory buffer in data memory
+  442: 1			; --> r6,r7: address of memory buffer
+  443: 1			; --> r5: 	character for which to search
+  444: 1			; --> r4:	how many bytes at which to look
+  445: 1			; <-- r6,r7: address at which character was found, otherwise NULL
+  446: 1  08A4			memchr:
+  447: 1  08A4	8E 83			mov dph, r6
+  448: 1  08A6	8F 82			mov dpl, r7
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 16
 
@@ -950,62 +950,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-       1  089E	2F 5C 5C 5C
-       1  08A2	5F 20 20 20
-       1  08A6	0D 0A
-  477: 1  08A8	09 20 20 20	db TAB, "      _\/\\\_______\/\\\___/\\\________\/\\\_______\/\\\_  ", CR, LF
-       1  08AC	20 20 20 5F
-       1  08B0	5C 2F 5C 5C
-       1  08B4	5C 5F 5F 5F
-       1  08B8	5F 5F 5F 5F
-       1  08BC	5C 2F 5C 5C
-       1  08C0	5C 5F 5F 5F
-       1  08C4	2F 5C 5C 5C
-       1  08C8	5F 5F 5F 5F
-       1  08CC	5F 5F 5F 5F
-       1  08D0	5C 2F 5C 5C
-       1  08D4	5C 5F 5F 5F
-       1  08D8	5F 5F 5F 5F
-       1  08DC	5C 2F 5C 5C
-       1  08E0	5C 5F 20 20
-       1  08E4	0D 0A
-  478: 1  08E6	09 20 20 20	db TAB, "       _\//\\\\\\\\\\\\/___\//\\\\\\\\\\\\\/________\/\\\_ ", CR, LF
-       1  08EA	20 20 20 20
-       1  08EE	5F 5C 2F 2F
-       1  08F2	5C 5C 5C 5C
-       1  08F6	5C 5C 5C 5C
-       1  08FA	5C 5C 5C 5C
-       1  08FE	2F 5F 5F 5F
-       1  0902	5C 2F 2F 5C
-       1  0906	5C 5C 5C 5C
-       1  090A	5C 5C 5C 5C
-       1  090E	5C 5C 5C 5C
-       1  0912	2F 5F 5F 5F
-       1  0916	5F 5F 5F 5F
-       1  091A	5F 5C 2F 5C
-       1  091E	5C 5C 5F 20
-       1  0922	0D 0A
-  479: 1  0924	09 20 20 20	db TAB, "        __\////////////______\/////////////__________\///_ ", CR, LF, 0
-       1  0928	20 20 20 20
-       1  092C	20 5F 5F 5C
-       1  0930	2F 2F 2F 2F
-       1  0934	2F 2F 2F 2F
-       1  0938	2F 2F 2F 2F
-       1  093C	5F 5F 5F 5F
-       1  0940	5F 5F 5C 2F
-       1  0944	2F 2F 2F 2F
-       1  0948	2F 2F 2F 2F
-       1  094C	2F 2F 2F 2F
-       1  0950	5F 5F 5F 5F
-       1  0954	5F 5F 5F 5F
-       1  0958	5F 5F 5C 2F
-       1  095C	2F 2F 5F 20
-       1  0960	0D 0A 00
-  480:				$include (string.inc)
-  481: 1			cseg
-  482: 1			; --- String Compare Utility ---
-  483: 1  0963			STRCMP:
-  484: 1			    ; Compares RAM string at R0 with CODE string at DPTR
+  449: 1  08A8			memchr_loop:
+  450: 1  08A8	E4			clr a
+  451: 1  08A9	E0			movx a, @dptr
+  452: 1  08AA	60 0E			jz memchr_match
+  453: 1  08AC	C3			clr c
+  454: 1  08AD	9D			subb a, r5
+  455: 1  08AE	70 05			jnz memchr_no_match
+  456: 1  08B0	DC F6			djnz r4, memchr_loop
+  457: 1  08B2	02 08 BA		jmp memchr_match
+  458: 1  08B5			memchr_no_match:
+  459: 1  08B5	7E 00			mov r6, #00h
+  460: 1  08B7	7F 00			mov r7, #00h
+  461: 1  08B9	22			ret
+  462: 1  08BA			memchr_match:
+  463: 1  08BA	AE 83			mov r6, dph
+  464: 1  08BC	AF 82			mov r7, dpl
+  465: 1  08BE	22			ret
+  466: 1
+  467: 1			; compares the first n bytes of two blocks of memory, one of which is in program memory
+  468: 1			; --> r6, r7: 	address of block of memory in program memory
+  469: 1			; --> r4, r5: 	address of block of memory in data memory
+  470: 1			; --> r3: 		how many bytes to compare
+  471: 1			; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
+  472: 1
+  473: 1  08BF			memcmp_c:
+  474: 1  08BF	8E 83			mov dph, r6
+  475: 1  08C1	8F 82			mov dpl, r7
+  476: 1  08C3			memcmp_loop_c:
+  477: 1  08C3	E4			clr a
+  478: 1  08C4	93			movc a, @a + dptr
+  479: 1  08C5	F5 F0			mov b, a
+  480: 1  08C7	A3			inc dptr
+  481: 1  08C8	AE 83			mov r6, dph
+  482: 1  08CA	AF 82			mov r7, dpl
+  483: 1  08CC	8C 83			mov dph, r4
+  484: 1  08CE	8D 82			mov dpl, r5
+  485: 1  08D0	E0			movx a, @dptr
+  486: 1  08D1	C3			clr c
+  487: 1  08D2	95 F0			subb a, b
+  488: 1  08D4	70 0E			jnz memcmp_no_match_c
+  489: 1  08D6	DB EB			djnz r3, memcmp_loop_c
+  490: 1  08D8	A3			inc dptr
+  491: 1  08D9	AC 83			mov r4, dph
+  492: 1  08DB	AD 82			mov r5, dpl
+  493: 1  08DD	8E 83			mov dph, r6
+  494: 1  08DF	8F 82			mov dpl, r7
+  495: 1  08E1	02 08 EC		jmp memcmp_match_c
+  496: 1  08E4			memcmp_no_match_c:
+  497: 1  08E4	40 03			jc memcmp_no_match_less_c
+  498: 1  08E6	7F 01			mov r7, #01h
+  499: 1  08E8	22			ret
+  500: 1  08E9			memcmp_no_match_less_c:
+  501: 1  08E9	7F FF			mov r7, #0ffh
+  502: 1  08EB	22			ret
+  503: 1  08EC			memcmp_match_c:
+  504: 1  08EC	7F 00			mov r7, #00h
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 17
 
@@ -1013,62 +1013,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  485: 1			    ; Returns A=0 if match, A=1 if no match
-  486: 1  0963			STRCMP_LOOP:
-  487: 1  0963	E4		    CLR A
-  488: 1  0964	93		    MOVC A, @A+DPTR     ; Get char from CODE
-  489: 1  0965	F5 F0		    MOV B, A            ; Store in B
-  490: 1  0967	E6		    MOV A, @R0          ; Get char from RAM
-  491: 1  0968	B5 F0 08	    CJNE A, B, NO_MATCH ; Compare
-  492: 1  096B	60 04		    JZ MATCH            ; If both are 0, they match
-  493: 1  096D	08		    INC R0
-  494: 1  096E	A3		    INC DPTR
-  495: 1  096F	80 F2		    SJMP STRCMP_LOOP
-  496: 1  0971			MATCH:
-  497: 1  0971	E4		    CLR A               ; Return 0
-  498: 1  0972	22		    RET
-  499: 1  0973			NO_MATCH:
-  500: 1  0973	74 01		    MOV A, #01H         ; Return 1
-  501: 1  0975	22		    RET
-  502: 1
-  503: 1  0976			strncmp:
-  504: 1							; counter
-  505: 1  0976			strncmp_loop:
-  506: 1  0976	E4		    CLR A
-  507: 1  0977	93		    MOVC A, @A+DPTR     ; Get char from CODE
-  508: 1  0978	F5 F0		    MOV B, A            ; Store in B
-  509: 1  097A	E6		    MOV A, @R0          ; Get char from RAM
-  510: 1  097B	B5 F0 06	    CJNE A, B, strncmp_no_match ; Compare
-  511: 1  097E	08		    INC R0
-  512: 1  097F	A3		    INC DPTR
-  513: 1  0980	DA F4			djnz r2, strncmp_loop
-  514: 1
-  515: 1  0982			strncmp_match:
-  516: 1  0982	E4		    CLR A               ; Return 0
-  517: 1  0983	22		    RET
-  518: 1  0984			strncmp_no_match:
-  519: 1  0984	74 01		    MOV A, #01H         ; Return 1
-  520: 1  0986	22		    RET
-  521: 1
-  522: 1			; finds character c in the first n bytes of a memory buffer in program memory
-  523: 1			; --> r6,r7: address of memory buffer
-  524: 1			; --> r5: 	character for which to search
-  525: 1			; --> r4:	how many bytes at which to look
-  526: 1			; <-- r6,r7: address at which character was found, otherwise NULL
-  527: 1			; <-- c: clear if found, otherwise set
-  528: 1  0987			memchr_c:
-  529: 1  0987	8E 83			mov dph, r6
-  530: 1  0989	8F 82			mov dpl, r7
-  531: 1  098B			memchr_loop_c:
-  532: 1  098B	E4			clr a
-  533: 1  098C	93			movc a, @a + dptr
-  534: 1  098D	C3			clr c
-  535: 1  098E	9D			subb a, r5
-  536: 1  098F	70 05			jnz memchr_no_match_c
-  537: 1  0991	DC F8			djnz r4, memchr_loop_c
-  538: 1  0993	02 09 9C		jmp memchr_match_c
-  539: 1  0996			memchr_no_match_c:
-  540: 1  0996	7E 00			mov r6, #00h
+  505: 1  08EE	22			ret
+  506: 1
+  507: 1			; copies n bytes from one memory block to another, one of which resides in program memory
+  508: 1			; --> r6, r7: address of source memory block in program memory
+  509: 1			; --> r4, r5: address of destination memory block in data memory
+  510: 1			; --> r3: 	  how many bytes to copy
+  511: 1
+  512: 1  08EF			memcpy_c:
+  513: 1  08EF			memcpy_c_loop:
+  514: 1  08EF	8E 83			mov dph, r6
+  515: 1  08F1	8F 82			mov dpl, r7
+  516: 1  08F3	E4			clr a
+  517: 1  08F4	93			movc a, @a + dptr
+  518: 1  08F5	F5 F0			mov b, a
+  519: 1  08F7	A3			inc dptr
+  520: 1  08F8	AE 83			mov r6, dph
+  521: 1  08FA	AF 82			mov r7, dpl
+  522: 1  08FC	8C 83			mov dph, r4
+  523: 1  08FE	8D 82			mov dpl, r5
+  524: 1  0900	E5 F0			mov a, b
+  525: 1  0902	F0			movx @dptr, a
+  526: 1  0903	A3			inc dptr
+  527: 1  0904	AC 83			mov r4, dph
+  528: 1  0906	AD 82			mov r5, dpl
+  529: 1  0908	DB E5			djnz r3, memcpy_c_loop
+  530: 1
+  531: 1  090A	22			ret
+  532: 1
+  533: 1			; initializes a memory block with a specific byte
+  534: 1			; --> r6, r7: address of memory block
+  535: 1			; --> r5: length of memory block
+  536: 1			; --> r4: byte to fill the block
+  537: 1
+  538: 1  090B			memset:
+  539: 1  090B	8E 83			mov dph, r6
+  540: 1  090D	8F 82			mov dpl, r7
+  541: 1  090F			memset_loop:
+  542: 1  090F	EC			mov a, r4
+  543: 1  0910	F0			movx @dptr, a
+  544: 1  0911	A3			inc dptr
+  545: 1  0912	DD FB			djnz r5, memset_loop
+  546: 1  0914	22			ret
+  547: 1
+  548: 1
+  549: 1			; moves a memory block from one location to another
+  550: 1			; --> r6, r7: address of source memory block
+  551: 1			; --> r4, r5: address of destination memory block
+  552: 1			; --> r3: how many bytes to move
+  553: 1  0915			memcpy:
+  554: 1  0915	8E 83			mov dph, r6
+  555: 1  0917	8F 82			mov dpl, r7
+  556: 1  0919	E0			movx a, @dptr
+  557: 1  091A	A3			inc dptr
+  558: 1  091B	AE 83			mov r6, dph
+  559: 1  091D	AF 82			mov r7, dpl
+  560: 1  091F	8C 83			mov dph, r4
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 18
 
@@ -1076,62 +1076,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  541: 1  0998	7F 00			mov r7, #00h
-  542: 1  099A	D3			setb c
-  543: 1  099B	22			ret
-  544: 1  099C			memchr_match_c:
-  545: 1  099C	AE 83			mov r6, dph
-  546: 1  099E	AF 82			mov r7, dpl
-  547: 1  09A0	C3			clr c
-  548: 1  09A1	22			ret
-  549: 1
-  550: 1			; finds character c in the first n bytes of a memory buffer in data memory
-  551: 1			; --> r6,r7: address of memory buffer
-  552: 1			; --> r5: 	character for which to search
-  553: 1			; --> r4:	how many bytes at which to look
-  554: 1			; <-- r6,r7: address at which character was found, otherwise NULL
-  555: 1  09A2			memchr:
-  556: 1  09A2	8E 83			mov dph, r6
-  557: 1  09A4	8F 82			mov dpl, r7
-  558: 1  09A6			memchr_loop:
-  559: 1  09A6	E4			clr a
-  560: 1  09A7	E0			movx a, @dptr
-  561: 1  09A8	60 0E			jz memchr_match
-  562: 1  09AA	C3			clr c
-  563: 1  09AB	9D			subb a, r5
-  564: 1  09AC	70 05			jnz memchr_no_match
-  565: 1  09AE	DC F6			djnz r4, memchr_loop
-  566: 1  09B0	02 09 B8		jmp memchr_match
-  567: 1  09B3			memchr_no_match:
-  568: 1  09B3	7E 00			mov r6, #00h
-  569: 1  09B5	7F 00			mov r7, #00h
-  570: 1  09B7	22			ret
-  571: 1  09B8			memchr_match:
-  572: 1  09B8	AE 83			mov r6, dph
-  573: 1  09BA	AF 82			mov r7, dpl
-  574: 1  09BC	22			ret
-  575: 1
-  576: 1			; compares the first n bytes of two blocks of memory, one of which is in program memory
-  577: 1			; --> r6, r7: 	address of block of memory in program memory
-  578: 1			; --> r4, r5: 	address of block of memory in data memory
-  579: 1			; --> r3: 		how many bytes to compare
-  580: 1			; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
+  561: 1  0921	8D 82			mov dpl, r5
+  562: 1  0923	F0			movx @dptr, a
+  563: 1  0924	A3			inc dptr
+  564: 1  0925	AC 83			mov r4, dph
+  565: 1  0927	AD 82			mov r5, dpl
+  566: 1  0929	DB EA			djnz r3, memcpy
+  567: 1
+  568: 1  092B	22			ret
+  569: 1
+  570:				$include (ascii.inc)
+  571: 1			cseg
+  572: 1			; Function: asc2bin
+  573: 1			; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
+  574: 1			; Output: Accumulator (A) = Binary value (00h-0Fh)
+  575: 1			; Uses:   R0 (temporary storage)
+  576: 1
+  577: 1  092C			asc2nibble:
+  578: 1  092C	FA		    MOV R2, A         	; Store original character in R2
+  579: 1  092D	C3		    CLR C             	; Clear carry for subtraction
+  580: 1  092E	94 30		    SUBB A, #30H      	; Subtract 30h to handle '0'-'9'
   581: 1
-  582: 1  09BD			memcmp_c:
-  583: 1  09BD	8E 83			mov dph, r6
-  584: 1  09BF	8F 82			mov dpl, r7
-  585: 1  09C1			memcmp_loop_c:
-  586: 1  09C1	E4			clr a
-  587: 1  09C2	93			movc a, @a + dptr
-  588: 1  09C3	F5 F0			mov b, a
-  589: 1  09C5	A3			inc dptr
-  590: 1  09C6	AE 83			mov r6, dph
-  591: 1  09C8	AF 82			mov r7, dpl
-  592: 1  09CA	8C 83			mov dph, r4
-  593: 1  09CC	8D 82			mov dpl, r5
-  594: 1  09CE	E0			movx a, @dptr
-  595: 1  09CF	C3			clr c
-  596: 1  09D0	95 F0			subb a, b
+  582: 1			    ; Check if result is > 9 (indicating it was likely 'A'-'F')
+  583: 1  0930	F9		    MOV R1, A         	; Temporary copy of intermediate result
+  584: 1  0931	C3		    CLR C
+  585: 1  0932	94 0A		    SUBB A, #0AH      	; Subtract 10 (0Ah)
+  586: 1  0934	50 02		    JNC IS_ALPHA      	; If no borrow (A >= 10), it's 'A'-'F'
+  587: 1
+  588: 1			    ; It's a digit '0'-'9'
+  589: 1  0936	E9		    MOV A, R1         	; Restore the '0'-'9' result
+  590: 1  0937	22		    RET
+  591: 1
+  592: 1  0938			IS_ALPHA:
+  593: 1			    ; It's a letter 'A'-'F'
+  594: 1  0938	EA		    MOV A, R2         	; Start again with original ASCII char
+  595: 1  0939	54 DF			anl a, #11011111b	; convert to uppercase
+  596: 1  093B	94 37		    SUBB A, #37H      	; Subtract 37h to get binary 10-15
+  597: 1  093D	22		    RET
+  598: 1
+  599: 1			; converts a binary value to an ascii character
+  600: 1			; --> a: binary value to be converted
+  601: 1			; <-- a: ascii character
+  602: 1  093E			nibble2asc:
+  603: 1  093E	C3			clr c
+  604: 1  093F	FA			mov r2, a
+  605: 1  0940	94 0A			subb a, #0ah
+  606: 1  0942	40 06			jc nibble2asc_is_digit
+  607: 1  0944	EA			mov a, r2
+  608: 1  0945	24 37			add a, #37h
+  609: 1  0947	44 20			orl a, #00100000b	; convert to lowercase
+  610: 1  0949	22			ret
+  611: 1  094A			nibble2asc_is_digit:
+  612: 1  094A	EA			mov a, r2
+  613: 1  094B	24 30			add a, #30h
+  614: 1  094D	22			ret
+  615: 1
+  616: 1			; converts a hex value to ascii
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 19
 
@@ -1139,62 +1139,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  597: 1  09D2	70 0E			jnz memcmp_no_match_c
-  598: 1  09D4	DB EB			djnz r3, memcmp_loop_c
-  599: 1  09D6	A3			inc dptr
-  600: 1  09D7	AC 83			mov r4, dph
-  601: 1  09D9	AD 82			mov r5, dpl
-  602: 1  09DB	8E 83			mov dph, r6
-  603: 1  09DD	8F 82			mov dpl, r7
-  604: 1  09DF	02 09 EA		jmp memcmp_match_c
-  605: 1  09E2			memcmp_no_match_c:
-  606: 1  09E2	40 03			jc memcmp_no_match_less_c
-  607: 1  09E4	7F 01			mov r7, #01h
-  608: 1  09E6	22			ret
-  609: 1  09E7			memcmp_no_match_less_c:
-  610: 1  09E7	7F FF			mov r7, #0ffh
-  611: 1  09E9	22			ret
-  612: 1  09EA			memcmp_match_c:
-  613: 1  09EA	7F 00			mov r7, #00h
-  614: 1  09EC	22			ret
-  615: 1
-  616: 1			; copies n bytes from one memory block to another, one of which resides in program memory
-  617: 1			; --> r6, r7: address of source memory block in program memory
-  618: 1			; --> r4, r5: address of destination memory block in data memory
-  619: 1			; --> r3: 	  how many bytes to copy
-  620: 1
-  621: 1  09ED			memcpy_c:
-  622: 1  09ED			memcpy_c_loop:
-  623: 1  09ED	8E 83			mov dph, r6
-  624: 1  09EF	8F 82			mov dpl, r7
-  625: 1  09F1	E4			clr a
-  626: 1  09F2	93			movc a, @a + dptr
-  627: 1  09F3	F5 F0			mov b, a
-  628: 1  09F5	A3			inc dptr
-  629: 1  09F6	AE 83			mov r6, dph
-  630: 1  09F8	AF 82			mov r7, dpl
-  631: 1  09FA	8C 83			mov dph, r4
-  632: 1  09FC	8D 82			mov dpl, r5
-  633: 1  09FE	E5 F0			mov a, b
-  634: 1  0A00	F0			movx @dptr, a
-  635: 1  0A01	A3			inc dptr
-  636: 1  0A02	AC 83			mov r4, dph
-  637: 1  0A04	AD 82			mov r5, dpl
-  638: 1  0A06	DB E5			djnz r3, memcpy_c_loop
-  639: 1
-  640: 1  0A08	22			ret
-  641: 1
-  642: 1			; initializes a memory block with a specific byte
-  643: 1			; --> r6, r7: address of memory block
-  644: 1			; --> r5: length of memory block
-  645: 1			; --> r4: byte to fill the block
-  646: 1
-  647: 1  0A09			memset:
-  648: 1  0A09	8E 83			mov dph, r6
-  649: 1  0A0B	8F 82			mov dpl, r7
-  650: 1  0A0D			memset_loop:
-  651: 1  0A0D	EC			mov a, r4
-  652: 1  0A0E	F0			movx @dptr, a
+  617: 1			; --> a: hex value
+  618: 1			; <-- b: ascii equivalent of upper nibble
+  619: 1			; <-- a: ascii equivalent of lower nibble
+  620: 1  094E			hex2asc:
+  621: 1  094E	FF			mov r7, a
+  622: 1  094F	C4			swap a
+  623: 1  0950	54 0F			anl a, #0fh
+  624: 1  0952	31 3E			call nibble2asc
+  625: 1  0954	F5 F0			mov b, a
+  626: 1  0956	EF			mov a, r7
+  627: 1  0957	54 0F			anl a, #0fh
+  628: 1  0959	31 3E			call nibble2asc
+  629: 1  095B	22			ret
+  630: 1
+  631: 1
+  632:				$include (commands.inc)
+  633: 1			cseg
+  634: 1
+  635: 1  095C			do_help:
+  636: 1  095C	12 01 66		call println
+  637: 1  095F	90 04 BE		mov dptr, #help_table
+  638: 1  0962			do_help_loop:
+  639: 1  0962	E4			clr a
+  640: 1  0963	93			movc a, @a + dptr		; high byte of command
+  641: 1  0964	FF			mov r7, a
+  642: 1  0965	74 01			mov a, #1
+  643: 1  0967	93			movc a, @a + dptr		; low byte of command
+  644: 1  0968	FE			mov r6, a
+  645: 1  0969	4F			orl a, r7
+  646: 1  096A	60 3B			jz do_help_exit
+  647: 1  096C	74 09			mov a, #TAB
+  648: 1  096E	12 0D 35		call uart_tx_char
+  649: 1  0971	C0 83			push dph				; save table pointer
+  650: 1  0973	C0 82			push dpl
+  651: 1  0975	8F 83			mov dph, r7				; get address of command
+  652: 1  0977	8E 82			mov dpl, r6
+  653: 1  0979	12 0D 3D		call uart_tx_string		; send command to uart
+  654: 1  097C	74 09			mov a, #TAB
+  655: 1  097E	12 0D 35		call uart_tx_char
+  656: 1  0981	12 0D 35		call uart_tx_char
+  657: 1  0984	D0 82			pop dpl
+  658: 1  0986	D0 83			pop dph
+  659: 1  0988	A3			inc dptr				; advance to command description
+  660: 1  0989	A3			inc dptr
+  661: 1  098A	E4			clr a
+  662: 1  098B	93			movc a, @a + dptr
+  663: 1  098C	FF			mov r7, a
+  664: 1  098D	74 01			mov a, #1
+  665: 1  098F	93			movc a, @a + dptr
+  666: 1  0990	FE			mov r6, a
+  667: 1  0991	C0 83			push dph
+  668: 1  0993	C0 82			push dpl
+  669: 1  0995	8F 83			mov dph, r7
+  670: 1  0997	8E 82			mov dpl, r6
+  671: 1  0999	12 0D 3D		call uart_tx_string
+  672: 1  099C	12 01 66		call println
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 20
 
@@ -1202,62 +1202,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  653: 1  0A0F	A3			inc dptr
-  654: 1  0A10	DD FB			djnz r5, memset_loop
-  655: 1  0A12	22			ret
-  656: 1
-  657: 1
-  658: 1			; moves a memory block from one location to another
-  659: 1			; --> r6, r7: address of source memory block
-  660: 1			; --> r4, r5: address of destination memory block
-  661: 1			; --> r3: how many bytes to move
-  662: 1  0A13			memcpy:
-  663: 1  0A13	8E 83			mov dph, r6
-  664: 1  0A15	8F 82			mov dpl, r7
-  665: 1  0A17	E0			movx a, @dptr
-  666: 1  0A18	A3			inc dptr
-  667: 1  0A19	AE 83			mov r6, dph
-  668: 1  0A1B	AF 82			mov r7, dpl
-  669: 1  0A1D	8C 83			mov dph, r4
-  670: 1  0A1F	8D 82			mov dpl, r5
-  671: 1  0A21	F0			movx @dptr, a
-  672: 1  0A22	A3			inc dptr
-  673: 1  0A23	AC 83			mov r4, dph
-  674: 1  0A25	AD 82			mov r5, dpl
-  675: 1  0A27	DB EA			djnz r3, memcpy
-  676: 1
-  677: 1  0A29	22			ret
-  678: 1
-  679:				$include (ascii.inc)
-  680: 1			cseg
-  681: 1			; Function: asc2bin
-  682: 1			; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
-  683: 1			; Output: Accumulator (A) = Binary value (00h-0Fh)
-  684: 1			; Uses:   R0 (temporary storage)
-  685: 1
-  686: 1  0A2A			asc2nibble:
-  687: 1  0A2A	FA		    MOV R2, A         	; Store original character in R2
-  688: 1  0A2B	C3		    CLR C             	; Clear carry for subtraction
-  689: 1  0A2C	94 30		    SUBB A, #30H      	; Subtract 30h to handle '0'-'9'
-  690: 1
-  691: 1			    ; Check if result is > 9 (indicating it was likely 'A'-'F')
-  692: 1  0A2E	F9		    MOV R1, A         	; Temporary copy of intermediate result
-  693: 1  0A2F	C3		    CLR C
-  694: 1  0A30	94 0A		    SUBB A, #0AH      	; Subtract 10 (0Ah)
-  695: 1  0A32	50 02		    JNC IS_ALPHA      	; If no borrow (A >= 10), it's 'A'-'F'
-  696: 1
-  697: 1			    ; It's a digit '0'-'9'
-  698: 1  0A34	E9		    MOV A, R1         	; Restore the '0'-'9' result
-  699: 1  0A35	22		    RET
-  700: 1
-  701: 1  0A36			IS_ALPHA:
-  702: 1			    ; It's a letter 'A'-'F'
-  703: 1  0A36	EA		    MOV A, R2         	; Start again with original ASCII char
-  704: 1  0A37	54 DF			anl a, #11011111b	; convert to uppercase
-  705: 1  0A39	94 37		    SUBB A, #37H      	; Subtract 37h to get binary 10-15
-  706: 1  0A3B	22		    RET
-  707: 1
-  708: 1			; converts a binary value to an ascii character
+  673: 1  099F	D0 82			pop dpl					; restore table pointer
+  674: 1  09A1	D0 83			pop dph
+  675: 1  09A3	A3			inc dptr				; advance to next record in table
+  676: 1  09A4	A3			inc dptr
+  677: 1  09A5	80 BB			jmp do_help_loop
+  678: 1  09A7			do_help_exit:
+  679: 1  09A7	22			ret
+  680: 1
+  681: 1  09A8			do_ls:
+  682: 1  09A8	12 01 66		call println
+  683: 1  09AB	90 05 D6		mov dptr, #app_table
+  684: 1  09AE			do_ls_loop:
+  685: 1  09AE	E4			clr a
+  686: 1  09AF	93			movc a, @a + dptr		; high byte of app_name
+  687: 1  09B0	FF			mov r7, a
+  688: 1  09B1	74 01			mov a, #1
+  689: 1  09B3	93			movc a, @a + dptr		; low byte of app_name
+  690: 1  09B4	FE			mov r6, a
+  691: 1  09B5	4F			orl a, r7
+  692: 1  09B6	60 3D			jz do_ls_exit
+  693: 1  09B8	74 09			mov a, #TAB
+  694: 1  09BA	12 0D 35		call uart_tx_char
+  695: 1  09BD	C0 83			push dph				; save table pointer
+  696: 1  09BF	C0 82			push dpl
+  697: 1  09C1	8F 83			mov dph, r7				; get address of app_name
+  698: 1  09C3	8E 82			mov dpl, r6
+  699: 1  09C5	12 0D 3D		call uart_tx_string		; send app_name to uart
+  700: 1  09C8	74 09			mov a, #TAB
+  701: 1  09CA	12 0D 35		call uart_tx_char
+  702: 1  09CD	12 0D 35		call uart_tx_char
+  703: 1  09D0	D0 82			pop dpl
+  704: 1  09D2	D0 83			pop dph
+  705: 1  09D4	A3			inc dptr				; advance to app description
+  706: 1  09D5	A3			inc dptr
+  707: 1  09D6	E4			clr a
+  708: 1  09D7	93			movc a, @a + dptr
+  709: 1  09D8	FF			mov r7, a
+  710: 1  09D9	74 01			mov a, #1
+  711: 1  09DB	93			movc a, @a + dptr
+  712: 1  09DC	FE			mov r6, a
+  713: 1  09DD	C0 83			push dph
+  714: 1  09DF	C0 82			push dpl
+  715: 1  09E1	8F 83			mov dph, r7
+  716: 1  09E3	8E 82			mov dpl, r6
+  717: 1  09E5	12 0D 3D		call uart_tx_string
+  718: 1  09E8	12 01 66		call println
+  719: 1  09EB	D0 82			pop dpl					; restore table pointer
+  720: 1  09ED	D0 83			pop dph
+  721: 1  09EF	A3			inc dptr				; advance to next record in table
+  722: 1  09F0	A3			inc dptr
+  723: 1  09F1	A3			inc dptr
+  724: 1  09F2	A3			inc dptr
+  725: 1  09F3	80 B9			jmp do_ls_loop
+  726: 1
+  727: 1  09F5			do_ls_exit:
+  728: 1  09F5	22			ret
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 21
 
@@ -1265,62 +1265,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  709: 1			; --> a: binary value to be converted
-  710: 1			; <-- a: ascii character
-  711: 1  0A3C			nibble2asc:
-  712: 1  0A3C	C3			clr c
-  713: 1  0A3D	FA			mov r2, a
-  714: 1  0A3E	94 0A			subb a, #0ah
-  715: 1  0A40	40 06			jc nibble2asc_is_digit
-  716: 1  0A42	EA			mov a, r2
-  717: 1  0A43	24 37			add a, #37h
-  718: 1  0A45	44 20			orl a, #00100000b	; convert to lowercase
-  719: 1  0A47	22			ret
-  720: 1  0A48			nibble2asc_is_digit:
-  721: 1  0A48	EA			mov a, r2
-  722: 1  0A49	24 30			add a, #30h
-  723: 1  0A4B	22			ret
-  724: 1
-  725: 1			; converts a hex value to ascii
-  726: 1			; --> a: hex value
-  727: 1			; <-- b: ascii equivalent of upper nibble
-  728: 1			; <-- a: ascii equivalent of lower nibble
-  729: 1  0A4C			hex2asc:
-  730: 1  0A4C	FF			mov r7, a
-  731: 1  0A4D	C4			swap a
-  732: 1  0A4E	54 0F			anl a, #0fh
-  733: 1  0A50	51 3C			call nibble2asc
-  734: 1  0A52	F5 F0			mov b, a
-  735: 1  0A54	EF			mov a, r7
-  736: 1  0A55	54 0F			anl a, #0fh
-  737: 1  0A57	51 3C			call nibble2asc
-  738: 1  0A59	22			ret
-  739: 1
-  740: 1
-  741:				$include (commands.inc)
-  742: 1			cseg
-  743: 1
-  744: 1  0A5A			do_help:
-  745: 1  0A5A	12 01 93		call println
-  746: 1  0A5D	90 05 15		mov dptr, #help_table
-  747: 1  0A60			do_help_loop:
-  748: 1  0A60	E4			clr a
-  749: 1  0A61	93			movc a, @a + dptr		; high byte of command
-  750: 1  0A62	FF			mov r7, a
-  751: 1  0A63	74 01			mov a, #1
-  752: 1  0A65	93			movc a, @a + dptr		; low byte of command
-  753: 1  0A66	FE			mov r6, a
-  754: 1  0A67	4F			orl a, r7
-  755: 1  0A68	60 3B			jz do_help_exit
-  756: 1  0A6A	74 09			mov a, #TAB
-  757: 1  0A6C	12 06 F7		call uart_tx_char
-  758: 1  0A6F	C0 83			push dph				; save table pointer
-  759: 1  0A71	C0 82			push dpl
-  760: 1  0A73	8F 83			mov dph, r7				; get address of command
-  761: 1  0A75	8E 82			mov dpl, r6
-  762: 1  0A77	12 06 FF		call uart_tx_string		; send command to uart
-  763: 1  0A7A	74 09			mov a, #TAB
-  764: 1  0A7C	12 06 F7		call uart_tx_char
+  729: 1
+  730: 1  09F6			do_peek:
+  731: 1  09F6	12 01 66		call println
+  732: 1  09F9	12 01 5C		call skip_blanks
+  733: 1  09FC	12 01 4A		call get_hex_address
+  734: 1  09FF	08			inc r0
+  735: 1  0A00	FF			mov r7, a
+  736: 1  0A01	12 01 4A		call get_hex_address
+  737: 1  0A04	FE			mov r6, a
+  738: 1
+  739: 1  0A05	8F 83			mov dph, r7
+  740: 1  0A07	8E 82			mov dpl, r6
+  741: 1
+  742: 1  0A09	E0			movx a, @dptr
+  743: 1  0A0A	F5 F0			mov b, a
+  744: 1  0A0C	C4			swap a
+  745: 1  0A0D	54 0F			anl a, #0fh
+  746: 1  0A0F	31 3E			call nibble2asc
+  747: 1  0A11	12 0D 35		call uart_tx_char
+  748: 1  0A14	E5 F0			mov a, b
+  749: 1  0A16	54 0F			anl a, #0fh
+  750: 1  0A18	31 3E			call nibble2asc
+  751: 1  0A1A	12 0D 35		call uart_tx_char
+  752: 1  0A1D	12 01 66		call println
+  753: 1  0A20	22			ret
+  754: 1
+  755: 1  0A21			do_poke:
+  756: 1  0A21	12 01 66		call println
+  757: 1  0A24	12 01 5C		call skip_blanks
+  758: 1  0A27	12 01 4A		call get_hex_address
+  759: 1  0A2A	08			inc r0
+  760: 1  0A2B	FF			mov r7, a
+  761: 1  0A2C	12 01 4A		call get_hex_address
+  762: 1  0A2F	FE			mov r6, a
+  763: 1  0A30	08			inc r0
+  764: 1  0A31	12 01 5C		call skip_blanks
+  765: 1  0A34	12 01 4A		call get_hex_address
+  766: 1  0A37	FD			mov r5, a
+  767: 1  0A38	8F 83			mov dph, r7
+  768: 1  0A3A	8E 82			mov dpl, r6
+  769: 1  0A3C	ED			mov a, r5
+  770: 1  0A3D	F0			movx @dptr, a
+  771: 1  0A3E	12 01 66		call println
+  772: 1  0A41	22			ret
+  773: 1
+  774: 1  0A42			do_dump:
+  775: 1  0A42	12 01 66		call println
+  776: 1  0A45	12 01 5C		call skip_blanks
+  777: 1  0A48	12 01 4A		call get_hex_address
+  778: 1  0A4B	FF			mov r7, a
+  779: 1  0A4C	74 09			mov a, #TAB
+  780: 1  0A4E	12 0D 35		call uart_tx_char
+  781: 1  0A51	12 0A C9		call print_dump_header
+  782: 1  0A54	12 01 66		call println
+  783: 1
+  784: 1  0A57	7E 00			mov r6, #00h
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 22
 
@@ -1328,62 +1328,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  765: 1  0A7F	12 06 F7		call uart_tx_char
-  766: 1  0A82	D0 82			pop dpl
-  767: 1  0A84	D0 83			pop dph
-  768: 1  0A86	A3			inc dptr				; advance to command description
-  769: 1  0A87	A3			inc dptr
-  770: 1  0A88	E4			clr a
-  771: 1  0A89	93			movc a, @a + dptr
-  772: 1  0A8A	FF			mov r7, a
-  773: 1  0A8B	74 01			mov a, #1
-  774: 1  0A8D	93			movc a, @a + dptr
-  775: 1  0A8E	FE			mov r6, a
-  776: 1  0A8F	C0 83			push dph
-  777: 1  0A91	C0 82			push dpl
-  778: 1  0A93	8F 83			mov dph, r7
-  779: 1  0A95	8E 82			mov dpl, r6
-  780: 1  0A97	12 06 FF		call uart_tx_string
-  781: 1  0A9A	12 01 93		call println
-  782: 1  0A9D	D0 82			pop dpl					; restore table pointer
-  783: 1  0A9F	D0 83			pop dph
-  784: 1  0AA1	A3			inc dptr				; advance to next record in table
-  785: 1  0AA2	A3			inc dptr
-  786: 1  0AA3	80 BB			jmp do_help_loop
-  787: 1  0AA5			do_help_exit:
-  788: 1  0AA5	22			ret
-  789: 1
-  790: 1  0AA6			do_ls:
-  791: 1  0AA6	12 01 93		call println
-  792: 1  0AA9	90 06 85		mov dptr, #app_table
-  793: 1  0AAC			do_ls_loop:
-  794: 1  0AAC	E4			clr a
-  795: 1  0AAD	93			movc a, @a + dptr		; high byte of app_name
-  796: 1  0AAE	FF			mov r7, a
-  797: 1  0AAF	74 01			mov a, #1
-  798: 1  0AB1	93			movc a, @a + dptr		; low byte of app_name
-  799: 1  0AB2	FE			mov r6, a
-  800: 1  0AB3	4F			orl a, r7
-  801: 1  0AB4	60 3D			jz do_ls_exit
-  802: 1  0AB6	74 09			mov a, #TAB
-  803: 1  0AB8	12 06 F7		call uart_tx_char
-  804: 1  0ABB	C0 83			push dph				; save table pointer
-  805: 1  0ABD	C0 82			push dpl
-  806: 1  0ABF	8F 83			mov dph, r7				; get address of app_name
-  807: 1  0AC1	8E 82			mov dpl, r6
-  808: 1  0AC3	12 06 FF		call uart_tx_string		; send app_name to uart
-  809: 1  0AC6	74 09			mov a, #TAB
-  810: 1  0AC8	12 06 F7		call uart_tx_char
-  811: 1  0ACB	12 06 F7		call uart_tx_char
-  812: 1  0ACE	D0 82			pop dpl
-  813: 1  0AD0	D0 83			pop dph
-  814: 1  0AD2	A3			inc dptr				; advance to app description
-  815: 1  0AD3	A3			inc dptr
-  816: 1  0AD4	E4			clr a
-  817: 1  0AD5	93			movc a, @a + dptr
-  818: 1  0AD6	FF			mov r7, a
-  819: 1  0AD7	74 01			mov a, #1
-  820: 1  0AD9	93			movc a, @a + dptr
+  785: 1  0A59	7D 10			mov r5, #10h
+  786: 1  0A5B			do_dump_loop:
+  787: 1  0A5B	12 0A 91		call print_row_address
+  788: 1  0A5E	12 0A 6B		call print_row_data
+  789: 1  0A61	12 01 66		call println
+  790: 1  0A64	EE			mov a, r6
+  791: 1  0A65	24 10			add a, #10h
+  792: 1  0A67	FE			mov r6, a
+  793: 1  0A68	DD F1			djnz r5, do_dump_loop
+  794: 1  0A6A	22			ret
+  795: 1
+  796: 1  0A6B			print_row_data:
+  797: 1  0A6B	8F 83			mov dph, r7
+  798: 1  0A6D	8E 82			mov dpl, r6
+  799: 1  0A6F	7C 10			mov r4, #10h
+  800: 1  0A71			print_row_data_loop:
+  801: 1  0A71	E0			movx a, @dptr
+  802: 1  0A72	F5 F0			mov b, a
+  803: 1  0A74	C4			swap a
+  804: 1  0A75	54 0F			anl a, #0fh
+  805: 1  0A77	31 3E			call nibble2asc
+  806: 1  0A79	12 0D 35		call uart_tx_char
+  807: 1  0A7C	E5 F0			mov a, b
+  808: 1  0A7E	54 0F			anl a, #0fh
+  809: 1  0A80	31 3E			call nibble2asc
+  810: 1  0A82	12 0D 35		call uart_tx_char
+  811: 1  0A85	74 20			mov a, #' '
+  812: 1  0A87	12 0D 35		call uart_tx_char
+  813: 1  0A8A	12 0D 35		call uart_tx_char
+  814: 1  0A8D	A3			inc dptr
+  815: 1  0A8E	DC E1			djnz r4, print_row_data_loop
+  816: 1  0A90	22			ret
+  817: 1
+  818: 1  0A91			print_row_address:
+  819: 1  0A91	EF			mov a, r7
+  820: 1  0A92	C4			swap a
+  821: 1  0A93	54 0F			anl a, #0fh
+  822: 1  0A95	31 3E			call nibble2asc
+  823: 1  0A97	12 0D 35		call uart_tx_char
+  824: 1  0A9A	EF			mov a, r7
+  825: 1  0A9B	54 0F			anl a, #0fh
+  826: 1  0A9D	31 3E			call nibble2asc
+  827: 1  0A9F	12 0D 35		call uart_tx_char
+  828: 1  0AA2	EE			mov a, r6
+  829: 1  0AA3	C4			swap a
+  830: 1  0AA4	54 0F			anl a, #0fh
+  831: 1  0AA6	31 3E			call nibble2asc
+  832: 1  0AA8	12 0D 35		call uart_tx_char
+  833: 1  0AAB	EE			mov a, r6
+  834: 1  0AAC	54 0F			anl a, #0fh
+  835: 1  0AAE	31 3E			call nibble2asc
+  836: 1  0AB0	12 0D 35		call uart_tx_char
+  837: 1  0AB3	74 20			mov a, #' '
+  838: 1  0AB5	12 0D 35		call uart_tx_char
+  839: 1  0AB8	12 0D 35		call uart_tx_char
+  840: 1  0ABB	12 0D 35		call uart_tx_char
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 23
 
@@ -1391,62 +1391,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  821: 1  0ADA	FE			mov r6, a
-  822: 1  0ADB	C0 83			push dph
-  823: 1  0ADD	C0 82			push dpl
-  824: 1  0ADF	8F 83			mov dph, r7
-  825: 1  0AE1	8E 82			mov dpl, r6
-  826: 1  0AE3	12 06 FF		call uart_tx_string
-  827: 1  0AE6	12 01 93		call println
-  828: 1  0AE9	D0 82			pop dpl					; restore table pointer
-  829: 1  0AEB	D0 83			pop dph
-  830: 1  0AED	A3			inc dptr				; advance to next record in table
-  831: 1  0AEE	A3			inc dptr
-  832: 1  0AEF	A3			inc dptr
-  833: 1  0AF0	A3			inc dptr
-  834: 1  0AF1	80 B9			jmp do_ls_loop
-  835: 1
-  836: 1  0AF3			do_ls_exit:
-  837: 1  0AF3	22			ret
-  838: 1
-  839: 1  0AF4			do_peek:
-  840: 1  0AF4	12 01 93		call println
-  841: 1  0AF7	12 01 89		call skip_blanks
-  842: 1  0AFA	12 01 77		call get_hex_address
-  843: 1  0AFD	08			inc r0
-  844: 1  0AFE	FF			mov r7, a
-  845: 1  0AFF	12 01 77		call get_hex_address
-  846: 1  0B02	FE			mov r6, a
-  847: 1
-  848: 1  0B03	8F 83			mov dph, r7
-  849: 1  0B05	8E 82			mov dpl, r6
-  850: 1
-  851: 1  0B07	E0			movx a, @dptr
-  852: 1  0B08	F5 F0			mov b, a
-  853: 1  0B0A	C4			swap a
-  854: 1  0B0B	54 0F			anl a, #0fh
-  855: 1  0B0D	51 3C			call nibble2asc
-  856: 1  0B0F	12 06 F7		call uart_tx_char
-  857: 1  0B12	E5 F0			mov a, b
-  858: 1  0B14	54 0F			anl a, #0fh
-  859: 1  0B16	51 3C			call nibble2asc
-  860: 1  0B18	12 06 F7		call uart_tx_char
-  861: 1  0B1B	12 01 93		call println
-  862: 1  0B1E	22			ret
-  863: 1
-  864: 1  0B1F			do_poke:
-  865: 1  0B1F	12 01 93		call println
-  866: 1  0B22	12 01 89		call skip_blanks
-  867: 1  0B25	12 01 77		call get_hex_address
-  868: 1  0B28	08			inc r0
-  869: 1  0B29	FF			mov r7, a
-  870: 1  0B2A	12 01 77		call get_hex_address
-  871: 1  0B2D	FE			mov r6, a
-  872: 1  0B2E	08			inc r0
-  873: 1  0B2F	12 01 89		call skip_blanks
-  874: 1  0B32	12 01 77		call get_hex_address
-  875: 1  0B35	FD			mov r5, a
-  876: 1  0B36	8F 83			mov dph, r7
+  841: 1  0ABE	12 0D 35		call uart_tx_char
+  842: 1  0AC1	22			ret
+  843: 1
+  844: 1  0AC2			clear_screen:
+  845: 1  0AC2	90 0D 17		mov dptr, #VT102_CLEAR_SCREEN
+  846: 1  0AC5	12 0D 3D		call uart_tx_string
+  847: 1  0AC8	22			ret
+  848: 1
+  849: 1  0AC9			print_dump_header:
+  850: 1  0AC9	7C FF			mov r4, #0ffh
+  851: 1  0ACB	7B 10			mov r3, #10h
+  852: 1  0ACD			print_dump_header_loop:
+  853: 1  0ACD	0C			inc r4
+  854: 1  0ACE	74 30			mov a, #'0'
+  855: 1  0AD0	12 0D 35		call uart_tx_char
+  856: 1  0AD3	EC			mov a, r4
+  857: 1  0AD4	54 0F			anl a, #0fh
+  858: 1  0AD6	31 3E			call nibble2asc
+  859: 1  0AD8	12 0D 35		call uart_tx_char
+  860: 1  0ADB	74 20			mov a, #' '
+  861: 1  0ADD	12 0D 35		call uart_tx_char
+  862: 1  0AE0	74 20			mov a, #' '
+  863: 1  0AE2	12 0D 35		call uart_tx_char
+  864: 1  0AE5	DB E6			djnz r3, print_dump_header_loop
+  865: 1
+  866: 1  0AE7	22			ret
+  867: 1
+  868: 1			; fills a memory block with a specific byte
+  869: 1  0AE8			do_fill:
+  870: 1  0AE8	12 01 66		call println
+  871: 1  0AEB	12 01 5C		call skip_blanks
+  872: 1  0AEE	12 01 4A		call get_hex_address
+  873: 1  0AF1	FE			mov r6, a
+  874: 1  0AF2	08			inc r0
+  875: 1  0AF3	12 01 4A		call get_hex_address
+  876: 1  0AF6	FF			mov r7, a
+  877: 1  0AF7	08			inc r0
+  878: 1  0AF8	12 01 5C		call skip_blanks
+  879: 1  0AFB	12 01 4A		call get_hex_address
+  880: 1  0AFE	FD			mov r5, a
+  881: 1  0AFF	08			inc r0
+  882: 1  0B00	12 01 5C		call skip_blanks
+  883: 1  0B03	12 01 4A		call get_hex_address
+  884: 1  0B06	FC			mov r4, a
+  885: 1
+  886: 1  0B07	31 0B			call memset
+  887: 1  0B09	22			ret
+  888: 1
+  889: 1			; copies a memory block from one location to another
+  890: 1  0B0A			do_copy:
+  891: 1  0B0A	12 01 66		call println
+  892: 1  0B0D	12 01 5C		call skip_blanks
+  893: 1  0B10	12 01 4A		call get_hex_address
+  894: 1  0B13	FE			mov r6, a
+  895: 1  0B14	08			inc r0
+  896: 1  0B15	12 01 4A		call get_hex_address
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 24
 
@@ -1454,62 +1454,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  877: 1  0B38	8E 82			mov dpl, r6
-  878: 1  0B3A	ED			mov a, r5
-  879: 1  0B3B	F0			movx @dptr, a
-  880: 1  0B3C	12 01 93		call println
-  881: 1  0B3F	22			ret
-  882: 1
-  883: 1  0B40			do_dump:
-  884: 1  0B40	12 01 93		call println
-  885: 1  0B43	12 01 89		call skip_blanks
-  886: 1  0B46	12 01 77		call get_hex_address
-  887: 1  0B49	FF			mov r7, a
-  888: 1  0B4A	74 09			mov a, #TAB
-  889: 1  0B4C	12 06 F7		call uart_tx_char
-  890: 1  0B4F	12 0B C7		call print_dump_header
-  891: 1  0B52	12 01 93		call println
-  892: 1
-  893: 1  0B55	7E 00			mov r6, #00h
-  894: 1  0B57	7D 10			mov r5, #10h
-  895: 1  0B59			do_dump_loop:
-  896: 1  0B59	12 0B 8F		call print_row_address
-  897: 1  0B5C	12 0B 69		call print_row_data
-  898: 1  0B5F	12 01 93		call println
-  899: 1  0B62	EE			mov a, r6
-  900: 1  0B63	24 10			add a, #10h
-  901: 1  0B65	FE			mov r6, a
-  902: 1  0B66	DD F1			djnz r5, do_dump_loop
-  903: 1  0B68	22			ret
-  904: 1
-  905: 1  0B69			print_row_data:
-  906: 1  0B69	8F 83			mov dph, r7
-  907: 1  0B6B	8E 82			mov dpl, r6
-  908: 1  0B6D	7C 10			mov r4, #10h
-  909: 1  0B6F			print_row_data_loop:
-  910: 1  0B6F	E0			movx a, @dptr
-  911: 1  0B70	F5 F0			mov b, a
-  912: 1  0B72	C4			swap a
-  913: 1  0B73	54 0F			anl a, #0fh
-  914: 1  0B75	51 3C			call nibble2asc
-  915: 1  0B77	12 06 F7		call uart_tx_char
-  916: 1  0B7A	E5 F0			mov a, b
-  917: 1  0B7C	54 0F			anl a, #0fh
-  918: 1  0B7E	51 3C			call nibble2asc
-  919: 1  0B80	12 06 F7		call uart_tx_char
-  920: 1  0B83	74 20			mov a, #' '
-  921: 1  0B85	12 06 F7		call uart_tx_char
-  922: 1  0B88	12 06 F7		call uart_tx_char
-  923: 1  0B8B	A3			inc dptr
-  924: 1  0B8C	DC E1			djnz r4, print_row_data_loop
-  925: 1  0B8E	22			ret
+  897: 1  0B18	FF			mov r7, a
+  898: 1  0B19	08			inc r0
+  899: 1  0B1A	12 01 5C		call skip_blanks
+  900: 1  0B1D	12 01 4A		call get_hex_address
+  901: 1  0B20	FC			mov r4, a
+  902: 1  0B21	08			inc r0
+  903: 1  0B22	12 01 4A		call get_hex_address
+  904: 1  0B25	FD			mov r5, a
+  905: 1  0B26	08			inc r0
+  906: 1  0B27	12 01 5C		call skip_blanks
+  907: 1  0B2A	12 01 4A		call get_hex_address
+  908: 1  0B2D	FB			mov r3, a
+  909: 1  0B2E	31 15			call memcpy
+  910: 1  0B30	22			ret
+  911: 1
+  912: 1			; jumps to a memory address in program memory
+  913: 1			; --> r6, r7: memmory address in program memory
+  914: 1  0B31			do_goto:
+  915: 1  0B31	12 01 66		call println
+  916: 1  0B34	12 01 5C		call skip_blanks
+  917: 1  0B37	12 01 4A		call get_hex_address
+  918: 1  0B3A	FE			mov r6, a
+  919: 1  0B3B	08			inc r0
+  920: 1  0B3C	12 01 4A		call get_hex_address
+  921: 1  0B3F	FF			mov r7, a
+  922: 1
+  923: 1  0B40	C0 07			push 07h
+  924: 1  0B42	C0 06			push 06h
+  925: 1  0B44	22			ret
   926: 1
-  927: 1  0B8F			print_row_address:
-  928: 1  0B8F	EF			mov a, r7
-  929: 1  0B90	C4			swap a
-  930: 1  0B91	54 0F			anl a, #0fh
-  931: 1  0B93	51 3C			call nibble2asc
-  932: 1  0B95	12 06 F7		call uart_tx_char
+  927: 1  0B45	22			ret
+  928: 1
+  929: 1  0B46			do_iram:
+  930: 1  0B46	12 01 66		call println
+  931: 1  0B49	7F 01			mov r7, #01h
+  932: 1  0B4B	12 01 6D		call printtab
+  933: 1  0B4E	51 C9			call print_dump_header
+  934: 1  0B50	12 01 66		call println
+  935: 1  0B53	7F 08			mov r7, #08h				; how many rows
+  936: 1  0B55	78 00			mov r0, #00h				; starting address
+  937: 1  0B57			do_iram_row_loop:
+  938: 1  0B57	7E 10			mov r6, #10h				; how many columns
+  939: 1  0B59	E8			mov a, r0
+  940: 1  0B5A	F5 F0			mov b, a
+  941: 1  0B5C	C4			swap a
+  942: 1  0B5D	54 0F			anl a, #0fh
+  943: 1  0B5F	31 3E			call nibble2asc
+  944: 1  0B61	12 0D 35		call uart_tx_char
+  945: 1  0B64	E5 F0			mov a, b
+  946: 1  0B66	54 0F			anl a, #0fh
+  947: 1  0B68	31 3E			call nibble2asc
+  948: 1  0B6A	12 0D 35		call uart_tx_char
+  949: 1  0B6D	C0 07			push 07h
+  950: 1  0B6F	7F 01			mov r7, #01h
+  951: 1  0B71	12 01 6D		call printtab
+  952: 1  0B74	D0 07			pop 07h
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 25
 
@@ -1517,62 +1517,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  933: 1  0B98	EF			mov a, r7
-  934: 1  0B99	54 0F			anl a, #0fh
-  935: 1  0B9B	51 3C			call nibble2asc
-  936: 1  0B9D	12 06 F7		call uart_tx_char
-  937: 1  0BA0	EE			mov a, r6
-  938: 1  0BA1	C4			swap a
-  939: 1  0BA2	54 0F			anl a, #0fh
-  940: 1  0BA4	51 3C			call nibble2asc
-  941: 1  0BA6	12 06 F7		call uart_tx_char
-  942: 1  0BA9	EE			mov a, r6
-  943: 1  0BAA	54 0F			anl a, #0fh
-  944: 1  0BAC	51 3C			call nibble2asc
-  945: 1  0BAE	12 06 F7		call uart_tx_char
-  946: 1  0BB1	74 20			mov a, #' '
-  947: 1  0BB3	12 06 F7		call uart_tx_char
-  948: 1  0BB6	12 06 F7		call uart_tx_char
-  949: 1  0BB9	12 06 F7		call uart_tx_char
-  950: 1  0BBC	12 06 F7		call uart_tx_char
-  951: 1  0BBF	22			ret
-  952: 1
-  953: 1  0BC0			clear_screen:
-  954: 1  0BC0	90 0E 15		mov dptr, #VT102_CLEAR_SCREEN
-  955: 1  0BC3	12 06 FF		call uart_tx_string
-  956: 1  0BC6	22			ret
-  957: 1
-  958: 1  0BC7			print_dump_header:
-  959: 1  0BC7	7C FF			mov r4, #0ffh
-  960: 1  0BC9	7B 10			mov r3, #10h
-  961: 1  0BCB			print_dump_header_loop:
-  962: 1  0BCB	0C			inc r4
-  963: 1  0BCC	74 30			mov a, #'0'
-  964: 1  0BCE	12 06 F7		call uart_tx_char
-  965: 1  0BD1	EC			mov a, r4
-  966: 1  0BD2	54 0F			anl a, #0fh
-  967: 1  0BD4	51 3C			call nibble2asc
-  968: 1  0BD6	12 06 F7		call uart_tx_char
-  969: 1  0BD9	74 20			mov a, #' '
-  970: 1  0BDB	12 06 F7		call uart_tx_char
-  971: 1  0BDE	74 20			mov a, #' '
-  972: 1  0BE0	12 06 F7		call uart_tx_char
-  973: 1  0BE3	DB E6			djnz r3, print_dump_header_loop
-  974: 1
-  975: 1  0BE5	22			ret
-  976: 1
-  977: 1			; fills a memory block with a specific byte
-  978: 1  0BE6			do_fill:
-  979: 1  0BE6	12 01 93		call println
-  980: 1  0BE9	12 01 89		call skip_blanks
-  981: 1  0BEC	12 01 77		call get_hex_address
-  982: 1  0BEF	FE			mov r6, a
-  983: 1  0BF0	08			inc r0
-  984: 1  0BF1	12 01 77		call get_hex_address
-  985: 1  0BF4	FF			mov r7, a
-  986: 1  0BF5	08			inc r0
-  987: 1  0BF6	12 01 89		call skip_blanks
-  988: 1  0BF9	12 01 77		call get_hex_address
+  953: 1  0B76			do_iram_col_loop:
+  954: 1  0B76	E6			mov a, @r0
+  955: 1  0B77	F5 F0			mov b, a
+  956: 1  0B79	C4			swap a
+  957: 1  0B7A	54 0F			anl a, #0fh
+  958: 1  0B7C	31 3E			call nibble2asc
+  959: 1  0B7E	12 0D 35		call uart_tx_char
+  960: 1  0B81	E5 F0			mov a, b
+  961: 1  0B83	54 0F			anl a, #0fh
+  962: 1  0B85	31 3E			call nibble2asc
+  963: 1  0B87	12 0D 35		call uart_tx_char
+  964: 1  0B8A	74 20			mov a, #SPC
+  965: 1  0B8C	12 0D 35		call uart_tx_char
+  966: 1  0B8F	12 0D 35		call uart_tx_char
+  967: 1  0B92	08			inc r0
+  968: 1  0B93	DE E1			djnz r6, do_iram_col_loop
+  969: 1  0B95	12 01 66		call println
+  970: 1  0B98	DF BD			djnz r7, do_iram_row_loop
+  971: 1  0B9A	22			ret
+  972: 1
+  973: 1  0B9B			do_sfr:
+  974: 1  0B9B	12 01 66		call println
+  975: 1
+  976: 1  0B9E	90 05 EE		mov dptr, #p0_txt
+  977: 1  0BA1	E5 80			mov a, p0
+  978: 1  0BA3	12 0C 8A		call print_sfr_reg
+  979: 1  0BA6	7F 01			mov r7, #1
+  980: 1  0BA8	12 01 6D		call printtab
+  981: 1  0BAB	90 06 13		mov dptr, #p1_txt
+  982: 1
+  983: 1  0BAE	E5 90			mov a, p1
+  984: 1  0BB0	12 0C 8A		call print_sfr_reg
+  985: 1  0BB3	90 06 20		mov dptr, #p2_txt
+  986: 1  0BB6	7F 01			mov r7, #1
+  987: 1  0BB8	12 01 6D		call printtab
+  988: 1
+  989: 1  0BBB	E5 A0			mov a, p2
+  990: 1  0BBD	12 0C 8A		call print_sfr_reg
+  991: 1  0BC0	7F 01			mov r7, #1
+  992: 1  0BC2	12 01 6D		call printtab
+  993: 1
+  994: 1  0BC5	90 06 26		mov dptr, #p3_txt
+  995: 1  0BC8	E5 B0			mov a, p3
+  996: 1  0BCA	12 0C 8A		call print_sfr_reg
+  997: 1  0BCD	7F 01			mov r7, #1
+  998: 1  0BCF	12 01 6D		call printtab
+  999: 1
+ 1000: 1  0BD2	12 01 66		call println
+ 1001: 1
+ 1002: 1  0BD5	90 05 F4		mov dptr, #pcon_txt
+ 1003: 1  0BD8	E5 87			mov a, pcon
+ 1004: 1  0BDA	12 0C 8A		call print_sfr_reg
+ 1005: 1  0BDD	7F 01			mov r7, #1
+ 1006: 1  0BDF	12 01 6D		call printtab
+ 1007: 1
+ 1008: 1  0BE2	90 06 2C		mov dptr, #psw_txt
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 26
 
@@ -1580,62 +1580,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
-  989: 1  0BFC	FD			mov r5, a
-  990: 1  0BFD	08			inc r0
-  991: 1  0BFE	12 01 89		call skip_blanks
-  992: 1  0C01	12 01 77		call get_hex_address
-  993: 1  0C04	FC			mov r4, a
-  994: 1
-  995: 1  0C05	51 09			call memset
-  996: 1  0C07	22			ret
-  997: 1
-  998: 1			; copies a memory block from one location to another
-  999: 1  0C08			do_copy:
- 1000: 1  0C08	12 01 93		call println
- 1001: 1  0C0B	12 01 89		call skip_blanks
- 1002: 1  0C0E	12 01 77		call get_hex_address
- 1003: 1  0C11	FE			mov r6, a
- 1004: 1  0C12	08			inc r0
- 1005: 1  0C13	12 01 77		call get_hex_address
- 1006: 1  0C16	FF			mov r7, a
- 1007: 1  0C17	08			inc r0
- 1008: 1  0C18	12 01 89		call skip_blanks
- 1009: 1  0C1B	12 01 77		call get_hex_address
- 1010: 1  0C1E	FC			mov r4, a
- 1011: 1  0C1F	08			inc r0
- 1012: 1  0C20	12 01 77		call get_hex_address
- 1013: 1  0C23	FD			mov r5, a
- 1014: 1  0C24	08			inc r0
- 1015: 1  0C25	12 01 89		call skip_blanks
- 1016: 1  0C28	12 01 77		call get_hex_address
- 1017: 1  0C2B	FB			mov r3, a
- 1018: 1  0C2C	51 13			call memcpy
- 1019: 1  0C2E	22			ret
- 1020: 1
- 1021: 1			; jumps to a memory address in program memory
- 1022: 1			; --> r6, r7: memmory address in program memory
- 1023: 1  0C2F			do_goto:
- 1024: 1  0C2F	12 01 93		call println
- 1025: 1  0C32	12 01 89		call skip_blanks
- 1026: 1  0C35	12 01 77		call get_hex_address
- 1027: 1  0C38	FE			mov r6, a
- 1028: 1  0C39	08			inc r0
- 1029: 1  0C3A	12 01 77		call get_hex_address
- 1030: 1  0C3D	FF			mov r7, a
- 1031: 1
- 1032: 1  0C3E	C0 07			push 07h
- 1033: 1  0C40	C0 06			push 06h
- 1034: 1  0C42	22			ret
- 1035: 1
- 1036: 1  0C43	22			ret
- 1037: 1
- 1038: 1  0C44			do_iram:
- 1039: 1  0C44	12 01 93		call println
- 1040: 1  0C47	7F 01			mov r7, #01h
- 1041: 1  0C49	12 01 9A		call printtab
- 1042: 1  0C4C	71 C7			call print_dump_header
- 1043: 1  0C4E	12 01 93		call println
- 1044: 1  0C51	7F 08			mov r7, #08h				; how many rows
+ 1009: 1  0BE5	E5 D0			mov a, psw
+ 1010: 1  0BE7	12 0C 8A		call print_sfr_reg
+ 1011: 1  0BEA	7F 01			mov r7, #1
+ 1012: 1  0BEC	12 01 6D		call printtab
+ 1013: 1
+ 1014: 1  0BEF	90 06 29		mov dptr, #ip_txt
+ 1015: 1  0BF2	E5 B8			mov a, ip
+ 1016: 1  0BF4	12 0C 8A		call print_sfr_reg
+ 1017: 1  0BF7	7F 01			mov r7, #1
+ 1018: 1  0BF9	12 01 6D		call printtab
+ 1019: 1
+ 1020: 1  0BFC	90 06 23		mov dptr, #ie_txt
+ 1021: 1  0BFF	E5 A8			mov a, ie
+ 1022: 1  0C01	12 0C 8A		call print_sfr_reg
+ 1023: 1  0C04	7F 01			mov r7, #1
+ 1024: 1  0C06	12 01 6D		call printtab
+ 1025: 1  0C09	12 01 66		call println
+ 1026: 1
+ 1027: 1  0C0C	90 05 F9		mov dptr, #tcon_txt
+ 1028: 1  0C0F	E5 88			mov a, tcon
+ 1029: 1  0C11	12 0C 8A		call print_sfr_reg
+ 1030: 1  0C14	7F 01			mov r7, #1
+ 1031: 1  0C16	12 01 6D		call printtab
+ 1032: 1  0C19	90 05 FE		mov dptr, #tmod_txt
+ 1033: 1  0C1C	E5 89			mov a, tmod
+ 1034: 1  0C1E	12 0C 8A		call print_sfr_reg
+ 1035: 1  0C21	7F 01			mov r7, #1
+ 1036: 1  0C23	12 01 6D		call printtab
+ 1037: 1  0C26	90 06 03		mov dptr, #tl0_txt
+ 1038: 1  0C29	E5 8A			mov a, tl0
+ 1039: 1  0C2B	12 0C 8A		call print_sfr_reg
+ 1040: 1  0C2E	7F 01			mov r7, #1
+ 1041: 1  0C30	12 01 6D		call printtab
+ 1042: 1  0C33	90 06 07		mov dptr, #tl1_txt
+ 1043: 1  0C36	E5 8B			mov a, tl1
+ 1044: 1  0C38	12 0C 8A		call print_sfr_reg
+ 1045: 1  0C3B	7F 01			mov r7, #1
+ 1046: 1  0C3D	12 01 6D		call printtab
+ 1047: 1  0C40	90 06 0B		mov dptr, #th0_txt
+ 1048: 1  0C43	E5 8C			mov a, th0
+ 1049: 1  0C45	12 0C 8A		call print_sfr_reg
+ 1050: 1  0C48	7F 01			mov r7, #1
+ 1051: 1  0C4A	12 01 6D		call printtab
+ 1052: 1  0C4D	90 06 0F		mov dptr, #th1_txt
+ 1053: 1  0C50	E5 8D			mov a, th1
+ 1054: 1  0C52	12 0C 8A		call print_sfr_reg
+ 1055: 1  0C55	12 01 66		call println
+ 1056: 1
+ 1057: 1  0C58	90 06 16		mov dptr, #scon_txt
+ 1058: 1  0C5B	E5 98			mov a, scon
+ 1059: 1  0C5D	12 0C 8A		call print_sfr_reg
+ 1060: 1  0C60	7F 01			mov r7, #1
+ 1061: 1  0C62	12 01 6D		call printtab
+ 1062: 1  0C65	90 06 1B		mov dptr, #sbuf_txt
+ 1063: 1  0C68	E5 99			mov a, sbuf
+ 1064: 1  0C6A	12 0C 8A		call print_sfr_reg
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 27
 
@@ -1643,62 +1643,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
- 1045: 1  0C53	78 00			mov r0, #00h				; starting address
- 1046: 1  0C55			do_iram_row_loop:
- 1047: 1  0C55	7E 10			mov r6, #10h				; how many columns
- 1048: 1  0C57	E8			mov a, r0
- 1049: 1  0C58	F5 F0			mov b, a
- 1050: 1  0C5A	C4			swap a
- 1051: 1  0C5B	54 0F			anl a, #0fh
- 1052: 1  0C5D	51 3C			call nibble2asc
- 1053: 1  0C5F	12 06 F7		call uart_tx_char
- 1054: 1  0C62	E5 F0			mov a, b
- 1055: 1  0C64	54 0F			anl a, #0fh
- 1056: 1  0C66	51 3C			call nibble2asc
- 1057: 1  0C68	12 06 F7		call uart_tx_char
- 1058: 1  0C6B	C0 07			push 07h
- 1059: 1  0C6D	7F 01			mov r7, #01h
- 1060: 1  0C6F	12 01 9A		call printtab
- 1061: 1  0C72	D0 07			pop 07h
- 1062: 1  0C74			do_iram_col_loop:
- 1063: 1  0C74	E6			mov a, @r0
- 1064: 1  0C75	F5 F0			mov b, a
- 1065: 1  0C77	C4			swap a
- 1066: 1  0C78	54 0F			anl a, #0fh
- 1067: 1  0C7A	51 3C			call nibble2asc
- 1068: 1  0C7C	12 06 F7		call uart_tx_char
- 1069: 1  0C7F	E5 F0			mov a, b
- 1070: 1  0C81	54 0F			anl a, #0fh
- 1071: 1  0C83	51 3C			call nibble2asc
- 1072: 1  0C85	12 06 F7		call uart_tx_char
- 1073: 1  0C88	74 20			mov a, #SPC
- 1074: 1  0C8A	12 06 F7		call uart_tx_char
- 1075: 1  0C8D	12 06 F7		call uart_tx_char
- 1076: 1  0C90	08			inc r0
- 1077: 1  0C91	DE E1			djnz r6, do_iram_col_loop
- 1078: 1  0C93	12 01 93		call println
- 1079: 1  0C96	DF BD			djnz r7, do_iram_row_loop
- 1080: 1  0C98	22			ret
- 1081: 1
- 1082: 1  0C99			do_sfr:
- 1083: 1  0C99	12 01 93		call println
- 1084: 1
- 1085: 1  0C9C	90 06 9D		mov dptr, #p0_txt
- 1086: 1  0C9F	E5 80			mov a, p0
- 1087: 1  0CA1	12 0D 88		call print_sfr_reg
- 1088: 1  0CA4	7F 01			mov r7, #1
- 1089: 1  0CA6	12 01 9A		call printtab
- 1090: 1  0CA9	90 06 C2		mov dptr, #p1_txt
- 1091: 1
- 1092: 1  0CAC	E5 90			mov a, p1
- 1093: 1  0CAE	12 0D 88		call print_sfr_reg
- 1094: 1  0CB1	90 06 CF		mov dptr, #p2_txt
- 1095: 1  0CB4	7F 01			mov r7, #1
- 1096: 1  0CB6	12 01 9A		call printtab
+ 1065: 1  0C6D	12 01 66		call println
+ 1066: 1
+ 1067: 1  0C70	90 06 30		mov dptr, #acc_txt
+ 1068: 1  0C73	12 0C 8A		call print_sfr_reg
+ 1069: 1  0C76	7F 01			mov r7, #1
+ 1070: 1  0C78	12 01 6D		call printtab
+ 1071: 1  0C7B	90 06 34		mov dptr, #b_txt
+ 1072: 1  0C7E	E5 F0			mov a, b
+ 1073: 1  0C80	12 0C 8A		call print_sfr_reg
+ 1074: 1  0C83	12 01 66		call println
+ 1075: 1
+ 1076: 1  0C86	12 01 66		call println
+ 1077: 1  0C89	22			ret
+ 1078: 1
+ 1079: 1			; prints the contents of an sfr register
+ 1080: 1			; --> dptr: address of register name
+ 1081: 1			; --> a: contents of register
+ 1082: 1			; <-- none
+ 1083: 1  0C8A			print_sfr_reg:
+ 1084: 1  0C8A	C0 E0			push 0e0h					; save contents of a register
+ 1085: 1  0C8C	12 0D 3D		call uart_tx_string
+ 1086: 1  0C8F	74 09			mov a, #TAB
+ 1087: 1  0C91	12 0D 35		call uart_tx_char
+ 1088: 1  0C94	D0 E0			pop 0e0h
+ 1089: 1  0C96	31 4E			call hex2asc
+ 1090: 1  0C98	C0 E0			push 0e0h
+ 1091: 1  0C9A	E5 F0			mov a, b
+ 1092: 1  0C9C	12 0D 35		call uart_tx_char
+ 1093: 1  0C9F	D0 E0			pop 0e0h
+ 1094: 1  0CA1	12 0D 35		call uart_tx_char
+ 1095: 1
+ 1096: 1  0CA4	22			ret
  1097: 1
- 1098: 1  0CB9	E5 A0			mov a, p2
- 1099: 1  0CBB	12 0D 88		call print_sfr_reg
- 1100: 1  0CBE	7F 01			mov r7, #1
+ 1098: 1  0CA5			do_write:
+ 1099: 1  0CA5	12 01 66		call println
+ 1100: 1  0CA8	12 01 5C		call skip_blanks
+ 1101: 1  0CAB	E6			mov a, @r0
+ 1102: 1  0CAC	B4 70 54		cjne a, #'p', do_write_error
+ 1103: 1  0CAF	08			inc r0
+ 1104: 1  0CB0	E6			mov a, @r0
+ 1105: 1  0CB1	08			inc r0
+ 1106: 1  0CB2	B4 30 0B		cjne a, #'0', do_write_not_0
+ 1107: 1  0CB5	12 01 5C		call skip_blanks
+ 1108: 1  0CB8	12 01 4A		call get_hex_address
+ 1109: 1  0CBB	F5 80			mov p0, a
+ 1110: 1  0CBD	02 0D 05		jmp do_write_exit
+ 1111: 1  0CC0			do_write_not_0:
+ 1112: 1  0CC0	B4 31 0B		cjne a, #'1', do_write_not_1
+ 1113: 1  0CC3	12 01 5C		call skip_blanks
+ 1114: 1  0CC6	12 01 4A		call get_hex_address
+ 1115: 1  0CC9	F5 90			mov p1, a
+ 1116: 1  0CCB	02 0D 05		jmp do_write_exit
+ 1117: 1  0CCE			do_write_not_1:
+ 1118: 1  0CCE	B4 32 0B		cjne a, #'2', do_write_not_2
+ 1119: 1  0CD1	12 01 5C		call skip_blanks
+ 1120: 1  0CD4	12 01 4A		call get_hex_address
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 28
 
@@ -1706,62 +1706,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
- 1101: 1  0CC0	12 01 9A		call printtab
- 1102: 1
- 1103: 1  0CC3	90 06 D5		mov dptr, #p3_txt
- 1104: 1  0CC6	E5 B0			mov a, p3
- 1105: 1  0CC8	12 0D 88		call print_sfr_reg
- 1106: 1  0CCB	7F 01			mov r7, #1
- 1107: 1  0CCD	12 01 9A		call printtab
- 1108: 1
- 1109: 1  0CD0	12 01 93		call println
- 1110: 1
- 1111: 1  0CD3	90 06 A3		mov dptr, #pcon_txt
- 1112: 1  0CD6	E5 87			mov a, pcon
- 1113: 1  0CD8	12 0D 88		call print_sfr_reg
- 1114: 1  0CDB	7F 01			mov r7, #1
- 1115: 1  0CDD	12 01 9A		call printtab
- 1116: 1
- 1117: 1  0CE0	90 06 DB		mov dptr, #psw_txt
- 1118: 1  0CE3	E5 D0			mov a, psw
- 1119: 1  0CE5	12 0D 88		call print_sfr_reg
- 1120: 1  0CE8	7F 01			mov r7, #1
- 1121: 1  0CEA	12 01 9A		call printtab
- 1122: 1
- 1123: 1  0CED	90 06 D8		mov dptr, #ip_txt
- 1124: 1  0CF0	E5 B8			mov a, ip
- 1125: 1  0CF2	12 0D 88		call print_sfr_reg
- 1126: 1  0CF5	7F 01			mov r7, #1
- 1127: 1  0CF7	12 01 9A		call printtab
- 1128: 1
- 1129: 1  0CFA	90 06 D2		mov dptr, #ie_txt
- 1130: 1  0CFD	E5 A8			mov a, ie
- 1131: 1  0CFF	12 0D 88		call print_sfr_reg
- 1132: 1  0D02	7F 01			mov r7, #1
- 1133: 1  0D04	12 01 9A		call printtab
- 1134: 1  0D07	12 01 93		call println
- 1135: 1
- 1136: 1  0D0A	90 06 A8		mov dptr, #tcon_txt
- 1137: 1  0D0D	E5 88			mov a, tcon
- 1138: 1  0D0F	12 0D 88		call print_sfr_reg
- 1139: 1  0D12	7F 01			mov r7, #1
- 1140: 1  0D14	12 01 9A		call printtab
- 1141: 1  0D17	90 06 AD		mov dptr, #tmod_txt
- 1142: 1  0D1A	E5 89			mov a, tmod
- 1143: 1  0D1C	12 0D 88		call print_sfr_reg
- 1144: 1  0D1F	7F 01			mov r7, #1
- 1145: 1  0D21	12 01 9A		call printtab
- 1146: 1  0D24	90 06 B2		mov dptr, #tl0_txt
- 1147: 1  0D27	E5 8A			mov a, tl0
- 1148: 1  0D29	12 0D 88		call print_sfr_reg
- 1149: 1  0D2C	7F 01			mov r7, #1
- 1150: 1  0D2E	12 01 9A		call printtab
- 1151: 1  0D31	90 06 B6		mov dptr, #tl1_txt
- 1152: 1  0D34	E5 8B			mov a, tl1
- 1153: 1  0D36	12 0D 88		call print_sfr_reg
- 1154: 1  0D39	7F 01			mov r7, #1
- 1155: 1  0D3B	12 01 9A		call printtab
- 1156: 1  0D3E	90 06 BA		mov dptr, #th0_txt
+ 1121: 1  0CD7	F5 A0			mov p2, a
+ 1122: 1  0CD9	02 0D 05		jmp do_write_exit
+ 1123: 1  0CDC			do_write_not_2:
+ 1124: 1  0CDC	B4 33 0B		cjne a, #'3', do_write_not_3
+ 1125: 1  0CDF	12 01 5C		call skip_blanks
+ 1126: 1  0CE2	12 01 4A		call get_hex_address
+ 1127: 1  0CE5	F5 B0			mov p3, a
+ 1128: 1  0CE7	02 0D 05		jmp do_write_exit
+ 1129: 1  0CEA			do_write_not_3:
+ 1130: 1  0CEA	B4 63 16		cjne a, #'c', do_write_not_pcon
+ 1131: 1  0CED	08			inc r0
+ 1132: 1  0CEE	E6			mov a, @r0
+ 1133: 1  0CEF	B4 6F 11		cjne a, #'o', do_write_error
+ 1134: 1  0CF2	08			inc r0
+ 1135: 1  0CF3	E6			mov a, @r0
+ 1136: 1  0CF4	B4 6E 0C		cjne a, #'n', do_write_error
+ 1137: 1  0CF7	08			inc r0
+ 1138: 1  0CF8	12 01 5C		call skip_blanks
+ 1139: 1  0CFB	12 01 4A		call get_hex_address
+ 1140: 1  0CFE	F5 87			mov pcon, a
+ 1141: 1  0D00	02 0D 05		jmp do_write_exit
+ 1142: 1  0D03			do_write_not_pcon:
+ 1143: 1  0D03			do_write_error:
+ 1144: 1  0D03	D3			setb c
+ 1145: 1  0D04	22			ret
+ 1146: 1  0D05			do_write_exit:
+ 1147: 1  0D05	C3			clr c
+ 1148: 1  0D06	22			ret
+ 1149: 1
+ 1150: 1
+ 1151: 1
+ 1152: 1
+ 1153: 1
+ 1154:				$include (vt102.inc)
+ 1155: 1			cseg
+ 1156: 1
+ 1157: 1	N      001B	VT102_ESC			equ		1bh
+ 1158: 1  0D07	1B 5B 41 00	VT102_UP:			db		VT102_ESC, '[', 'A', 0
+ 1159: 1  0D0B	1B 5B 42 00	VT102_DOWN:			db		VT102_ESC, '[', 'B', 0
+ 1160: 1  0D0F	1B 5B 43 00	VT102_RIGHT:		db		VT102_ESC, '[', 'C', 0
+ 1161: 1  0D13	1B 5B 44 00	VT102_LEFT:			db		VT102_ESC, '[', 'D', 0
+ 1162: 1  0D17	1B 5B 48 1B	VT102_CLEAR_SCREEN:	db		VT102_ESC, '[', 'H', VT102_ESC, '[', '2', 'J', 0
+       1  0D1B	5B 32 4A 00
+ 1163: 1
+ 1164: 1
+ 1165: 1			; draws a line from the current position to a destination
+ 1166: 1			; --> r7: row of end of line
+ 1167: 1			; --> r6: col of end of line
+ 1168: 1  0D1F			vt102_line_to:
+ 1169: 1
+ 1170: 1
+ 1171: 1  0D1F	22			ret
+ 1172:				$include (apps.inc)
+ 1173: 1			cseg
+ 1174: 1
+ 1175: 1  0D20			lcd_app:
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 29
 
@@ -1769,62 +1769,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
- 1157: 1  0D41	E5 8C			mov a, th0
- 1158: 1  0D43	12 0D 88		call print_sfr_reg
- 1159: 1  0D46	7F 01			mov r7, #1
- 1160: 1  0D48	12 01 9A		call printtab
- 1161: 1  0D4B	90 06 BE		mov dptr, #th1_txt
- 1162: 1  0D4E	E5 8D			mov a, th1
- 1163: 1  0D50	12 0D 88		call print_sfr_reg
- 1164: 1  0D53	12 01 93		call println
- 1165: 1
- 1166: 1  0D56	90 06 C5		mov dptr, #scon_txt
- 1167: 1  0D59	E5 98			mov a, scon
- 1168: 1  0D5B	12 0D 88		call print_sfr_reg
- 1169: 1  0D5E	7F 01			mov r7, #1
- 1170: 1  0D60	12 01 9A		call printtab
- 1171: 1  0D63	90 06 CA		mov dptr, #sbuf_txt
- 1172: 1  0D66	E5 99			mov a, sbuf
- 1173: 1  0D68	12 0D 88		call print_sfr_reg
- 1174: 1  0D6B	12 01 93		call println
- 1175: 1
- 1176: 1  0D6E	90 06 DF		mov dptr, #acc_txt
- 1177: 1  0D71	12 0D 88		call print_sfr_reg
- 1178: 1  0D74	7F 01			mov r7, #1
- 1179: 1  0D76	12 01 9A		call printtab
- 1180: 1  0D79	90 06 E3		mov dptr, #b_txt
- 1181: 1  0D7C	E5 F0			mov a, b
- 1182: 1  0D7E	12 0D 88		call print_sfr_reg
- 1183: 1  0D81	12 01 93		call println
- 1184: 1
- 1185: 1  0D84	12 01 93		call println
- 1186: 1  0D87	22			ret
- 1187: 1
- 1188: 1			; prints the contents of an sfr register
- 1189: 1			; --> dptr: address of register name
- 1190: 1			; --> a: contents of register
- 1191: 1			; <-- none
- 1192: 1  0D88			print_sfr_reg:
- 1193: 1  0D88	C0 E0			push 0e0h					; save contents of a register
- 1194: 1  0D8A	12 06 FF		call uart_tx_string
- 1195: 1  0D8D	74 09			mov a, #TAB
- 1196: 1  0D8F	12 06 F7		call uart_tx_char
- 1197: 1  0D92	D0 E0			pop 0e0h
- 1198: 1  0D94	51 4C			call hex2asc
- 1199: 1  0D96	C0 E0			push 0e0h
- 1200: 1  0D98	E5 F0			mov a, b
- 1201: 1  0D9A	12 06 F7		call uart_tx_char
- 1202: 1  0D9D	D0 E0			pop 0e0h
- 1203: 1  0D9F	12 06 F7		call uart_tx_char
- 1204: 1
- 1205: 1  0DA2	22			ret
- 1206: 1
- 1207: 1  0DA3			do_write:
- 1208: 1  0DA3	12 01 93		call println
- 1209: 1  0DA6	12 01 89		call skip_blanks
- 1210: 1  0DA9	E6			mov a, @r0
- 1211: 1  0DAA	B4 70 54		cjne a, #'p', do_write_error
- 1212: 1  0DAD	08			inc r0
+ 1176: 1
+ 1177: 1  0D20	22			ret
+ 1178: 1
+ 1179: 1  0D21			pwm_app:
+ 1180: 1  0D21	22			ret
+ 1181: 1
+ 1182: 1  0D22			vt102_app:
+ 1183: 1  0D22	22			ret
+ 1184:				$include (uart.inc)
+ 1185: 1			cseg
+ 1186: 1
+ 1187: 1  0D23			uart_init:
+ 1188: 1  0D23	75 89 20	    mov tmod, #20h      ; timer 1, mode 2 (8-bit auto-reload)
+ 1189: 1  0D26	75 8D FD	    mov th1, #0fdh      ; 9600 baud at 11.0592 mhz
+ 1190: 1  0D29	75 98 50	    mov scon, #50h      ; mode 1 (8-bit uart), enable receiver (ren=1)
+ 1191: 1  0D2C	D2 8E		    setb tr1            ; start timer 1
+ 1192: 1  0D2E	90 00 00		mov dptr, #uart_rx_buffer_cur
+ 1193: 1  0D31	74 00			mov a, #00h
+ 1194: 1  0D33	F0			movx @dptr, a
+ 1195: 1  0D34	22		    ret
+ 1196: 1
+ 1197: 1  0D35			uart_tx_char:
+ 1198: 1  0D35	F5 99			mov sbuf, a             ; load character into buffer
+ 1199: 1  0D37			tx_wait:
+ 1200: 1  0D37	30 99 FD	    jnb ti, tx_wait     ; wait for transmission to complete
+ 1201: 1  0D3A	C2 99		    clr ti              ; clear flag for next char
+ 1202: 1  0D3C	22		    ret
+ 1203: 1
+ 1204: 1  0D3D			uart_tx_string:
+ 1205: 1			    ; sends null-terminated string from dptr
+ 1206: 1  0D3D	E4		    clr a
+ 1207: 1  0D3E	93		    movc a, @a+dptr     ; get char from code memory
+ 1208: 1  0D3F	60 05		    jz tx_str_done      ; if 0, end of string
+ 1209: 1  0D41	B1 35		    acall uart_tx_char  ; transmit char
+ 1210: 1  0D43	A3		    inc dptr            ; next char
+ 1211: 1  0D44	80 F7		    sjmp uart_tx_string
+ 1212: 1  0D46			tx_str_done:
+ 1213: 1  0D46	22		    ret
+ 1214: 1
+ 1215: 1  0D47			uart_rx_char:
+ 1216: 1  0D47	30 98 FD	    jnb ri, uart_rx_char ; wait for character
+ 1217: 1  0D4A	E5 99		    mov a, sbuf         ; read from buffer
+ 1218: 1  0D4C	C2 98		    clr ri              ; clear flag
+ 1219: 1  0D4E	22		    ret
+ 1220: 1
+ 1221: 1  0D4F			uart_rx_string:
+ 1222: 1			    ; receives string into ram at r0. terminates on cr (0x0d) or lf (0x0a).
+ 1223: 1			    ; replaces terminator with 0x00 (asciiz).
+ 1224: 1  0D4F			rx_loop:
+ 1225: 1  0D4F	12 0D 47	    lcall uart_rx_char  ; get char
+ 1226: 1  0D52	12 0D 35	    lcall uart_tx_char  ; echo char back to minicom (optional but helpful)
+ 1227: 1  0D55	B4 0D 02	    cjne a, #0dh, chk_lf ; is it cr?
+ 1228: 1  0D58	80 19		    sjmp str_term       ; yes, terminate
+ 1229: 1  0D5A			chk_lf:
+ 1230: 1  0D5A	B4 0A 02	    cjne a, #0ah, save_char ; is it lf?
+ 1231: 1  0D5D	80 14		    sjmp str_term       ; yes, terminate
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 30
 
@@ -1832,97 +1832,30 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
  Line  I  Addr  Code            Source
 
- 1213: 1  0DAE	E6			mov a, @r0
- 1214: 1  0DAF	08			inc r0
- 1215: 1  0DB0	B4 30 0B		cjne a, #'0', do_write_not_0
- 1216: 1  0DB3	12 01 89		call skip_blanks
- 1217: 1  0DB6	12 01 77		call get_hex_address
- 1218: 1  0DB9	F5 80			mov p0, a
- 1219: 1  0DBB	02 0E 03		jmp do_write_exit
- 1220: 1  0DBE			do_write_not_0:
- 1221: 1  0DBE	B4 31 0B		cjne a, #'1', do_write_not_1
- 1222: 1  0DC1	12 01 89		call skip_blanks
- 1223: 1  0DC4	12 01 77		call get_hex_address
- 1224: 1  0DC7	F5 90			mov p1, a
- 1225: 1  0DC9	02 0E 03		jmp do_write_exit
- 1226: 1  0DCC			do_write_not_1:
- 1227: 1  0DCC	B4 32 0B		cjne a, #'2', do_write_not_2
- 1228: 1  0DCF	12 01 89		call skip_blanks
- 1229: 1  0DD2	12 01 77		call get_hex_address
- 1230: 1  0DD5	F5 A0			mov p2, a
- 1231: 1  0DD7	02 0E 03		jmp do_write_exit
- 1232: 1  0DDA			do_write_not_2:
- 1233: 1  0DDA	B4 33 0B		cjne a, #'3', do_write_not_3
- 1234: 1  0DDD	12 01 89		call skip_blanks
- 1235: 1  0DE0	12 01 77		call get_hex_address
- 1236: 1  0DE3	F5 B0			mov p3, a
- 1237: 1  0DE5	02 0E 03		jmp do_write_exit
- 1238: 1  0DE8			do_write_not_3:
- 1239: 1  0DE8	B4 63 16		cjne a, #'c', do_write_not_pcon
- 1240: 1  0DEB	08			inc r0
- 1241: 1  0DEC	E6			mov a, @r0
- 1242: 1  0DED	B4 6F 11		cjne a, #'o', do_write_error
- 1243: 1  0DF0	08			inc r0
- 1244: 1  0DF1	E6			mov a, @r0
- 1245: 1  0DF2	B4 6E 0C		cjne a, #'n', do_write_error
- 1246: 1  0DF5	08			inc r0
- 1247: 1  0DF6	12 01 89		call skip_blanks
- 1248: 1  0DF9	12 01 77		call get_hex_address
- 1249: 1  0DFC	F5 87			mov pcon, a
- 1250: 1  0DFE	02 0E 03		jmp do_write_exit
- 1251: 1  0E01			do_write_not_pcon:
- 1252: 1  0E01			do_write_error:
- 1253: 1  0E01	D3			setb c
- 1254: 1  0E02	22			ret
- 1255: 1  0E03			do_write_exit:
- 1256: 1  0E03	C3			clr c
- 1257: 1  0E04	22			ret
- 1258: 1
- 1259: 1
- 1260: 1
- 1261: 1
- 1262: 1
- 1263:				$include (vt102.inc)
- 1264: 1			cseg
- 1265: 1
- 1266: 1	N      001B	VT102_ESC			equ		1bh
- 1267: 1  0E05	1B 5B 41 00	VT102_UP:			db		VT102_ESC, '[', 'A', 0
- 1268: 1  0E09	1B 5B 42 00	VT102_DOWN:			db		VT102_ESC, '[', 'B', 0
-
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 31
-
-
-
- Line  I  Addr  Code            Source
-
- 1269: 1  0E0D	1B 5B 43 00	VT102_RIGHT:		db		VT102_ESC, '[', 'C', 0
- 1270: 1  0E11	1B 5B 44 00	VT102_LEFT:			db		VT102_ESC, '[', 'D', 0
- 1271: 1  0E15	1B 5B 48 1B	VT102_CLEAR_SCREEN:	db		VT102_ESC, '[', 'H', VT102_ESC, '[', '2', 'J', 0
-       1  0E19	5B 32 4A 00
- 1272: 1
- 1273: 1
- 1274: 1			; draws a line from the current position to a destination
- 1275: 1			; --> r7: row of end of line
- 1276: 1			; --> r6: col of end of line
- 1277: 1  0E1D			vt102_line_to:
- 1278: 1
- 1279: 1
- 1280: 1  0E1D	22			ret
- 1281:				$include (apps.inc)
- 1282: 1			cseg
- 1283: 1
- 1284: 1  0E1E			lcd_app:
- 1285: 1
- 1286: 1  0E1E	22			ret
- 1287: 1
- 1288: 1  0E1F			pwm_app:
- 1289: 1  0E1F	22			ret
- 1290: 1
- 1291: 1  0E20			vt102_app:
- 1292: 1  0E20	22			ret
- 1293:
- 1294:				end
- 1295:
+ 1232: 1  0D5F			save_char:
+ 1233: 1  0D5F	B4 08 0D		cjne a, #BS, confirm_save
+ 1234: 1  0D62	18			dec r0
+ 1235: 1  0D63	74 20			mov a, #SPC
+ 1236: 1  0D65	12 0D 35		lcall uart_tx_char
+ 1237: 1  0D68	74 08			mov a, #BS
+ 1238: 1  0D6A	12 0D 35		lcall uart_tx_char
+ 1239: 1  0D6D	80 E0			sjmp rx_loop
+ 1240: 1  0D6F			confirm_save:
+ 1241: 1  0D6F	F6		    mov @r0, a          ; store char in ram
+ 1242: 1  0D70	08		    inc r0
+ 1243: 1  0D71	80 DC		    sjmp rx_loop
+ 1244: 1  0D73			str_term:
+ 1245: 1  0D73	76 00		    mov @r0, #00h       ; add null terminator (asciiz)
+ 1246: 1  0D75	22		    ret
+ 1247: 1
+ 1248: 1			xseg
+ 1249: 1  0000	N      0001	uart_rx_buffer_cur:		ds 01h
+ 1250: 1  0001	N      0100	uart_rx_buffer:			ds 100h				; 256-byte buffer
+ 1251: 1
+ 1252: 1
+ 1253:
+ 1254:				end
+ 1255:
 
 
 
@@ -1935,7 +1868,7 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
 
 
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 32
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 31
 
 
 
@@ -1951,79 +1884,78 @@ SYMBOL				  TYPE     VALUE	LINE
 ??VERSION			  NUMBER    0130
 AC				  BIT	      D6
 ACC				  DATA	      E0
-ACC_TXT				  CODE	    06DF	 393
-APP_TABLE			  CODE	    0685	 370
-ASC2NIBBLE			  CODE	    0A2A	 686
-A_SHORT_TEXT			  CODE	    05A2	 343
+ACC_TXT				  CODE	    0630	 355
+APP_TABLE			  CODE	    05D6	 332
+ASC2NIBBLE			  CODE	    092C	 577
 B				  DATA	      F0
-BS				  NUMBER    0008	 256
-B_TXT				  CODE	    06E3	 394
-CALL_CMD			  CODE	    0441	 287
-CALL_CMD_DESCR			  CODE	    0447	 288
-CHECK_CLEAR			  CODE	    00D1	  91
-CHECK_COPY			  CODE	    00F9	 110
-CHECK_DUMP			  CODE	    00AA	  72
-CHECK_FILL			  CODE	    00E4	 100
-CHECK_GOTO			  CODE	    010E	 120
-CHECK_HELP			  CODE	    0056	  31
-CHECK_IRAM			  CODE	    0123	 130
-CHECK_LS			  CODE	    006B	  42
-CHECK_PEEK			  CODE	    0080	  52
-CHECK_POKE			  CODE	    0095	  62
-CHECK_RESET			  CODE	    00BF	  82
-CHECK_SFR			  CODE	    0138	 140
-CHECK_WRITE			  CODE	    014D	 150
-CHK_LF				  CODE	    071A	 443
-CLEAR_CMD			  CODE	    02F2	 277
-CLEAR_CMD_DESCR			  CODE	    02F9	 278
-CLEAR_SCREEN			  CODE	    0BC0	 953
-CLEAR_TXT			  CODE	    0568	 323
-CMD_PROMPT			  CODE	    004B	  20
-COMMANDS			  CODE	    0201	 266
-COMMAND_PROMPT_STR		  CODE	    01FB	 263
-CONFIRM_SAVE			  CODE	    072D	 454
-COPY_CMD			  CODE	    0396	 283
-COPY_CMD_DESCR			  CODE	    039C	 284
-COPY_TXT			  CODE	    0579	 329
-CR				  NUMBER    000D	 252
+BS				  NUMBER    0008	 227
+B_TXT				  CODE	    0634	 356
+CALL_CMD			  CODE	    03EA	 258
+CALL_CMD_DESCR			  CODE	    03F0	 259
+CHECK_CLEAR			  CODE	    00A4	  90
+CHECK_COPY			  CODE	    00CC	 109
+CHECK_DUMP			  CODE	    007D	  71
+CHECK_FILL			  CODE	    00B7	  99
+CHECK_GOTO			  CODE	    00E1	 119
+CHECK_HELP			  CODE	    0029	  30
+CHECK_IRAM			  CODE	    00F6	 129
+CHECK_LS			  CODE	    003E	  41
+CHECK_PEEK			  CODE	    0053	  51
+CHECK_POKE			  CODE	    0068	  61
+CHECK_RESET			  CODE	    0092	  81
+CHECK_SFR			  CODE	    010B	 139
+CHECK_WRITE			  CODE	    0120	 149
+CHK_LF				  CODE	    0D5A	1229
+CLEAR_CMD			  CODE	    029B	 248
+CLEAR_CMD_DESCR			  CODE	    02A2	 249
+CLEAR_SCREEN			  CODE	    0AC2	 844
+CLEAR_TXT			  CODE	    0511	 294
+CMD_PROMPT			  CODE	    001E	  19
+COMMANDS			  CODE	    01AA	 237
+COMMAND_PROMPT_STR		  CODE	    01A4	 234
+CONFIRM_SAVE			  CODE	    0D6F	1240
+COPY_CMD			  CODE	    033F	 254
+COPY_CMD_DESCR			  CODE	    0345	 255
+COPY_TXT			  CODE	    0522	 300
+CR				  NUMBER    000D	 223
 CY				  BIT	      D7
-DO_COPY				  CODE	    0C08	 999
-DO_DUMP				  CODE	    0B40	 883
-DO_DUMP_LOOP			  CODE	    0B59	 895
-DO_FILL				  CODE	    0BE6	 978
-DO_GOTO				  CODE	    0C2F	1023
-DO_HELP				  CODE	    0A5A	 744
-DO_HELP_EXIT			  CODE	    0AA5	 787
-DO_HELP_LOOP			  CODE	    0A60	 747
-DO_IRAM				  CODE	    0C44	1038
-DO_IRAM_COL_LOOP		  CODE	    0C74	1062
+DO_COPY				  CODE	    0B0A	 890
+DO_DUMP				  CODE	    0A42	 774
+DO_DUMP_LOOP			  CODE	    0A5B	 786
+DO_FILL				  CODE	    0AE8	 869
+DO_GOTO				  CODE	    0B31	 914
+DO_HELP				  CODE	    095C	 635
+DO_HELP_EXIT			  CODE	    09A7	 678
+DO_HELP_LOOP			  CODE	    0962	 638
+DO_IRAM				  CODE	    0B46	 929
+DO_IRAM_COL_LOOP		  CODE	    0B76	 953
+DO_IRAM_ROW_LOOP		  CODE	    0B57	 937
 
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 33
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 32
 
 
 
 SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
-DO_IRAM_ROW_LOOP		  CODE	    0C55	1046
-DO_LS				  CODE	    0AA6	 790
-DO_LS_EXIT			  CODE	    0AF3	 836
-DO_LS_LOOP			  CODE	    0AAC	 793
-DO_PEEK				  CODE	    0AF4	 839
-DO_POKE				  CODE	    0B1F	 864
-DO_SFR				  CODE	    0C99	1082
-DO_WRITE			  CODE	    0DA3	1207
-DO_WRITE_ERROR			  CODE	    0E01	1252
-DO_WRITE_EXIT			  CODE	    0E03	1255
-DO_WRITE_NOT_0			  CODE	    0DBE	1220
-DO_WRITE_NOT_1			  CODE	    0DCC	1226
-DO_WRITE_NOT_2			  CODE	    0DDA	1232
-DO_WRITE_NOT_3			  CODE	    0DE8	1238
-DO_WRITE_NOT_PCON		  CODE	    0E01	1251
+DO_LS				  CODE	    09A8	 681
+DO_LS_EXIT			  CODE	    09F5	 727
+DO_LS_LOOP			  CODE	    09AE	 684
+DO_PEEK				  CODE	    09F6	 730
+DO_POKE				  CODE	    0A21	 755
+DO_SFR				  CODE	    0B9B	 973
+DO_WRITE			  CODE	    0CA5	1098
+DO_WRITE_ERROR			  CODE	    0D03	1143
+DO_WRITE_EXIT			  CODE	    0D05	1146
+DO_WRITE_NOT_0			  CODE	    0CC0	1111
+DO_WRITE_NOT_1			  CODE	    0CCE	1117
+DO_WRITE_NOT_2			  CODE	    0CDC	1123
+DO_WRITE_NOT_3			  CODE	    0CEA	1129
+DO_WRITE_NOT_PCON		  CODE	    0D03	1142
 DPH				  DATA	      83
 DPL				  DATA	      82
-DUMP_CMD			  CODE	    02BF	 275
-DUMP_CMD_DESCR			  CODE	    02C5	 276
-DUMP_TXT			  CODE	    0563	 321
+DUMP_CMD			  CODE	    0268	 246
+DUMP_CMD_DESCR			  CODE	    026E	 247
+DUMP_TXT			  CODE	    050C	 292
 EA				  BIT	      AF
 ES				  BIT	      AC
 ET0				  BIT	      A9
@@ -2033,33 +1965,97 @@ EX1				  BIT	      AA
 EXTI0				  CODE	    0003
 EXTI1				  CODE	    0013
 F0				  BIT	      D5
-FILL_CMD			  CODE	    0347	 281
-FILL_CMD_DESCR			  CODE	    034D	 282
-FILL_TXT			  CODE	    0574	 327
-G51_LOGO			  CODE	    0734	 470
-GET_HEX_ADDRESS			  CODE	    0177	 175
-GOTO_CMD			  CODE	    03F2	 285
-GOTO_CMD_DESCR			  CODE	    03F8	 286
-GOTO_TXT			  CODE	    057E	 331
-HALT				  CODE	    0175	 172
-HELP_CMD			  CODE	    0201	 267
-HELP_CMD_DESCR			  CODE	    0207	 268
-HELP_TABLE			  CODE	    0515	 296
-HELP_TXT			  CODE	    0551	 313
-HEX2ASC				  CODE	    0A4C	 729
+FILL_CMD			  CODE	    02F0	 252
+FILL_CMD_DESCR			  CODE	    02F6	 253
+FILL_TXT			  CODE	    051D	 298
+G51_LOGO			  CODE	    0636	 361
+GET_HEX_ADDRESS			  CODE	    014A	 174
+GOTO_CMD			  CODE	    039B	 256
+GOTO_CMD_DESCR			  CODE	    03A1	 257
+GOTO_TXT			  CODE	    0527	 302
+HALT				  CODE	    0148	 171
+HELP_CMD			  CODE	    01AA	 238
+HELP_CMD_DESCR			  CODE	    01B0	 239
+HELP_TABLE			  CODE	    04BE	 267
+HELP_TXT			  CODE	    04FA	 284
+HEX2ASC				  CODE	    094E	 620
 IE				  DATA	      A8
 IE0				  BIT	      89
 IE1				  BIT	      8B
-IE_TXT				  CODE	    06D2	 389
+IE_TXT				  CODE	    0623	 351
 INT0				  BIT	      B2
 INT1				  BIT	      B3
 IP				  DATA	      B8
-IP_TXT				  CODE	    06D8	 391
-IRAM_CMD			  CODE	    047C	 289
-IRAM_CMD_DESCR			  CODE	    0482	 290
-IRAM_TXT			  CODE	    0583	 333
-IS_ALPHA			  CODE	    0A36	 701
+IP_TXT				  CODE	    0629	 353
+IRAM_CMD			  CODE	    0425	 260
+IRAM_CMD_DESCR			  CODE	    042B	 261
+IRAM_TXT			  CODE	    052C	 304
+IS_ALPHA			  CODE	    0938	 592
 IT0				  BIT	      88
+IT1				  BIT	      8A
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 33
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+LCD_APP				  CODE	    0D20	1175
+LCD_APP_DESCR			  CODE	    054F	 317
+LCD_APP_NAME			  CODE	    054B	 314
+LF				  NUMBER    000A	 224
+LS_CMD				  CODE	    01D5	 240
+LS_CMD_DESCR			  CODE	    01D9	 241
+LS_TXT				  CODE	    04FF	 286
+MAIN				  CODE	    0003	   4
+MATCH				  CODE	    0873	 387
+MEMCHR				  CODE	    08A4	 446
+MEMCHR_C			  CODE	    0889	 419
+MEMCHR_LOOP			  CODE	    08A8	 449
+MEMCHR_LOOP_C			  CODE	    088D	 422
+MEMCHR_MATCH			  CODE	    08BA	 462
+MEMCHR_MATCH_C			  CODE	    089E	 435
+MEMCHR_NO_MATCH			  CODE	    08B5	 458
+MEMCHR_NO_MATCH_C		  CODE	    0898	 430
+MEMCMP_C			  CODE	    08BF	 473
+MEMCMP_LOOP_C			  CODE	    08C3	 476
+MEMCMP_MATCH_C			  CODE	    08EC	 503
+MEMCMP_NO_MATCH_C		  CODE	    08E4	 496
+MEMCMP_NO_MATCH_LESS_C		  CODE	    08E9	 500
+MEMCPY				  CODE	    0915	 553
+MEMCPY_C			  CODE	    08EF	 512
+MEMCPY_C_LOOP			  CODE	    08EF	 513
+MEMSET				  CODE	    090B	 538
+MEMSET_LOOP			  CODE	    090F	 541
+MSG_ERR				  CODE	    053B	 311
+NEWLINE_STR			  CODE	    01A1	 232
+NIBBLE2ASC			  CODE	    093E	 602
+NIBBLE2ASC_IS_DIGIT		  CODE	    094A	 611
+NO_MATCH			  CODE	    0875	 390
+NULL				  NUMBER    0000	 226
+OV				  BIT	      D2
+P				  BIT	      D0
+P0				  DATA	      80
+P0_TXT				  CODE	    05EE	 338
+P1				  DATA	      90
+P1_TXT				  CODE	    0613	 347
+P2				  DATA	      A0
+P2_TXT				  CODE	    0620	 350
+P3				  DATA	      B0
+P3_TXT				  CODE	    0626	 352
+PCON				  DATA	      87
+PCON_TXT			  CODE	    05F4	 340
+PEEK_CMD			  CODE	    01FA	 242
+PEEK_CMD_DESCR			  CODE	    0200	 243
+PEEK_TXT			  CODE	    0502	 288
+POKE_CMD			  CODE	    0230	 244
+POKE_CMD_DESCR			  CODE	    0236	 245
+POKE_TXT			  CODE	    0507	 290
+PRINTLN				  CODE	    0166	 197
+PRINTSPC			  CODE	    0175	 213
+PRINTTAB			  CODE	    016D	 204
+PRINT_DUMP_HEADER		  CODE	    0AC9	 849
+PRINT_DUMP_HEADER_LOOP		  CODE	    0ACD	 852
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 34
 
@@ -2067,62 +2063,62 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
 SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
-IT1				  BIT	      8A
-LCD_APP				  CODE	    0E1E	1284
-LCD_APP_DESCR			  CODE	    05FE	 355
-LCD_APP_NAME			  CODE	    05FA	 352
-LF				  NUMBER    000A	 253
-LS_CMD				  CODE	    022C	 269
-LS_CMD_DESCR			  CODE	    0230	 270
-LS_TXT				  CODE	    0556	 315
-MAIN				  CODE	    0030	   5
-MATCH				  CODE	    0971	 496
-MEMCHR				  CODE	    09A2	 555
-MEMCHR_C			  CODE	    0987	 528
-MEMCHR_LOOP			  CODE	    09A6	 558
-MEMCHR_LOOP_C			  CODE	    098B	 531
-MEMCHR_MATCH			  CODE	    09B8	 571
-MEMCHR_MATCH_C			  CODE	    099C	 544
-MEMCHR_NO_MATCH			  CODE	    09B3	 567
-MEMCHR_NO_MATCH_C		  CODE	    0996	 539
-MEMCMP_C			  CODE	    09BD	 582
-MEMCMP_LOOP_C			  CODE	    09C1	 585
-MEMCMP_MATCH_C			  CODE	    09EA	 612
-MEMCMP_NO_MATCH_C		  CODE	    09E2	 605
-MEMCMP_NO_MATCH_LESS_C		  CODE	    09E7	 609
-MEMCPY				  CODE	    0A13	 662
-MEMCPY_C			  CODE	    09ED	 621
-MEMCPY_C_LOOP			  CODE	    09ED	 622
-MEMSET				  CODE	    0A09	 647
-MEMSET_LOOP			  CODE	    0A0D	 650
-MEM_TEST			  CODE	    01AA	 224
-MEM_TEST_FAIL			  CODE	    01CD	 243
-MEM_TEST_FAIL_MSG		  CODE	    05CF	 346
-MEM_TEST_SUCCESS_MSG		  CODE	    05E3	 349
-MSG_ERR				  CODE	    0592	 340
-NEWLINE_STR			  CODE	    01F8	 261
-NIBBLE2ASC			  CODE	    0A3C	 711
-NIBBLE2ASC_IS_DIGIT		  CODE	    0A48	 720
-NO_MATCH			  CODE	    0973	 499
-NULL				  NUMBER    0000	 255
-OV				  BIT	      D2
-P				  BIT	      D0
-P0				  DATA	      80
-P0_TXT				  CODE	    069D	 376
-P1				  DATA	      90
-P1_TXT				  CODE	    06C2	 385
-P2				  DATA	      A0
-P2_TXT				  CODE	    06CF	 388
-P3				  DATA	      B0
-P3_TXT				  CODE	    06D5	 390
-PCON				  DATA	      87
-PCON_TXT			  CODE	    06A3	 378
-PEEK_CMD			  CODE	    0251	 271
-PEEK_CMD_DESCR			  CODE	    0257	 272
-PEEK_TXT			  CODE	    0559	 317
-POKE_CMD			  CODE	    0287	 273
-POKE_CMD_DESCR			  CODE	    028D	 274
-POKE_TXT			  CODE	    055E	 319
+PRINT_ROW_ADDRESS		  CODE	    0A91	 818
+PRINT_ROW_DATA			  CODE	    0A6B	 796
+PRINT_ROW_DATA_LOOP		  CODE	    0A71	 800
+PRINT_SFR_REG			  CODE	    0C8A	1083
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PSW_TXT				  CODE	    062C	 354
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PWM_APP				  CODE	    0D21	1179
+PWM_APP_DESCR			  CODE	    057E	 323
+PWM_APP_NAME			  CODE	    057A	 320
+PX0				  BIT	      B8
+PX1				  BIT	      BA
+RB8				  BIT	      9A
+RD				  BIT	      B7
+REN				  BIT	      9C
+RESET				  CODE	    0000
+RESET_CMD			  CODE	    02C5	 250
+RESET_CMD_DESCR			  CODE	    02CC	 251
+RESET_TXT			  CODE	    0517	 296
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RXD				  BIT	      B0
+RX_LOOP				  CODE	    0D4F	1224
+SAVE_CHAR			  CODE	    0D5F	1232
+SBUF				  DATA	      99
+SBUF_TXT			  CODE	    061B	 349
+SCON				  DATA	      98
+SCON_TXT			  CODE	    0616	 348
+SFR_CMD				  CODE	    045E	 262
+SFR_CMD_DESCR			  CODE	    0463	 263
+SFR_TXT				  CODE	    0531	 306
+SINT				  CODE	    0023
+SKIP_BLANKS			  CODE	    015C	 187
+SKIP_BLANKS_EXIT		  CODE	    0165	 194
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SP				  DATA	      81
+SPC				  NUMBER    0020	 228
+SP_TXT				  CODE	    05F1	 339
+STRCMP				  CODE	    0865	 374
+STRCMP_LOOP			  CODE	    0865	 377
+STRNCMP				  CODE	    0878	 394
+STRNCMP_LOOP			  CODE	    0878	 396
+STRNCMP_MATCH			  CODE	    0884	 406
+STRNCMP_NO_MATCH		  CODE	    0886	 409
+STR_TERM			  CODE	    0D73	1244
+T0				  BIT	      B4
+T1				  BIT	      B5
+TAB				  NUMBER    0009	 225
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TCON_TXT			  CODE	    05F9	 341
 
 ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 35
 
@@ -2130,115 +2126,47 @@ ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. H
 
 SYMBOL				  TYPE     VALUE	LINE
 ------------------------------------------------------------
-PRINTLN				  CODE	    0193	 198
-PRINTSPC			  CODE	    01A2	 214
-PRINTTAB			  CODE	    019A	 205
-PRINT_DUMP_HEADER		  CODE	    0BC7	 958
-PRINT_DUMP_HEADER_LOOP		  CODE	    0BCB	 961
-PRINT_ROW_ADDRESS		  CODE	    0B8F	 927
-PRINT_ROW_DATA			  CODE	    0B69	 905
-PRINT_ROW_DATA_LOOP		  CODE	    0B6F	 909
-PRINT_SFR_REG			  CODE	    0D88	1192
-PS				  BIT	      BC
-PSW				  DATA	      D0
-PSW_TXT				  CODE	    06DB	 392
-PT0				  BIT	      B9
-PT1				  BIT	      BB
-PWM_APP				  CODE	    0E1F	1288
-PWM_APP_DESCR			  CODE	    062D	 361
-PWM_APP_NAME			  CODE	    0629	 358
-PX0				  BIT	      B8
-PX1				  BIT	      BA
-RB8				  BIT	      9A
-RD				  BIT	      B7
-REN				  BIT	      9C
-RESET				  CODE	    0000
-RESET_CMD			  CODE	    031C	 279
-RESET_CMD_DESCR			  CODE	    0323	 280
-RESET_TXT			  CODE	    056E	 325
-RI				  BIT	      98
-RS0				  BIT	      D3
-RS1				  BIT	      D4
-RXD				  BIT	      B0
-RX_LOOP				  CODE	    0711	 438
-SAVE_CHAR			  CODE	    071F	 446
-SBUF				  DATA	      99
-SBUF_TXT			  CODE	    06CA	 387
-SCON				  DATA	      98
-SCON_TXT			  CODE	    06C5	 386
-SFR_CMD				  CODE	    04B5	 291
-SFR_CMD_DESCR			  CODE	    04BA	 292
-SFR_TXT				  CODE	    0588	 335
-SINT				  CODE	    0023
-SKIP_BLANKS			  CODE	    0189	 188
-SKIP_BLANKS_EXIT		  CODE	    0192	 195
-SM0				  BIT	      9F
-SM1				  BIT	      9E
-SM2				  BIT	      9D
-SP				  DATA	      81
-SPC				  NUMBER    0020	 257
-SP_TXT				  CODE	    06A0	 377
-STRCMP				  CODE	    0963	 483
-STRCMP_LOOP			  CODE	    0963	 486
-STRNCMP				  CODE	    0976	 503
-STRNCMP_LOOP			  CODE	    0976	 505
-STRNCMP_MATCH			  CODE	    0982	 515
-STRNCMP_NO_MATCH		  CODE	    0984	 518
-STR_TERM			  CODE	    0731	 458
-T0				  BIT	      B4
-
-ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 36
-
-
-
-SYMBOL				  TYPE     VALUE	LINE
-------------------------------------------------------------
-T1				  BIT	      B5
-TAB				  NUMBER    0009	 254
-TB8				  BIT	      9B
-TCON				  DATA	      88
-TCON_TXT			  CODE	    06A8	 379
 TF0				  BIT	      8D
 TF1				  BIT	      8F
 TH0				  DATA	      8C
-TH0_TXT				  CODE	    06BA	 383
+TH0_TXT				  CODE	    060B	 345
 TH1				  DATA	      8D
-TH1_TXT				  CODE	    06BE	 384
+TH1_TXT				  CODE	    060F	 346
 TI				  BIT	      99
 TIMER0				  CODE	    000B
 TIMER1				  CODE	    001B
-TITLE_STR			  CODE	    01D4	 259
+TITLE_STR			  CODE	    017D	 230
 TL0				  DATA	      8A
-TL0_TXT				  CODE	    06B2	 381
+TL0_TXT				  CODE	    0603	 343
 TL1				  DATA	      8B
-TL1_TXT				  CODE	    06B6	 382
+TL1_TXT				  CODE	    0607	 344
 TMOD				  DATA	      89
-TMOD_TXT			  CODE	    06AD	 380
+TMOD_TXT			  CODE	    05FE	 342
 TR0				  BIT	      8C
 TR1				  BIT	      8E
 TXD				  BIT	      B1
-TX_STR_DONE			  CODE	    0708	 426
-TX_WAIT				  CODE	    06F9	 413
-UART_INIT			  CODE	    06E5	 401
-UART_RX_BUFFER			  XDATA	    0001	 464
-UART_RX_BUFFER_CUR		  XDATA	    0000	 463
-UART_RX_CHAR			  CODE	    0709	 429
-UART_RX_STRING			  CODE	    0711	 435
-UART_TX_CHAR			  CODE	    06F7	 411
-UART_TX_STRING			  CODE	    06FF	 418
-UNKNOWN				  CODE	    0162	 161
-UNKNOWN_CMD_PROMPT		  CODE	    0173	 169
-VT102_APP			  CODE	    0E20	1291
-VT102_APP_DESCR			  CODE	    065A	 367
-VT102_APP_NAME			  CODE	    0654	 364
-VT102_CLEAR_SCREEN		  CODE	    0E15	1271
-VT102_DOWN			  CODE	    0E09	1268
-VT102_ESC			  NUMBER    001B	1266
-VT102_LEFT			  CODE	    0E11	1270
-VT102_LINE_TO			  CODE	    0E1D	1277
-VT102_RIGHT			  CODE	    0E0D	1269
-VT102_UP			  CODE	    0E05	1267
+TX_STR_DONE			  CODE	    0D46	1212
+TX_WAIT				  CODE	    0D37	1199
+UART_INIT			  CODE	    0D23	1187
+UART_RX_BUFFER			  XDATA	    0001	1250
+UART_RX_BUFFER_CUR		  XDATA	    0000	1249
+UART_RX_CHAR			  CODE	    0D47	1215
+UART_RX_STRING			  CODE	    0D4F	1221
+UART_TX_CHAR			  CODE	    0D35	1197
+UART_TX_STRING			  CODE	    0D3D	1204
+UNKNOWN				  CODE	    0135	 160
+UNKNOWN_CMD_PROMPT		  CODE	    0146	 168
+VT102_APP			  CODE	    0D22	1182
+VT102_APP_DESCR			  CODE	    05AB	 329
+VT102_APP_NAME			  CODE	    05A5	 326
+VT102_CLEAR_SCREEN		  CODE	    0D17	1162
+VT102_DOWN			  CODE	    0D0B	1159
+VT102_ESC			  NUMBER    001B	1157
+VT102_LEFT			  CODE	    0D13	1161
+VT102_LINE_TO			  CODE	    0D1F	1168
+VT102_RIGHT			  CODE	    0D0F	1160
+VT102_UP			  CODE	    0D07	1158
 WR				  BIT	      B6
-WRITE_CMD			  CODE	    04E3	 293
-WRITE_CMD_DESCR			  CODE	    04E9	 294
-WRITE_TXT			  CODE	    058C	 337
+WRITE_CMD			  CODE	    048C	 264
+WRITE_CMD_DESCR			  CODE	    0492	 265
+WRITE_TXT			  CODE	    0535	 308
