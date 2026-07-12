@@ -1,0 +1,323 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 1
+Hexadecimal [24-Bits]
+
+
+
+                                      1 .include "constants.inc"
+                           000009     1 TAB			.equ		0x09
+                           000000     2 NULL 		.equ		0x00 
+                           000008     3 BS 			.equ		0x08
+                           000020     4 SPC			.equ		0x20
+                           00000A     5 CR			.equ		0x0a
+                           00000D     6 LF			.equ		0x0d
+                           00007F     7 DEL			.equ		0x7f
+                                      8 
+                                      9 .globl title_str
+                                     10 .globl newline_str
+                                     11 .globl command_prompt_str
+                                     12 .globl help_table
+                                     13 .globl app_table
+                                     14 .globl p0_txt
+                                     15 .globl p1_txt
+                                     16 .globl p2_txt
+                                     17 .globl p3_txt
+                                     18 .globl pcon_txt
+                                     19 .globl psw_txt
+                                     20 .globl ip_txt
+                                     21 .globl ie_txt
+                                     22 .globl tcon_txt
+                                     23 .globl tmod_txt
+                                     24 .globl tl0_txt
+                                     25 .globl tl1_txt
+                                     26 .globl th0_txt
+                                     27 .globl th1_txt
+                                     28 .globl scon_txt
+                                     29 .globl sbuf_txt
+                                     30 .globl acc_txt
+                                     31 .globl b_txt
+                                     32 .globl help_txt
+                                     33 .globl ls_txt
+                                     34 .globl peek_txt
+                                     35 .globl poke_txt
+                                     36 .globl clear_txt
+                                     37 .globl reset_txt
+                                     38 .globl write_txt
+                                     39 .globl dump_txt
+                                     40 .globl fill_txt
+                                     41 .globl copy_txt
+                                     42 .globl goto_txt
+                                     43 .globl iram_txt
+                                     44 .globl sfr_txt
+                                     45 .globl msg_err
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 2
+Hexadecimal [24-Bits]
+
+
+
+                                      2 .include "string.inc"
+                                      1 .globl STRCMP
+                                      2 .globl strncmp
+                                      3 
+                                      4 ; finds character c in the first n bytes of a memory buffer in program memory
+                                      5 ; --> r6,r7: address of memory buffer
+                                      6 ; --> r5: 	character for which to search
+                                      7 ; --> r4:	how many bytes at which to look
+                                      8 ; <-- r6,r7: address at which character was found, otherwise NULL
+                                      9 ; <-- c: clear if found, otherwise set
+                                     10 .globl memchr_c
+                                     11 
+                                     12 ; finds character c in the first n bytes of a memory buffer in data memory
+                                     13 ; --> r6,r7: address of memory buffer
+                                     14 ; --> r5: 	character for which to search
+                                     15 ; --> r4:	how many bytes at which to look
+                                     16 ; <-- r6,r7: address at which character was found, otherwise NULL
+                                     17 .globl memchr
+                                     18 
+                                     19 ; compares the first n bytes of two blocks of memory, one of which is in program memory
+                                     20 ; --> r6, r7: 	address of block of memory in program memory
+                                     21 ; --> r4, r5: 	address of block of memory in data memory
+                                     22 ; --> r3: 		how many bytes to compare
+                                     23 ; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
+                                     24 
+                                     25 .globl memcmp_c
+                                     26 
+                                     27 ; copies n bytes from one memory block to another, one of which resides in program memory
+                                     28 ; --> r6, r7: address of source memory block in program memory
+                                     29 ; --> r4, r5: address of destination memory block in data memory
+                                     30 ; --> r3: 	  how many bytes to copy
+                                     31 
+                                     32 .globl memcpy_c
+                                     33 
+                                     34 ; initializes a memory block with a specific byte
+                                     35 ; --> r6, r7: address of memory block
+                                     36 ; --> r5: length of memory block
+                                     37 ; --> r4: byte to fill the block
+                                     38 
+                                     39 .globl memset
+                                     40 
+                                     41 ; moves a memory block from one location to another
+                                     42 ; --> r6, r7: address of source memory block
+                                     43 ; --> r4, r5: address of destination memory block
+                                     44 ; --> r3: how many bytes to move
+                                     45 .globl memcpy
+                                     46 
+                                     47 .globl strncmp
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 3
+Hexadecimal [24-Bits]
+
+
+
+                                      3 
+                                      4 .area cseg (code)
+                                      5 ; --- String Compare Utility ---
+      000000                          6 STRCMP:
+                                      7     ; Compares RAM string at R0 with CODE string at DPTR
+                                      8     ; Returns A=0 if match, A=1 if no match
+      000000                          9 STRCMP_LOOP:
+      000000 E4               [12]   10     CLR A
+      000001 93               [24]   11     MOVC A, @A+DPTR     ; Get char from CODE
+      000002 F5 F0            [12]   12     MOV B, A            ; Store in B
+      000004 E6               [12]   13     MOV A, @R0          ; Get char from RAM
+      000005 B5 F0 08         [24]   14     CJNE A, B, NO_MATCH ; Compare
+      000008 60 04            [24]   15     JZ MATCH            ; If both are 0, they match
+      00000A 08               [12]   16     INC R0
+      00000B A3               [24]   17     INC DPTR
+      00000C 80 F2            [24]   18     SJMP STRCMP_LOOP
+      00000E                         19 MATCH:
+      00000E E4               [12]   20     CLR A               ; Return 0
+      00000F 22               [24]   21     RET
+      000010                         22 NO_MATCH:
+      000010 74 01            [12]   23     MOV A, #0x01         ; Return 1
+      000012 22               [24]   24     RET
+                                     25 
+      000013                         26 strncmp:
+                                     27 				; counter
+      000013                         28 strncmp_loop:
+      000013 E4               [12]   29     CLR A
+      000014 93               [24]   30     MOVC A, @A+DPTR     ; Get char from CODE
+      000015 F5 F0            [12]   31     MOV B, A            ; Store in B
+      000017 E6               [12]   32     MOV A, @R0          ; Get char from RAM
+      000018 B5 F0 06         [24]   33     CJNE A, B, strncmp_no_match ; Compare
+      00001B 08               [12]   34     INC R0
+      00001C A3               [24]   35     INC DPTR
+      00001D DA F4            [24]   36 	djnz r2, strncmp_loop
+                                     37     
+      00001F                         38 strncmp_match:
+      00001F E4               [12]   39     CLR A               ; Return 0
+      000020 22               [24]   40     RET
+      000021                         41 strncmp_no_match:
+      000021 74 01            [12]   42     MOV A, #0x01        ; Return 1
+      000023 22               [24]   43     RET
+                                     44 
+                                     45 ; finds character c in the first n bytes of a memory buffer in program memory
+                                     46 ; --> r6,r7: address of memory buffer
+                                     47 ; --> r5: 	character for which to search
+                                     48 ; --> r4:	how many bytes at which to look
+                                     49 ; <-- r6,r7: address at which character was found, otherwise NULL
+                                     50 ; <-- c: clear if found, otherwise set
+      000024                         51 memchr_c:
+      000024 8E 83            [24]   52 	mov dph, r6
+      000026 8F 82            [24]   53 	mov dpl, r7
+      000028                         54 memchr_loop_c:
+      000028 E4               [12]   55 	clr a
+      000029 93               [24]   56 	movc a, @a + dptr
+      00002A C3               [12]   57 	clr c
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 4
+Hexadecimal [24-Bits]
+
+
+
+      00002B 9D               [12]   58 	subb a, r5
+      00002C 70 04            [24]   59 	jnz memchr_no_match_c
+      00002E DC F8            [24]   60 	djnz r4, memchr_loop_c
+      000030 80 06            [24]   61 	sjmp memchr_match_c
+      000032                         62 memchr_no_match_c:
+      000032 7E 00            [12]   63 	mov r6, #0x00
+      000034 7F 00            [12]   64 	mov r7, #0x00
+      000036 D3               [12]   65 	setb c
+      000037 22               [24]   66 	ret
+      000038                         67 memchr_match_c:
+      000038 AE 83            [24]   68 	mov r6, dph
+      00003A AF 82            [24]   69 	mov r7, dpl
+      00003C C3               [12]   70 	clr c
+      00003D 22               [24]   71 	ret
+                                     72 
+                                     73 ; finds character c in the first n bytes of a memory buffer in data memory
+                                     74 ; --> r6,r7: address of memory buffer
+                                     75 ; --> r5: 	character for which to search
+                                     76 ; --> r4:	how many bytes at which to look
+                                     77 ; <-- r6,r7: address at which character was found, otherwise NULL
+      00003E                         78 memchr:
+      00003E 8E 83            [24]   79 	mov dph, r6
+      000040 8F 82            [24]   80 	mov dpl, r7
+      000042                         81 memchr_loop:
+      000042 E4               [12]   82 	clr a
+      000043 E0               [24]   83 	movx a, @dptr
+      000044 60 0D            [24]   84 	jz memchr_match
+      000046 C3               [12]   85 	clr c
+      000047 9D               [12]   86 	subb a, r5
+      000048 70 04            [24]   87 	jnz memchr_no_match
+      00004A DC F6            [24]   88 	djnz r4, memchr_loop
+      00004C 80 05            [24]   89 	sjmp memchr_match
+      00004E                         90 memchr_no_match:
+      00004E 7E 00            [12]   91 	mov r6, #0x00
+      000050 7F 00            [12]   92 	mov r7, #0x00
+      000052 22               [24]   93 	ret
+      000053                         94 memchr_match:
+      000053 AE 83            [24]   95 	mov r6, dph
+      000055 AF 82            [24]   96 	mov r7, dpl
+      000057 22               [24]   97 	ret
+                                     98 
+                                     99 ; compares the first n bytes of two blocks of memory, one of which is in program memory
+                                    100 ; --> r6, r7: 	address of block of memory in program memory
+                                    101 ; --> r4, r5: 	address of block of memory in data memory
+                                    102 ; --> r3: 		how many bytes to compare
+                                    103 ; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
+                                    104 
+      000058                        105 memcmp_c:
+      000058 8E 83            [24]  106 	mov dph, r6
+      00005A 8F 82            [24]  107 	mov dpl, r7
+      00005C                        108 memcmp_loop_c:
+      00005C E4               [12]  109 	clr a
+      00005D 93               [24]  110 	movc a, @a + dptr 
+      00005E F5 F0            [12]  111 	mov b, a
+      000060 A3               [24]  112 	inc dptr
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 5
+Hexadecimal [24-Bits]
+
+
+
+      000061 AE 83            [24]  113 	mov r6, dph
+      000063 AF 82            [24]  114 	mov r7, dpl
+      000065 8C 83            [24]  115 	mov dph, r4
+      000067 8D 82            [24]  116 	mov dpl, r5
+      000069 E0               [24]  117 	movx a, @dptr
+      00006A C3               [12]  118 	clr c
+      00006B 95 F0            [12]  119 	subb a, b
+      00006D 70 0D            [24]  120 	jnz memcmp_no_match_c
+      00006F DB EB            [24]  121 	djnz r3, memcmp_loop_c
+      000071 A3               [24]  122 	inc dptr
+      000072 AC 83            [24]  123 	mov r4, dph
+      000074 AD 82            [24]  124 	mov r5, dpl
+      000076 8E 83            [24]  125 	mov dph, r6
+      000078 8F 82            [24]  126 	mov dpl, r7
+      00007A 80 08            [24]  127 	sjmp memcmp_match_c
+      00007C                        128 memcmp_no_match_c:
+      00007C 40 03            [24]  129 	jc memcmp_no_match_less_c
+      00007E 7F 01            [12]  130 	mov r7, #0x01
+      000080 22               [24]  131 	ret
+      000081                        132 memcmp_no_match_less_c:
+      000081 7F FF            [12]  133 	mov r7, #0xff
+      000083 22               [24]  134 	ret
+      000084                        135 memcmp_match_c:
+      000084 7F 00            [12]  136 	mov r7, #0x00
+      000086 22               [24]  137 	ret
+                                    138 
+                                    139 ; copies n bytes from one memory block to another, one of which resides in program memory
+                                    140 ; --> r6, r7: address of source memory block in program memory
+                                    141 ; --> r4, r5: address of destination memory block in data memory
+                                    142 ; --> r3: 	  how many bytes to copy
+                                    143 
+      000087                        144 memcpy_c:
+      000087                        145 memcpy_c_loop:
+      000087 8E 83            [24]  146 	mov dph, r6
+      000089 8F 82            [24]  147 	mov dpl, r7
+      00008B E4               [12]  148 	clr a
+      00008C 93               [24]  149 	movc a, @a + dptr
+      00008D F5 F0            [12]  150 	mov b, a
+      00008F A3               [24]  151 	inc dptr
+      000090 AE 83            [24]  152 	mov r6, dph
+      000092 AF 82            [24]  153 	mov r7, dpl
+      000094 8C 83            [24]  154 	mov dph, r4 
+      000096 8D 82            [24]  155 	mov dpl, r5
+      000098 E5 F0            [12]  156 	mov a, b
+      00009A F0               [24]  157 	movx @dptr, a
+      00009B A3               [24]  158 	inc dptr
+      00009C AC 83            [24]  159 	mov r4, dph
+      00009E AD 82            [24]  160 	mov r5, dpl
+      0000A0 DB E5            [24]  161 	djnz r3, memcpy_c_loop
+                                    162 
+      0000A2 22               [24]  163 	ret
+                                    164 
+                                    165 ; initializes a memory block with a specific byte
+                                    166 ; --> r6, r7: address of memory block
+                                    167 ; --> r5: length of memory block
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 6
+Hexadecimal [24-Bits]
+
+
+
+                                    168 ; --> r4: byte to fill the block
+                                    169 
+      0000A3                        170 memset:
+      0000A3 8E 83            [24]  171 	mov dph, r6
+      0000A5 8F 82            [24]  172 	mov dpl, r7
+      0000A7                        173 memset_loop:
+      0000A7 EC               [12]  174 	mov a, r4
+      0000A8 F0               [24]  175 	movx @dptr, a
+      0000A9 A3               [24]  176 	inc dptr
+      0000AA DD FB            [24]  177 	djnz r5, memset_loop
+      0000AC 22               [24]  178 	ret
+                                    179 
+                                    180 
+                                    181 ; moves a memory block from one location to another
+                                    182 ; --> r6, r7: address of source memory block
+                                    183 ; --> r4, r5: address of destination memory block
+                                    184 ; --> r3: how many bytes to move
+      0000AD                        185 memcpy:
+      0000AD 8E 83            [24]  186 	mov dph, r6
+      0000AF 8F 82            [24]  187 	mov dpl, r7
+      0000B1 E0               [24]  188 	movx a, @dptr
+      0000B2 A3               [24]  189 	inc dptr
+      0000B3 AE 83            [24]  190 	mov r6, dph
+      0000B5 AF 82            [24]  191 	mov r7, dpl
+      0000B7 8C 83            [24]  192 	mov dph, r4
+      0000B9 8D 82            [24]  193 	mov dpl, r5
+      0000BB F0               [24]  194 	movx @dptr, a
+      0000BC A3               [24]  195 	inc dptr
+      0000BD AC 83            [24]  196 	mov r4, dph
+      0000BF AD 82            [24]  197 	mov r5, dpl
+      0000C1 DB EA            [24]  198 	djnz r3, memcpy
+                                    199 
+      0000C3 22               [24]  200 	ret
+                                    201 

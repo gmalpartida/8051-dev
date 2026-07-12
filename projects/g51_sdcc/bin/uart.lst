@@ -1,0 +1,362 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 1
+Hexadecimal [24-Bits]
+
+
+
+                                      1 .include "uart.inc"
+                                      1 .globl uart_init
+                                      2 
+                                      3 ; receives a character via serial line
+                                      4 ; ==> none
+                                      5 ; <== a: character received
+                                      6 .globl uart_rx_char
+                                      7 
+                                      8 ; sends a character via serial line
+                                      9 ; ==> a:	character to send
+                                     10 ; <== none
+                                     11 .globl uart_tx_char
+                                     12 
+                                     13 ; sends an null-terminated string via serial line
+                                     14 ; ==> dptr: address of string
+                                     15 ; <== none
+                                     16 .globl uart_tx_asciz
+                                     17 
+                                     18 ; receives a null-terminated string via serial line
+                                     19 ; ==> none
+                                     20 ; <== dptr: address of received string
+                                     21 .globl uart_rx_asciz
+                                     22 
+                                     23 .globl uart_rx_isr
+                                     24 
+                                     25 .globl return_uart_rx_buffer
+                                     26 
+                                     27 .globl uart_rx_buffer_size
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 2
+Hexadecimal [24-Bits]
+
+
+
+                                      2 .include "constants.inc"
+                           000009     1 TAB			.equ		0x09
+                           000000     2 NULL 		.equ		0x00 
+                           000008     3 BS 			.equ		0x08
+                           000020     4 SPC			.equ		0x20
+                           00000A     5 CR			.equ		0x0a
+                           00000D     6 LF			.equ		0x0d
+                           00007F     7 DEL			.equ		0x7f
+                                      8 
+                                      9 .globl title_str
+                                     10 .globl newline_str
+                                     11 .globl command_prompt_str
+                                     12 .globl help_table
+                                     13 .globl app_table
+                                     14 .globl p0_txt
+                                     15 .globl p1_txt
+                                     16 .globl p2_txt
+                                     17 .globl p3_txt
+                                     18 .globl pcon_txt
+                                     19 .globl psw_txt
+                                     20 .globl ip_txt
+                                     21 .globl ie_txt
+                                     22 .globl tcon_txt
+                                     23 .globl tmod_txt
+                                     24 .globl tl0_txt
+                                     25 .globl tl1_txt
+                                     26 .globl th0_txt
+                                     27 .globl th1_txt
+                                     28 .globl scon_txt
+                                     29 .globl sbuf_txt
+                                     30 .globl acc_txt
+                                     31 .globl b_txt
+                                     32 .globl help_txt
+                                     33 .globl ls_txt
+                                     34 .globl peek_txt
+                                     35 .globl poke_txt
+                                     36 .globl clear_txt
+                                     37 .globl reset_txt
+                                     38 .globl write_txt
+                                     39 .globl dump_txt
+                                     40 .globl fill_txt
+                                     41 .globl copy_txt
+                                     42 .globl goto_txt
+                                     43 .globl iram_txt
+                                     44 .globl sfr_txt
+                                     45 .globl msg_err
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 3
+Hexadecimal [24-Bits]
+
+
+
+                                      3 
+                                      4 .area CSEG (CODE)
+                                      5 
+      000000                          6 uart_init:
+      000000 53 89 0F         [24]    7     anl tmod, #0x0f                 ; Clear Timer 1 mode bits
+      000003 43 89 20         [24]    8     orl tmod, #0x20                 ; Set Timer 1 to Mode 2 (8-bit auto-reload)
+                                      9     
+      000006 75 8D FF         [24]   10     mov th1, #0xff                  ; 57600 bps at 11.0592 MHz
+                                     11     
+      000009 43 87 80         [24]   12     orl pcon, #0x80                 ; Set SMOD to 1 (Doubles the baud rate generation)
+                                     13     
+      00000C 75 98 50         [24]   14     mov scon, #0x50                 ; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
+      00000F D2 8E            [12]   15     setb tr1                        ; Start Timer 1
+                                     16     
+                                     17     ;setb ti                         ; set transmitter 'ready'
+                                     18 
+      000011 74 00            [12]   19 	mov a, #0x00
+      000013 90 01 00         [24]   20 	mov dptr, #uart_rx_buffer_head
+      000016 F0               [24]   21 	movx @dptr, a
+      000017 90 01 01         [24]   22 	mov dptr,#uart_rx_buffer_tail
+      00001A F0               [24]   23 	movx @dptr, a
+                                     24 
+      00001B 22               [24]   25     ret
+                                     26 
+                                     27 ;uart_rx_char:
+                                     28 ;	jnb ri, uart_rx_char			; wait for character to arrive
+                                     29 ;	clr ri							; clear receiveer
+                                     30 ;	mov a, sbuf						; get character
+                                     31 ;	ret
+                                     32 
+      00001C                         33 uart_rx_char:
+                                     34 	; if buffer is not empty, process char
+      00001C 90 01 00         [24]   35 	mov dptr, #uart_rx_buffer_head
+      00001F E0               [24]   36 	movx a, @dptr
+      000020 F5 F0            [12]   37 	mov b, a
+      000022                         38 uart_rx_wait_loop:
+      000022 90 01 01         [24]   39 	mov dptr, #uart_rx_buffer_tail
+      000025 E0               [24]   40 	movx a, @dptr
+      000026 B5 F0 02         [24]   41 	cjne a, b, uart_rx_process_char
+      000029 80 F7            [24]   42 	sjmp uart_rx_wait_loop					; otherwise loop back and wait for char
+      00002B                         43 uart_rx_process_char:
+                                     44 	; process char, store in a
+      00002B 90 00 00         [24]   45 	mov dptr, #uart_rx_buffer
+      00002E E5 F0            [12]   46 	mov a, b							; restore buffer head
+      000030 25 82            [12]   47 	add a, dpl							; add head to buffer
+      000032 50 02            [24]   48 	jnc uart_rx_char_skip_dph
+      000034 05 83            [12]   49 	inc dph
+      000036                         50 uart_rx_char_skip_dph:
+      000036 F5 82            [12]   51 	mov dpl, a							; dptr contains address of char at buffer + head
+      000038 E0               [24]   52 	movx a, @dptr						; retrieve character from buffer
+      000039 C0 E0            [24]   53 	push acc							; save char
+                                     54 	; advance buffer head
+      00003B E5 F0            [12]   55 	mov a, b							; b still contains buffer head
+      00003D 04               [12]   56 	inc a
+      00003E 90 01 00         [24]   57 	mov dptr, #uart_rx_buffer_head
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 4
+Hexadecimal [24-Bits]
+
+
+
+      000041 F0               [24]   58 	movx @dptr, a		
+      000042 D0 E0            [24]   59 	pop acc							; restore retrieved char
+      000044 22               [24]   60 	ret
+                                     61 
+      000045                         62 uart_tx_char:
+      000045 C2 99            [12]   63 	clr ti
+      000047 F5 99            [12]   64 	mov sbuf, a
+      000049                         65 wait_for_tx_done:
+      000049 30 99 FD         [24]   66 	jnb ti, wait_for_tx_done
+      00004C C2 99            [12]   67 	clr ti
+      00004E 22               [24]   68 	ret
+                                     69 
+      00004F                         70 uart_tx_asciz:
+      00004F E4               [12]   71 	clr a
+      000050 93               [24]   72 	movc a, @a + dptr
+      000051 60 05            [24]   73 	jz uart_tx_asciz_exit
+      000053 00 45            [12]   74 	acall uart_tx_char
+      000055 A3               [24]   75 	inc dptr
+      000056 80 F7            [24]   76 	sjmp uart_tx_asciz
+      000058                         77 uart_tx_asciz_exit:
+      000058 22               [24]   78 	ret
+                                     79 
+      000059                         80 uart_rx_asciz:
+      000059 00 1C            [12]   81 	acall uart_rx_char
+      00005B F5 F0            [12]   82 	mov b, a									; make copy of it, next statements destroy char in a
+      00005D 60 12            [24]   83 	jz uart_rx_asciz_exit						; if NULL then exit
+      00005F 64 0A            [12]   84 	xrl a, #CR
+      000061 60 0E            [24]   85 	jz uart_rx_asciz_exit						; if CR then exit
+      000063 E5 F0            [12]   86 	mov a, b									; restore copy of char
+      000065 64 0D            [12]   87 	xrl a, #LF
+      000067 60 08            [24]   88 	jz uart_rx_asciz_exit						; if LF then exit
+      000069 E5 F0            [12]   89 	mov a, b
+      00006B                         90 uart_rx_asciz_process_char:
+      00006B F0               [24]   91 	movx @dptr, a								; not NULL, CR or LF, keep it
+      00006C A3               [24]   92 	inc dptr
+      00006D 00 45            [12]   93 	acall uart_tx_char							; echo char
+      00006F 80 E8            [24]   94 	sjmp uart_rx_asciz
+      000071                         95 uart_rx_asciz_exit:
+      000071 74 00            [12]   96 	mov a, #0x00								; the last character must be NULL
+      000073 F0               [24]   97 	movx @dptr, a
+      000074 22               [24]   98 	ret
+                                     99 
+      000075                        100 uart_rx_asciz2:
+                                    101     ; 1. Protect the start boundary using the stack
+      000075 C0 82            [24]  102     push dpl                     ; Push low byte of start address
+      000077 C0 83            [24]  103     push dph                     ; Push high byte of start address
+                                    104 
+      000079                        105 uart_rx_loop:
+      000079 00 1C            [12]  106     acall uart_rx_char           ; Get char into Acc
+      00007B F8               [12]  107     mov r0, a                    ; Save received character to temp R0
+                                    108 
+                                    109     ; Check for CR
+      00007C C3               [12]  110     clr c
+      00007D 94 0A            [12]  111     subb a, #CR
+      00007F 60 46            [24]  112     jz rx_terminate
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 5
+Hexadecimal [24-Bits]
+
+
+
+                                    113 
+                                    114     ; Check for LF
+      000081 E8               [12]  115     mov a, r0
+      000082 C3               [12]  116     clr c
+      000083 94 0D            [12]  117     subb a, #LF
+      000085 60 40            [24]  118     jz rx_terminate
+                                    119 
+                                    120     ; Check for BS (0x08)
+      000087 E8               [12]  121     mov a, r0
+      000088 C3               [12]  122     clr c
+      000089 94 08            [12]  123     subb a, #BS
+      00008B 60 0E            [24]  124     jz rx_backspace
+                                    125 
+                                    126     ; Check for DEL (0x7F)
+      00008D E8               [12]  127     mov a, r0
+      00008E C3               [12]  128     clr c
+      00008F 94 7F            [12]  129     subb a, #DEL
+      000091 60 08            [24]  130     jz rx_backspace
+                                    131 
+                                    132     ; --- Normal Character Processing ---
+      000093 E8               [12]  133     mov a, r0
+      000094 F0               [24]  134     movx @dptr, a                ; Store in RAM buffer
+      000095 A3               [24]  135     inc dptr                     ; Move buffer pointer forward
+                                    136     
+      000096 E8               [12]  137     mov a, r0                    ; Echo char back to terminal
+      000097 00 45            [12]  138     acall uart_tx_char          
+      000099 80 DE            [24]  139     sjmp uart_rx_loop
+                                    140 
+      00009B                        141 rx_backspace:
+                                    142     ; --- Underflow Check ---
+                                    143     
+                                    144     ; 1. Check High Byte
+      00009B A8 81            [24]  145     mov r0, sp                   ; R0 points to top of stack (saved DPH)
+      00009D E6               [12]  146     mov a, @r0                   ; A = saved DPH
+      00009E C3               [12]  147     clr c
+      00009F 95 83            [12]  148     subb a, dph                  ; Compare saved DPH with current DPH
+      0000A1 70 0C            [24]  149     jnz do_backspace             ; If difference != 0, they don't match -> safe to delete
+                                    150 
+                                    151     ; 2. Check Low Byte
+      0000A3 E5 81            [12]  152     mov a, sp
+      0000A5 14               [12]  153     dec a                        ; Target SP - 1 (saved DPL)
+      0000A6 F8               [12]  154     mov r0, a                    ; R0 points to saved DPL
+      0000A7 E6               [12]  155     mov a, @r0                   ; A = saved DPL
+      0000A8 C3               [12]  156     clr c
+      0000A9 95 82            [12]  157     subb a, dpl                  ; Compare saved DPL with current DPL
+      0000AB 70 02            [24]  158     jnz do_backspace             ; If difference != 0, they don't match -> safe to delete
+                                    159 
+                                    160     ; If both match exactly, buffer is empty. Ignore backspace.
+      0000AD 80 CA            [24]  161     sjmp uart_rx_loop
+                                    162 
+      0000AF                        163 do_backspace:
+                                    164     ; Decrement the 16-bit DPTR (8051 has no DEC DPTR, must do manually)
+      0000AF E5 82            [12]  165     mov a, dpl
+      0000B1 14               [12]  166     dec a
+      0000B2 F5 82            [12]  167     mov dpl, a
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 6
+Hexadecimal [24-Bits]
+
+
+
+      0000B4 B4 FF 02         [24]  168     cjne a, #0xFF, skip_dph_dec  ; If low byte rolled over from 00 to FF
+      0000B7 15 83            [12]  169     dec dph                      ; Decrement the high byte
+      0000B9                        170 skip_dph_dec:
+                                    171 
+                                    172     ; Visual erasure on user terminal (BS, Space, BS)
+      0000B9 74 08            [12]  173     mov a, #BS
+      0000BB 00 45            [12]  174     acall uart_tx_char
+      0000BD 74 20            [12]  175     mov a, #SPC
+      0000BF 00 45            [12]  176     acall uart_tx_char
+      0000C1 74 08            [12]  177     mov a, #BS
+      0000C3 00 45            [12]  178     acall uart_tx_char
+      0000C5 80 B2            [24]  179     sjmp uart_rx_loop
+                                    180 
+      0000C7                        181 rx_terminate:
+                                    182     ; Terminate string with NULL
+      0000C7 74 00            [12]  183     mov a, #NULL
+      0000C9 F0               [24]  184     movx @dptr, a
+                                    185     
+                                    186     ; Echo a newline to terminal
+      0000CA 74 0A            [12]  187     mov a, #CR
+      0000CC 00 45            [12]  188     acall uart_tx_char
+      0000CE 74 0D            [12]  189     mov a, #LF
+      0000D0 00 45            [12]  190     acall uart_tx_char
+                                    191 
+                                    192     ; 3. Clean up stack before exit
+      0000D2 D0 83            [24]  193     pop dph                      ; Discard saved high byte
+      0000D4 D0 82            [24]  194     pop dpl                      ; Discard saved low byte
+      0000D6 22               [24]  195     ret
+                                    196 
+      0000D7                        197 uart_rx_isr:
+      0000D7 C0 E0            [24]  198 	push a
+      0000D9 C0 F0            [24]  199 	push b
+      0000DB C0 D0            [24]  200 	push psw
+      0000DD C0 82            [24]  201 	push dpl
+      0000DF C0 83            [24]  202 	push dph
+      0000E1 E8               [12]  203 	mov a, r0
+      0000E2 C0 E0            [24]  204 	push a
+      0000E4 30 98 1F         [24]  205 	jnb ri, uart_rx_isr_exit
+      0000E7 10 99 1C         [24]  206 	jbc ti, uart_rx_isr_exit
+      0000EA C2 98            [12]  207 	clr ri
+      0000EC E5 99            [12]  208 	mov a, sbuf							; retrieve received character
+                                    209 	;mov sbuf, a
+      0000EE F5 F0            [12]  210 	mov b, a							; save it for later
+      0000F0 90 01 01         [24]  211 	mov dptr, #uart_rx_buffer_tail
+      0000F3 E0               [24]  212 	movx a, @dptr						; get tail position
+      0000F4 F8               [12]  213 	mov r0, a							; save buffer tail value
+      0000F5 04               [12]  214 	inc a								; increment current buffer tail value
+      0000F6 F0               [24]  215 	movx @dptr, a						; save it back
+      0000F7 90 00 00         [24]  216 	mov dptr, #uart_rx_buffer			; get address of rx buffer
+      0000FA E8               [12]  217 	mov a, r0							; restore buffer tail value
+      0000FB 25 82            [12]  218 	add a, dpl								; add buffer tail value to buffer address
+      0000FD 50 02            [24]  219 	jnc uart_rx_isr_skip_dph
+      0000FF 05 83            [12]  220 	inc dph
+      000101                        221 uart_rx_isr_skip_dph:
+      000101 F5 82            [12]  222 	mov dpl, a
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 7
+Hexadecimal [24-Bits]
+
+
+
+      000103 E5 F0            [12]  223 	mov a, b							; restore character received
+      000105 F0               [24]  224 	movx @dptr, a						; copy character to buffer
+      000106                        225 uart_rx_isr_exit:
+      000106 D0 E0            [24]  226 	pop a
+      000108 F8               [12]  227 	mov r0, a
+      000109 D0 83            [24]  228 	pop dph
+      00010B D0 82            [24]  229 	pop dpl
+      00010D D0 D0            [24]  230 	pop psw
+      00010F D0 F0            [24]  231 	pop b
+      000111 D0 E0            [24]  232 	pop a
+      000113 32               [24]  233 	reti
+                                    234 
+      000114                        235 return_uart_rx_buffer:
+      000114 90 00 00         [24]  236 	mov dptr, #uart_rx_buffer
+      000117 22               [24]  237 	ret
+                                    238 
+      000118                        239 uart_rx_buffer_size:
+      000118 90 01 01         [24]  240 	mov dptr, #uart_rx_buffer_tail
+      00011B E0               [24]  241 	movx a, @dptr
+      00011C F5 F0            [12]  242 	mov b, a
+      00011E 90 01 00         [24]  243 	mov dptr, #uart_rx_buffer_head
+      000121 E0               [24]  244 	movx a, @dptr
+      000122 C3               [12]  245 	clr c
+      000123 95 F0            [12]  246 	subb a, b
+      000125 22               [24]  247 	ret
+                                    248 	
+                                    249 .area _XSEG (REL, CON, XDATA)
+      000000                        250 uart_rx_buffer::			.blkb		0x0100
+      000100                        251 uart_rx_buffer_head::	.blkb		0x01
+      000101                        252 uart_rx_buffer_tail::	.blkb		0x01
+                                    253 
+                                    254 
+                                    255 

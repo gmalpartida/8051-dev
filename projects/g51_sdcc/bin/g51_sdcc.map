@@ -1,0 +1,188 @@
+ASxxxx Linker V03.00/V05.40 + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           
+     00000000  l_BIT_BANK                      
+     00000000  l_BSEG                          
+     00000000  l_BSEG_BYTES                    
+     00000000  l_DSEG                          
+     00000000  l_ISEG                          
+     00000000  l_OSEG                          
+     00000000  l_REG_BANK_0                    
+     00000000  l_REG_BANK_1                    
+     00000000  l_REG_BANK_2                    
+     00000000  l_REG_BANK_3                    
+     00000000  l_SSEG                          
+     00000000  l__CODE                         
+     00000000  s_BSEG                          
+     00000000  s_DSEG                          
+     00000000  s_REG_BANK_0                    
+     00000000  s__XSEG                         
+     00000000  s_vectors                       
+     00000008  s_REG_BANK_1                    
+     00000010  s_REG_BANK_2                    
+     00000018  s_BIT_BANK                      
+     00000018  s_ISEG                          
+     00000018  s_OSEG                          
+     00000018  s_REG_BANK_3                    
+     00000018  s_SSEG                          
+     00000020  s_BSEG_BYTES                    
+     00000020  s__CODE                         
+     00000026  l_vectors                       
+     00000030  s_cseg                          
+     00000100  l_IRAM                          
+     00000202  l__XSEG                         
+     00000E92  l_cseg                          
+
+ASxxxx Linker V03.00/V05.40 + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+cseg                                00000030    00000E92 =        3730. bytes (REL,CON,CODE)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+C:   00000030  lcd_app                            
+C:   00000031  pwm_app                            
+C:   00000032  vt102_app                          
+C:   00000033  vt102_line_to                      
+C:   00000044  VT102_CLEAR_SCREEN                 
+C:   0000004C  get_hex_address                    
+C:   0000005E  skip_blanks                        
+C:   00000068  println                            
+C:   00000073  printtab                           
+C:   00000079  printspc                           
+C:   0000007F  do_help                            
+C:   000000CB  do_ls                              
+C:   00000119  do_peek                            
+C:   00000146  do_poke                            
+C:   00000167  do_dump                            
+C:   000001EA  clear_screen                       
+C:   00000211  do_fill                            
+C:   00000234  do_copy                            
+C:   0000025C  do_goto                            
+C:   00000271  do_iram                            
+C:   000002CA  do_sfr                             
+C:   000003C3  do_write                           
+C:   00000420  uart_init                          
+C:   0000043C  uart_rx_char                       
+C:   00000465  uart_tx_char                       
+C:   0000046F  uart_tx_asciz                      
+C:   00000479  uart_rx_asciz                      
+C:   000004F7  uart_rx_isr                        
+C:   00000534  return_uart_rx_buffer              
+C:   00000538  uart_rx_buffer_size                
+C:   00000546  STRCMP                             
+C:   00000559  strncmp                            
+C:   0000056A  memchr_c                           
+C:   00000584  memchr                             
+C:   0000059E  memcmp_c                           
+C:   000005CD  memcpy_c                           
+C:   000005E9  memset                             
+C:   000005F3  memcpy                             
+C:   0000060A  print_logo                         
+C:   00000611  g51_logo                           
+C:   00000835  asc2nibble                         
+C:   00000847  nibble2asc                         
+C:   00000857  hex2asc                            
+C:   00000865  title_str                          
+C:   00000889  newline_str                        
+C:   0000088C  command_prompt_str                 
+C:   00000B86  help_table                         
+C:   00000BC2  help_txt                           
+C:   00000BC7  ls_txt                             
+C:   00000BCA  peek_txt                           
+ASxxxx Linker V03.00/V05.40 + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+cseg                                00000030    00000E92 =        3730. bytes (REL,CON,CODE)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+C:   00000BCF  poke_txt                           
+C:   00000BD4  dump_txt                           
+C:   00000BD9  clear_txt                          
+C:   00000BDF  reset_txt                          
+C:   00000BE5  fill_txt                           
+C:   00000BEA  copy_txt                           
+C:   00000BEF  goto_txt                           
+C:   00000BF4  iram_txt                           
+C:   00000BF9  sfr_txt                            
+C:   00000BFD  write_txt                          
+C:   00000C03  msg_err                            
+C:   00000CF6  app_table                          
+C:   00000D0E  p0_txt                             
+C:   00000D14  pcon_txt                           
+C:   00000D19  tcon_txt                           
+C:   00000D1E  tmod_txt                           
+C:   00000D23  tl0_txt                            
+C:   00000D27  tl1_txt                            
+C:   00000D2B  th0_txt                            
+C:   00000D2F  th1_txt                            
+C:   00000D33  p1_txt                             
+C:   00000D36  scon_txt                           
+C:   00000D3B  sbuf_txt                           
+C:   00000D40  p2_txt                             
+C:   00000D43  ie_txt                             
+C:   00000D46  p3_txt                             
+C:   00000D49  ip_txt                             
+C:   00000D4C  psw_txt                            
+C:   00000D50  acc_txt                            
+C:   00000D54  b_txt                              
+
+ASxxxx Linker V03.00/V05.40 + sdld,  page 4.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_XSEG                               00000000    00000202 =         514. bytes (REL,CON,XDATA)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+D:   00000000  uart_rx_buffer                     
+D:   00000100  uart_rx_buffer_head                
+D:   00000101  uart_rx_buffer_tail                
+D:   00000102  cmd_line_buffer                    
+
+ASxxxx Linker V03.00/V05.40 + sdld,  page 5.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+vectors                             00000000    00000026 =          38. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+ASxxxx Linker V03.00/V05.40 + sdld,  page 6.
+
+Files Linked                              [ module(s) ]
+
+bin/apps.rel                              [  ]
+bin/vt102.rel                             [  ]
+bin/conio.rel                             [  ]
+bin/commands.rel                          [  ]
+bin/uart.rel                              [  ]
+bin/string.rel                            [  ]
+bin/logo.rel                              [  ]
+bin/ascii.rel                             [  ]
+bin/constants.rel                         [  ]
+bin/g51_sdcc.rel                          [  ]
+
+ASxxxx Linker V03.00/V05.40 + sdld,  page 7.
+
+User Base Address Definitions
+
+VECTORS=0x0000
+CSEG=0x0030
+_XSEG=0x0000
+
+

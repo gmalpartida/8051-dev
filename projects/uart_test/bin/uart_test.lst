@@ -1,0 +1,411 @@
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+	Source File:	src/uart_test.asm
+	Object File:	bin/uart_test.hex
+	List File:	bin/uart_test.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:		N      0000	cseg at 0000h
+    2:
+    3:	  0000			rst_isr:
+    4:	  0000	02 00 26	    ljmp main
+    5:	  0003			ie0_isr:
+    6:	  0003	32			reti
+    7:	  0004	N      0007		ds	07h
+    8:	  000B			tf0_isr:
+    9:	  000B	32			reti
+   10:	  000C	N      0007		ds	07h
+   11:	  0013			ie1_isr:
+   12:	  0013	32			reti
+   13:	  0014	N      0007		ds	07h
+   14:	  001B			tf1_isr:
+   15:	  001B	32			reti
+   16:	  001C	N      0007		ds	07h
+   17:	  0023			ser_isr:
+   18:	  0023	02 00 D1		ljmp uart_rx_isr
+   19:
+   20:	  0026			main:
+   21:	  0026	85 2F 81	    mov sp, 02fh					; Initialize Stack
+   22:	  0029	12 00 54	    lcall uart_init					; Setup UART
+   23:
+   24:	  002C	D2 AC			setb es							; enable serial interrupt
+   25:	  002E	D2 AF			setb ea							; enable global interrupt
+   26:
+   27:	  0030			cmd_prompt:
+   28:
+   29:	  0030	90 01 1F	    mov dptr, #cmd_prompt_str
+   30:	  0033	12 00 A1	    lcall uart_tx_asciz
+   31:
+   32:	  0036	90 01 02		mov dptr, #cmd_line_buffer
+   33:	  0039	12 00 B5		lcall uart_rx_asciz
+   34:
+   35:	  003C	90 01 02		mov dptr, #cmd_line_buffer
+   36:	  003F	12 00 AC		lcall uart_tx_asciz_xram
+   37:
+   38:	  0042	12 00 49		lcall println
+   39:	  0045	80 E9			sjmp cmd_prompt
+   40:
+   41:	  0047			halt:
+   42:	  0047	80 FE			sjmp halt
+   43:
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   44:	  0049			println:
+   45:	  0049	74 0A			mov a, #0ah
+   46:	  004B	12 00 99		lcall uart_tx_char
+   47:	  004E	74 0D			mov a, #0dh
+   48:	  0050	12 00 99		lcall uart_tx_char
+   49:	  0053	22			ret
+   50:
+   51:	  0054			uart_init:
+   52:	  0054	53 89 0F	    anl tmod, #0fh                 ; Clear Timer 1 mode bits
+   53:	  0057	43 89 20	    orl tmod, #20h                 ; Set Timer 1 to Mode 2 (8-bit auto-reload)
+   54:
+   55:	  005A	75 8D FF	    mov th1, #0ffh                  ; 57600 bps at 11.0592 MHz
+   56:
+   57:	  005D	43 87 80	    orl pcon, #80h                 ; Set SMOD to 1 (Doubles the baud rate generation)
+   58:
+   59:	  0060	75 98 50	    mov scon, #50h                 ; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
+   60:	  0063	D2 8E		    setb tr1                        ; Start Timer 1
+   61:
+   62:				    ;setb ti                         ; set transmitter 'ready'
+   63:
+   64:	  0065	74 00			mov a, #00h
+   65:	  0067	90 01 00		mov dptr, #uart_rx_buffer_head
+   66:	  006A	F0			movx @dptr, a
+   67:	  006B	90 01 01		mov dptr,#uart_rx_buffer_tail
+   68:	  006E	F0			movx @dptr, a
+   69:
+   70:	  006F	22		    ret
+   71:
+   72:				;uart_rx_char:
+   73:				;	jnb ri, uart_rx_char			; wait for character to arrive
+   74:				;	clr ri							; clear receiveer
+   75:				;	mov a, sbuf						; get character
+   76:				;	ret
+   77:
+   78:	  0070			uart_rx_char:
+   79:					; if buffer is not empty, process char
+   80:	  0070	90 01 00		mov dptr, #uart_rx_buffer_head
+   81:	  0073	E0			movx a, @dptr
+   82:	  0074	F5 F0			mov b, a
+   83:	  0076			uart_rx_wait_loop:
+   84:	  0076	90 01 01		mov dptr, #uart_rx_buffer_tail
+   85:	  0079	E0			movx a, @dptr
+   86:	  007A	B5 F0 02		cjne a, b, uart_rx_process_char
+   87:	  007D	80 F7			sjmp uart_rx_wait_loop					; otherwise loop back and wait for c
+				har
+   88:	  007F			uart_rx_process_char:
+   89:					; process char, store in a
+   90:	  007F	90 00 00		mov dptr, #uart_rx_buffer
+   91:	  0082	E5 F0			mov a, b							; restore buffer head
+   92:	  0084	25 82			add a, dpl							; add head to buffer
+   93:	  0086	50 02			jnc uart_rx_char_skip_dph
+   94:	  0088	05 83			inc dph
+   95:	  008A			uart_rx_char_skip_dph:
+   96:	  008A	F5 82			mov dpl, a							; dptr contains address of c
+				har at buffer + head
+   97:	  008C	E0			movx a, @dptr						; retrieve character from buffer
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+   98:	  008D	C0 E0			push acc							; save char
+   99:					; advance buffer head
+  100:	  008F	E5 F0			mov a, b							; b still contains buffer he
+				ad
+  101:	  0091	04			inc a
+  102:	  0092	90 01 00		mov dptr, #uart_rx_buffer_head
+  103:	  0095	F0			movx @dptr, a
+  104:	  0096	D0 E0			pop acc							; restore retrieved char
+  105:	  0098	22			ret
+  106:
+  107:	  0099			uart_tx_char:
+  108:	  0099	30 99 FD		jnb ti, uart_tx_char
+  109:	  009C	C2 99			clr ti
+  110:	  009E	F5 99			mov sbuf, a
+  111:	  00A0	22			ret
+  112:
+  113:	  00A1			uart_tx_asciz:
+  114:	  00A1	E5 00			mov a, 00h
+  115:	  00A3	93			movc a, @a + dptr
+  116:	  00A4	60 05			jz uart_tx_asciz_exit
+  117:	  00A6	11 99			acall uart_tx_char
+  118:	  00A8	A3			inc dptr
+  119:	  00A9	80 F6			sjmp uart_tx_asciz
+  120:	  00AB			uart_tx_asciz_exit:
+  121:	  00AB	22			ret
+  122:
+  123:	  00AC			uart_tx_asciz_xram:
+  124:	  00AC	E0			movx a, @dptr
+  125:	  00AD	60 05			jz uart_tx_asciz_xram_exit
+  126:	  00AF	11 99			acall uart_tx_char
+  127:	  00B1	A3			inc dptr
+  128:	  00B2	80 F8			sjmp uart_tx_asciz_xram
+  129:	  00B4			uart_tx_asciz_xram_exit:
+  130:	  00B4	22			ret
+  131:
+  132:	  00B5			uart_rx_asciz:
+  133:	  00B5	11 70			acall uart_rx_char
+  134:	  00B7	F5 F0			mov b, a									; make copy
+				of it, next statements destroy char in a
+  135:	  00B9	60 12			jz uart_rx_asciz_exit						; if NULL then exit
+  136:	  00BB	64 0A			xrl a, #0ah
+  137:	  00BD	60 0E			jz uart_rx_asciz_exit						; if CR then exit
+  138:	  00BF	E5 F0			mov a, b									; restore co
+				py of char
+  139:	  00C1	64 0D			xrl a, #0dh
+  140:	  00C3	60 08			jz uart_rx_asciz_exit						; if LF then exit
+  141:	  00C5	E5 F0			mov a, b
+  142:	  00C7			uart_rx_asciz_process_char:
+  143:	  00C7	F0			movx @dptr, a								; not NULL, CR or LF
+				, keep it
+  144:	  00C8	A3			inc dptr
+  145:	  00C9	11 99			acall uart_tx_char							; echo char
+  146:	  00CB	80 E8			sjmp uart_rx_asciz
+  147:	  00CD			uart_rx_asciz_exit:
+  148:	  00CD	74 00			mov a, #00h								; the last character
+				 must be NULL
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
+
+
+
+ Line  I  Addr  Code            Source
+
+  149:	  00CF	F0			movx @dptr, a
+  150:	  00D0	22			ret
+  151:
+  152:	  00D1			uart_rx_isr:
+  153:	  00D1	C0 E0			push acc
+  154:	  00D3	C0 F0			push b
+  155:	  00D5	C0 D0			push psw
+  156:	  00D7	C0 82			push dpl
+  157:	  00D9	C0 83			push dph
+  158:	  00DB	E8			mov a, r0
+  159:	  00DC	C0 E0			push acc
+  160:	  00DE	20 98 02		jb ri, uart_rx_handler
+  161:					;jbc ti, uart_rx_isr_exit
+  162:	  00E1	80 1C			sjmp uart_rx_isr_exit
+  163:	  00E3			uart_rx_handler:
+  164:	  00E3	C2 98			clr ri
+  165:	  00E5	E5 99			mov a, sbuf							; retrieve received characte
+				r
+  166:					;mov sbuf, a
+  167:	  00E7	F5 F0			mov b, a							; save it for later
+  168:	  00E9	90 01 01		mov dptr, #uart_rx_buffer_tail
+  169:	  00EC	E0			movx a, @dptr						; get tail position
+  170:	  00ED	F8			mov r0, a							; save buffer tail value
+  171:	  00EE	04			inc a								; increment current buffer t
+				ail value
+  172:	  00EF	F0			movx @dptr, a						; save it back
+  173:	  00F0	90 00 00		mov dptr, #uart_rx_buffer			; get address of rx buffer
+  174:	  00F3	E8			mov a, r0							; restore buffer tail value
+  175:	  00F4	25 82			add a, dpl								; add buffer tail va
+				lue to buffer address
+  176:	  00F6	50 02			jnc uart_rx_isr_skip_dph
+  177:	  00F8	05 83			inc dph
+  178:	  00FA			uart_rx_isr_skip_dph:
+  179:	  00FA	F5 82			mov dpl, a
+  180:	  00FC	E5 F0			mov a, b							; restore character received
+  181:	  00FE	F0			movx @dptr, a						; copy character to buffer
+  182:	  00FF			uart_rx_isr_exit:
+  183:	  00FF	D0 E0			pop acc
+  184:	  0101	F8			mov r0, a
+  185:	  0102	D0 83			pop dph
+  186:	  0104	D0 82			pop dpl
+  187:	  0106	D0 D0			pop psw
+  188:	  0108	D0 F0			pop b
+  189:	  010A	D0 E0			pop acc
+  190:	  010C	32			reti
+  191:
+  192:	  010D			return_uart_rx_buffer:
+  193:	  010D	90 00 00		mov dptr, #uart_rx_buffer
+  194:	  0110	22			ret
+  195:
+  196:	  0111			uart_rx_buffer_size:
+  197:	  0111	90 01 01		mov dptr, #uart_rx_buffer_tail
+  198:	  0114	E0			movx a, @dptr
+  199:	  0115	F5 F0			mov b, a
+  200:	  0117	90 01 00		mov dptr, #uart_rx_buffer_head
+  201:	  011A	E0			movx a, @dptr
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
+
+
+
+ Line  I  Addr  Code            Source
+
+  202:	  011B	C3			clr c
+  203:	  011C	95 F0			subb a, b
+  204:	  011E	22			ret
+  205:
+  206:	  011F	75 61 72 74	cmd_prompt_str:			db		"uart test> ", 0
+	  0123	20 74 65 73
+	  0127	74 3E 20 00
+  207:
+  208:				xseg
+  209:	  0000	N      0100	uart_rx_buffer:			ds		0100h
+  210:	  0100	N      0001	uart_rx_buffer_head:	ds		01h
+  211:	  0101	N      0001	uart_rx_buffer_tail:	ds		01h
+  212:	  0102	N      0100	cmd_line_buffer:		ds		0100h
+  213:
+  214:					end
+  215:
+
+
+
+
+
+                     register banks used:  ---
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
+
+
+
+
+
+	       L I S T   O F   S Y M B O L S
+	       =============================
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+??ASEM_51			  NUMBER    8051
+??VERSION			  NUMBER    0130
+AC				  BIT	      D6
+ACC				  DATA	      E0
+B				  DATA	      F0
+CMD_LINE_BUFFER			  XDATA	    0102	 212
+CMD_PROMPT			  CODE	    0030	  27
+CMD_PROMPT_STR			  CODE	    011F	 206
+CY				  BIT	      D7
+DPH				  DATA	      83
+DPL				  DATA	      82
+EA				  BIT	      AF
+ES				  BIT	      AC
+ET0				  BIT	      A9
+ET1				  BIT	      AB
+EX0				  BIT	      A8
+EX1				  BIT	      AA
+EXTI0				  CODE	    0003
+EXTI1				  CODE	    0013
+F0				  BIT	      D5
+HALT				  CODE	    0047	  41
+IE				  DATA	      A8
+IE0				  BIT	      89
+IE0_ISR				  CODE	    0003	   5
+IE1				  BIT	      8B
+IE1_ISR				  CODE	    0013	  11
+INT0				  BIT	      B2
+INT1				  BIT	      B3
+IP				  DATA	      B8
+IT0				  BIT	      88
+IT1				  BIT	      8A
+MAIN				  CODE	    0026	  20
+OV				  BIT	      D2
+P				  BIT	      D0
+P0				  DATA	      80
+P1				  DATA	      90
+P2				  DATA	      A0
+P3				  DATA	      B0
+PCON				  DATA	      87
+PRINTLN				  CODE	    0049	  44
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PX0				  BIT	      B8
+PX1				  BIT	      BA
+RB8				  BIT	      9A
+RD				  BIT	      B7
+REN				  BIT	      9C
+RESET				  CODE	    0000
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 7
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+RETURN_UART_RX_BUFFER		  CODE	    010D	 192
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RST_ISR				  CODE	    0000	   3
+RXD				  BIT	      B0
+SBUF				  DATA	      99
+SCON				  DATA	      98
+SER_ISR				  CODE	    0023	  17
+SINT				  CODE	    0023
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SP				  DATA	      81
+T0				  BIT	      B4
+T1				  BIT	      B5
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TF0				  BIT	      8D
+TF0_ISR				  CODE	    000B	   8
+TF1				  BIT	      8F
+TF1_ISR				  CODE	    001B	  14
+TH0				  DATA	      8C
+TH1				  DATA	      8D
+TI				  BIT	      99
+TIMER0				  CODE	    000B
+TIMER1				  CODE	    001B
+TL0				  DATA	      8A
+TL1				  DATA	      8B
+TMOD				  DATA	      89
+TR0				  BIT	      8C
+TR1				  BIT	      8E
+TXD				  BIT	      B1
+UART_INIT			  CODE	    0054	  51
+UART_RX_ASCIZ			  CODE	    00B5	 132
+UART_RX_ASCIZ_EXIT		  CODE	    00CD	 147
+UART_RX_ASCIZ_PROCESS_CHAR	  CODE	    00C7	 142
+UART_RX_BUFFER			  XDATA	    0000	 209
+UART_RX_BUFFER_HEAD		  XDATA	    0100	 210
+UART_RX_BUFFER_SIZE		  CODE	    0111	 196
+UART_RX_BUFFER_TAIL		  XDATA	    0101	 211
+UART_RX_CHAR			  CODE	    0070	  78
+UART_RX_CHAR_SKIP_DPH		  CODE	    008A	  95
+UART_RX_HANDLER			  CODE	    00E3	 163
+UART_RX_ISR			  CODE	    00D1	 152
+UART_RX_ISR_EXIT		  CODE	    00FF	 182
+UART_RX_ISR_SKIP_DPH		  CODE	    00FA	 178
+UART_RX_PROCESS_CHAR		  CODE	    007F	  88
+UART_RX_WAIT_LOOP		  CODE	    0076	  83
+UART_TX_ASCIZ			  CODE	    00A1	 113
+UART_TX_ASCIZ_EXIT		  CODE	    00AB	 120
+UART_TX_ASCIZ_XRAM		  CODE	    00AC	 123
+UART_TX_ASCIZ_XRAM_EXIT		  CODE	    00B4	 129
+UART_TX_CHAR			  CODE	    0099	 107
+WR				  BIT	      B6

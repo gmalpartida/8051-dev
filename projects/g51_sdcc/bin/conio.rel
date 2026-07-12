@@ -1,0 +1,84 @@
+XH3
+H 2 areas 36 global symbols
+S uart_tx_asciz Ref000000
+S uart_rx_char Ref000000
+S uart_tx_char Ref000000
+S clear_txt Ref000000
+S sfr_txt Ref000000
+S th0_txt Ref000000
+S th1_txt Ref000000
+S ie_txt Ref000000
+S uart_init Ref000000
+S tl0_txt Ref000000
+S tl1_txt Ref000000
+S help_table Ref000000
+S nibble2asc Ref000000
+S asc2nibble Ref000000
+S ip_txt Ref000000
+S command_prompt_str Ref000000
+S psw_txt Ref000000
+S title_str Ref000000
+S return_uart_rx_buffer Ref000000
+S ls_txt Ref000000
+S .__.ABS. Def000000
+S p0_txt Ref000000
+S p1_txt Ref000000
+S b_txt Ref000000
+S p2_txt Ref000000
+S reset_txt Ref000000
+S p3_txt Ref000000
+S peek_txt Ref000000
+S fill_txt Ref000000
+S acc_txt Ref000000
+S iram_txt Ref000000
+S help_txt Ref000000
+S app_table Ref000000
+S write_txt Ref000000
+S newline_str Ref000000
+S hex2asc Ref000000
+S poke_txt Ref000000
+S msg_err Ref000000
+S sbuf_txt Ref000000
+S pcon_txt Ref000000
+S uart_rx_isr Ref000000
+S scon_txt Ref000000
+S tmod_txt Ref000000
+S tcon_txt Ref000000
+S dump_txt Ref000000
+S uart_rx_buffer_size Ref000000
+S goto_txt Ref000000
+S copy_txt Ref000000
+S uart_rx_asciz Ref000000
+A _CODE size 0 flags 0 addr 0
+A cseg size 33 flags 20 addr 0
+S println Def00001C
+S skip_blanks Def000012
+S printtab Def000027
+S get_hex_address Def000000
+S printspc Def00002D
+T 00 00 00
+R 00 00 00 01
+T 00 00 00 E6 12 00 00 08 F5 F0 E6 12 00 00 C4 54
+R 00 00 00 01 02 05 00 0D 02 0C 00 0D
+T 00 00 0D F0 45 F0 C4 22
+R 00 00 00 01
+T 00 00 12
+R 00 00 00 01
+T 00 00 12 E0 60 06 B4 20 03 A3 80 F7
+R 00 00 00 01
+T 00 00 1B
+R 00 00 00 01
+T 00 00 1B 22
+R 00 00 00 01
+T 00 00 1C
+R 00 00 00 01
+T 00 00 1C 74 0A 12 00 00 74 0D 12 00 00 22
+R 00 00 00 01 02 06 00 02 02 0B 00 02
+T 00 00 27
+R 00 00 00 01
+T 00 00 27 74 09 12 00 00 22
+R 00 00 00 01 02 06 00 02
+T 00 00 2D
+R 00 00 00 01
+T 00 00 2D 74 20 12 00 00 22
+R 00 00 00 01 02 06 00 02

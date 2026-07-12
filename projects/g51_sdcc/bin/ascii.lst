@@ -1,0 +1,94 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 1
+Hexadecimal [24-Bits]
+
+
+
+                                      1 .include "ascii.inc"
+                                      1 ; Function: asc2bin
+                                      2 ; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
+                                      3 ; Output: Accumulator (A) = Binary value (00h-0Fh)
+                                      4 ; Uses:   R0 (temporary storage)
+                                      5 .globl asc2nibble
+                                      6 
+                                      7 ; converts a binary value to an ascii character
+                                      8 ; --> a: binary value to be converted
+                                      9 ; <-- a: ascii character 
+                                     10 .globl nibble2asc
+                                     11 
+                                     12 ; converts a hex value to ascii
+                                     13 ; --> a: hex value
+                                     14 ; <-- b: ascii equivalent of upper nibble
+                                     15 ; <-- a: ascii equivalent of lower nibble
+                                     16 .globl hex2asc
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 2
+Hexadecimal [24-Bits]
+
+
+
+                                      2 
+                                      3 .area cseg (CODE)
+                                      4 ; Function: asc2bin
+                                      5 ; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
+                                      6 ; Output: Accumulator (A) = Binary value (00h-0Fh)
+                                      7 ; Uses:   R0 (temporary storage)
+                                      8 
+      000000                          9 asc2nibble:
+      000000 FA               [12]   10     MOV R2, A         	; Store original character in R2
+      000001 C3               [12]   11     CLR C             	; Clear carry for subtraction
+      000002 94 30            [12]   12     SUBB A, #0x30      	; Subtract 30h to handle '0'-'9'
+                                     13     
+                                     14     ; Check if result is > 9 (indicating it was likely 'A'-'F')
+      000004 F9               [12]   15     MOV R1, A         	; Temporary copy of intermediate result
+      000005 C3               [12]   16     CLR C
+      000006 94 0A            [12]   17     SUBB A, #0x0A      	; Subtract 10 (0Ah)
+      000008 50 02            [24]   18     JNC IS_ALPHA      	; If no borrow (A >= 10), it's 'A'-'F'
+                                     19     
+                                     20     ; It's a digit '0'-'9'
+      00000A E9               [12]   21     MOV A, R1         	; Restore the '0'-'9' result
+      00000B 22               [24]   22     RET
+                                     23 
+      00000C                         24 IS_ALPHA:
+                                     25     ; It's a letter 'A'-'F'
+      00000C EA               [12]   26     MOV A, R2         	; Start again with original ASCII char
+      00000D 54 DF            [12]   27 	anl a, #0b11011111	; convert to uppercase
+      00000F 94 37            [12]   28     SUBB A, #0x37      	; Subtract 37h to get binary 10-15
+      000011 22               [24]   29     RET
+                                     30 
+                                     31 ; converts a binary value to an ascii character
+                                     32 ; --> a: binary value to be converted
+                                     33 ; <-- a: ascii character 
+      000012                         34 nibble2asc:
+      000012 C3               [12]   35 	clr c
+      000013 FA               [12]   36 	mov r2, a
+      000014 94 0A            [12]   37 	subb a, #0x0a
+      000016 40 06            [24]   38 	jc nibble2asc_is_digit
+      000018 EA               [12]   39 	mov a, r2
+      000019 24 37            [12]   40 	add a, #0x37
+      00001B 44 20            [12]   41 	orl a, #0b00100000	; convert to lowercase
+      00001D 22               [24]   42 	ret
+      00001E                         43 nibble2asc_is_digit:
+      00001E EA               [12]   44 	mov a, r2
+      00001F 24 30            [12]   45 	add a, #0x30
+      000021 22               [24]   46 	ret
+                                     47 
+                                     48 ; converts a hex value to ascii
+                                     49 ; --> a: hex value
+                                     50 ; <-- b: ascii equivalent of upper nibble
+                                     51 ; <-- a: ascii equivalent of lower nibble
+      000022                         52 hex2asc:
+      000022 FF               [12]   53 	mov r7, a
+      000023 C4               [12]   54 	swap a
+      000024 54 0F            [12]   55 	anl a, #0x0f
+      000026 00 12            [12]   56 	acall nibble2asc
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 3
+Hexadecimal [24-Bits]
+
+
+
+      000028 F5 F0            [12]   57 	mov b, a
+      00002A EF               [12]   58 	mov a, r7
+      00002B 54 0F            [12]   59 	anl a, #0x0f
+      00002D 00 12            [12]   60 	acall nibble2asc
+      00002F 22               [24]   61 	ret
+                                     62 
+                                     63 

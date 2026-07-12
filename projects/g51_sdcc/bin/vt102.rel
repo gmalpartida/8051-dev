@@ -1,0 +1,13 @@
+XH3
+H 2 areas 3 global symbols
+S .__.ABS. Def000000
+A _CODE size 0 flags 0 addr 0
+A cseg size 19 flags 20 addr 0
+S vt102_line_to Def000000
+S VT102_CLEAR_SCREEN Def000011
+T 00 00 00
+R 00 00 00 01
+T 00 00 00 22 1B 5B 41 00 1B 5B 42 00 1B 5B 43 00
+R 00 00 00 01
+T 00 00 0D 1B 5B 44 00 1B 5B 48 1B 5B 32 4A 00
+R 00 00 00 01
