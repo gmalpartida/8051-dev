@@ -1,6 +1,7 @@
 .include "ascii.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
+
 ; Function: asc2bin
 ; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
 ; Output: Accumulator (A) = Binary value (00h-0Fh)
@@ -53,11 +54,11 @@ hex2asc:
 	mov r7, a
 	swap a
 	anl a, #0x0f
-	acall nibble2asc
+	lcall nibble2asc
 	mov b, a
 	mov a, r7
 	anl a, #0x0f
-	acall nibble2asc
+	lcall nibble2asc
 	ret
 
 

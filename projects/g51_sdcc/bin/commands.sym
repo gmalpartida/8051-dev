@@ -53,119 +53,123 @@ Symbol Table
     SCON.3  =  00009B L   |     SCON.4  =  00009C L   |     SCON.5  =  00009D L
     SCON.6  =  00009E L   |     SCON.7  =  00009F L   |     SM0     =  00009F L
     SM1     =  00009E L   |     SM2     =  00009D L   |     SP      =  000081 L
-    SPC     =  000020     |     STRCMP     ****** GX  |     T2CON   =  0000C8 L
-    T2CON.0 =  0000C8 L   |     T2CON.1 =  0000C9 L   |     T2CON.2 =  0000CA L
-    T2CON.3 =  0000CB L   |     T2CON.4 =  0000CC L   |     T2CON.5 =  0000CD L
-    T2CON.6 =  0000CE L   |     T2CON.7 =  0000CF L   |     TAB     =  000009 
-    TB8     =  00009B L   |     TCLK    =  0000CC L   |     TCON    =  000088 L
+    SPC     =  000020     |     T2CON   =  0000C8 L   |     T2CON.0 =  0000C8 L
+    T2CON.1 =  0000C9 L   |     T2CON.2 =  0000CA L   |     T2CON.3 =  0000CB L
+    T2CON.4 =  0000CC L   |     T2CON.5 =  0000CD L   |     T2CON.6 =  0000CE L
+    T2CON.7 =  0000CF L   |     TAB     =  000009     |     TB8     =  00009B L
+    TCLK    =  0000CC L   |     TCON    =  000088 L   |     TCON.0  =  000088 L
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 2
 Hexadecimal [24-Bits]
 
 Symbol Table
 
-    TCON.0  =  000088 L   |     TCON.1  =  000089 L   |     TCON.2  =  00008A L
-    TCON.3  =  00008B L   |     TCON.4  =  00008C L   |     TCON.5  =  00008D L
-    TCON.6  =  00008E L   |     TCON.7  =  00008F L   |     TF0     =  00008D L
-    TF1     =  00008F L   |     TF2     =  0000CF L   |     TH0     =  00008C L
-    TH1     =  00008D L   |     TH2     =  0000CD L   |     TI      =  000099 L
-    TL0     =  00008A L   |     TL1     =  00008B L   |     TL2     =  0000CC L
-    TMOD    =  000089 L   |     TR0     =  00008C L   |     TR1     =  00008E L
-    TR2     =  0000CA L   |     TXD     =  0000B1 L   |     VT102_CL   ****** GX
-    VT102_ES=  00001B     |     a       =  0000E0 L   |     a.0     =  0000E0 L
-    a.1     =  0000E1 L   |     a.2     =  0000E2 L   |     a.3     =  0000E3 L
-    a.4     =  0000E4 L   |     a.5     =  0000E5 L   |     a.6     =  0000E6 L
-    a.7     =  0000E7 L   |     ac      =  0000D6 L   |     acc     =  0000E0 L
-    acc.0   =  0000E0 L   |     acc.1   =  0000E1 L   |     acc.2   =  0000E2 L
-    acc.3   =  0000E3 L   |     acc.4   =  0000E4 L   |     acc.5   =  0000E5 L
-    acc.6   =  0000E6 L   |     acc.7   =  0000E7 L   |     acc_txt    ****** GX
+    TCON.1  =  000089 L   |     TCON.2  =  00008A L   |     TCON.3  =  00008B L
+    TCON.4  =  00008C L   |     TCON.5  =  00008D L   |     TCON.6  =  00008E L
+    TCON.7  =  00008F L   |     TF0     =  00008D L   |     TF1     =  00008F L
+    TF2     =  0000CF L   |     TH0     =  00008C L   |     TH1     =  00008D L
+    TH2     =  0000CD L   |     TI      =  000099 L   |     TL0     =  00008A L
+    TL1     =  00008B L   |     TL2     =  0000CC L   |     TMOD    =  000089 L
+    TR0     =  00008C L   |     TR1     =  00008E L   |     TR2     =  0000CA L
+    TXD     =  0000B1 L   |     VT102_ES=  00001B     |     a       =  0000E0 L
+    a.0     =  0000E0 L   |     a.1     =  0000E1 L   |     a.2     =  0000E2 L
+    a.3     =  0000E3 L   |     a.4     =  0000E4 L   |     a.5     =  0000E5 L
+    a.6     =  0000E6 L   |     a.7     =  0000E7 L   |     ac      =  0000D6 L
+    acc     =  0000E0 L   |     acc.0   =  0000E0 L   |     acc.1   =  0000E1 L
+    acc.2   =  0000E2 L   |     acc.3   =  0000E3 L   |     acc.4   =  0000E4 L
+    acc.5   =  0000E5 L   |     acc.6   =  0000E6 L   |     acc.7   =  0000E7 L
+    acc_txt    ****** GX  |     ahex2byt   ****** GX  |     ahex2wor   ****** GX
     app_tabl   ****** GX  |     asc2nibb   ****** GX  |     b       =  0000F0 L
     b.0     =  0000F0 L   |     b.1     =  0000F1 L   |     b.2     =  0000F2 L
     b.3     =  0000F3 L   |     b.4     =  0000F4 L   |     b.5     =  0000F5 L
     b.6     =  0000F6 L   |     b.7     =  0000F7 L   |     b_txt      ****** GX
-  1 clear_sc   00016B GR  |     clear_tx   ****** GX  |     command_   ****** GX
-    copy_txt   ****** GX  |     cprl2   =  0000C8 L   |     ct2     =  0000C9 L
-    cy      =  0000D7 L   |   1 do_copy    0001B5 GR  |   1 do_dump    0000E8 GR
-  1 do_dump_   000100 R   |   1 do_fill    000192 GR  |   1 do_goto    0001DD GR
-  1 do_help    000000 GR  |   1 do_help_   00004B R   |   1 do_help_   000006 R
-  1 do_iram    0001F2 GR  |   1 do_iram_   000224 R   |   1 do_iram_   000203 R
+    clear_tx   ****** GX  |     cmd_line   ****** GX  |     cmd_line   ****** GX
+    command_   ****** GX  |     copy_txt   ****** GX  |     cprl2   =  0000C8 L
+    ct2     =  0000C9 L   |     cy      =  0000D7 L   |   1 do_clear   00036C GR
+  1 do_copy    0001C9 GR  |   1 do_dump    00010F GR  |   1 do_dump_   00012D R
+  1 do_fill    000196 GR  |   1 do_goto    000205 GR  |   1 do_help    000000 GR
+  1 do_help_   00004B R   |   1 do_help_   000006 R   |   1 do_iram    00021A GR
+  1 do_iram_   00024C R   |   1 do_iram_   00022B R   |   1 do_load    0003DA GR
   1 do_ls      00004C GR  |   1 do_ls_ex   000099 R   |   1 do_ls_lo   000052 R
-  1 do_peek    00009A GR  |   1 do_poke    0000C7 GR  |   1 do_sfr     00024B GR
-  1 do_write   000344 GR  |   1 do_write   00039D R   |   1 do_write   00039F R
-  1 do_write   00035E R   |   1 do_write   00036B R   |   1 do_write   000378 R
-  1 do_write   000385 R   |   1 do_write   00039D R   |     dph     =  000083 L
-    dpl     =  000082 L   |     dump_txt   ****** GX  |     ea      =  0000AF L
-    es      =  0000AC L   |     et0     =  0000A9 L   |     et1     =  0000AB L
-    et2     =  0000AD L   |     ex0     =  0000A8 L   |     ex1     =  0000AA L
-    exen2   =  0000CB L   |     exf2    =  0000CE L   |     f0      =  0000D5 L
-    fill_txt   ****** GX  |     get_hex_   ****** GX  |     goto_txt   ****** GX
-    help_tab   ****** GX  |     help_txt   ****** GX  |     hex2asc    ****** GX
-    ie      =  0000A8 L   |     ie.0    =  0000A8 L   |     ie.1    =  0000A9 L
-    ie.2    =  0000AA L   |     ie.3    =  0000AB L   |     ie.4    =  0000AC L
-    ie.5    =  0000AD L   |     ie.7    =  0000AF L   |     ie0     =  000089 L
-    ie1     =  00008B L   |     ie_txt     ****** GX  |     int0    =  0000B2 L
-    int1    =  0000B3 L   |     ip      =  0000B8 L   |     ip.0    =  0000B8 L
-    ip.1    =  0000B9 L   |     ip.2    =  0000BA L   |     ip.3    =  0000BB L
-    ip.4    =  0000BC L   |     ip.5    =  0000BD L   |     ip_txt     ****** GX
-    iram_txt   ****** GX  |     it0     =  000088 L   |     it1     =  00008A L
-    ls_txt     ****** GX  |     memchr     ****** GX  |     memchr_c   ****** GX
-    memcmp_c   ****** GX  |     memcpy     ****** GX  |     memcpy_c   ****** GX
-    memset     ****** GX  |     msg_err    ****** GX  |     newline_   ****** GX
-    nibble2a   ****** GX  |     ov      =  0000D2 L   |     p       =  0000D0 L
-    p0      =  000080 L   |     p0.0    =  000080 L   |     p0.1    =  000081 L
-    p0.2    =  000082 L   |     p0.3    =  000083 L   |     p0.4    =  000084 L
-    p0.5    =  000085 L   |     p0.6    =  000086 L   |     p0.7    =  000087 L
-    p0_txt     ****** GX  |     p1      =  000090 L   |     p1.0    =  000090 L
-    p1.1    =  000091 L   |     p1.2    =  000092 L   |     p1.3    =  000093 L
-    p1.4    =  000094 L   |     p1.5    =  000095 L   |     p1.6    =  000096 L
-    p1.7    =  000097 L   |     p1_txt     ****** GX  |     p2      =  0000A0 L
+  1 do_peek    00009E GR  |   1 do_poke    0000D4 GR  |   1 do_reset   00009A GR
+  1 do_sfr     000273 GR  |   1 do_unkno   0003CD GR  |   1 do_write   000370 GR
+  1 do_write   0003C9 R   |   1 do_write   0003CB R   |   1 do_write   00038A R
+  1 do_write   000397 R   |   1 do_write   0003A4 R   |   1 do_write   0003B1 R
+  1 do_write   0003C9 R   |     dph     =  000083 L   |     dpl     =  000082 L
+    dump_txt   ****** GX  |     ea      =  0000AF L   |     es      =  0000AC L
+    et0     =  0000A9 L   |     et1     =  0000AB L   |     et2     =  0000AD L
+    ex0     =  0000A8 L   |     ex1     =  0000AA L   |     exen2   =  0000CB L
+    exf2    =  0000CE L   |     f0      =  0000D5 L   |     fill_txt   ****** GX
+    get_hex_   ****** GX  |     goto_txt   ****** GX  |     help_tab   ****** GX
+    help_txt   ****** GX  |     hex2asc    ****** GX  |   2 hex_byte   000005 R
+  2 hex_word   000000 R   |     ie      =  0000A8 L   |     ie.0    =  0000A8 L
+    ie.1    =  0000A9 L   |     ie.2    =  0000AA L   |     ie.3    =  0000AB L
+    ie.4    =  0000AC L   |     ie.5    =  0000AD L   |     ie.7    =  0000AF L
+    ie0     =  000089 L   |     ie1     =  00008B L   |     ie_txt     ****** GX
+    int0    =  0000B2 L   |     int1    =  0000B3 L   |     ip      =  0000B8 L
+    ip.0    =  0000B8 L   |     ip.1    =  0000B9 L   |     ip.2    =  0000BA L
+    ip.3    =  0000BB L   |     ip.4    =  0000BC L   |     ip.5    =  0000BD L
+    ip_txt     ****** GX  |     iram_txt   ****** GX  |     it0     =  000088 L
+    it1     =  00008A L   |     ls_txt     ****** GX  |     memchr     ****** GX
+    memchr_c   ****** GX  |     memcmp_c   ****** GX  |     memcpy     ****** GX
+    memcpy_c   ****** GX  |     memset     ****** GX  |     msg_err    ****** GX
+    newline_   ****** GX  |     nibble2a   ****** GX  |     ov      =  0000D2 L
+    p       =  0000D0 L   |     p0      =  000080 L   |     p0.0    =  000080 L
+    p0.1    =  000081 L   |     p0.2    =  000082 L   |     p0.3    =  000083 L
+    p0.4    =  000084 L   |     p0.5    =  000085 L   |     p0.6    =  000086 L
+    p0.7    =  000087 L   |     p0_txt     ****** GX  |     p1      =  000090 L
+    p1.0    =  000090 L   |     p1.1    =  000091 L   |     p1.2    =  000092 L
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 3
 Hexadecimal [24-Bits]
 
 Symbol Table
 
-    p2.0    =  0000A0 L   |     p2.1    =  0000A1 L   |     p2.2    =  0000A2 L
-    p2.3    =  0000A3 L   |     p2.4    =  0000A4 L   |     p2.5    =  0000A5 L
-    p2.6    =  0000A6 L   |     p2.7    =  0000A7 L   |     p2_txt     ****** GX
-    p3      =  0000B0 L   |     p3.0    =  0000B0 L   |     p3.1    =  0000B1 L
-    p3.2    =  0000B2 L   |     p3.3    =  0000B3 L   |     p3.4    =  0000B4 L
-    p3.5    =  0000B5 L   |     p3.6    =  0000B6 L   |     p3.7    =  0000B7 L
-    p3_txt     ****** GX  |     pcon    =  000087 L   |     pcon_txt   ****** GX
-    peek_txt   ****** GX  |     poke_txt   ****** GX  |   1 print_du   000172 R
-  1 print_du   000176 R   |   1 print_ro   000136 R   |   1 print_ro   00010E R
-  1 print_ro   000114 R   |   1 print_sf   000328 R   |     println    ****** GX
-    printspc   ****** GX  |     printtab   ****** GX  |     ps      =  0000BC L
-    psw     =  0000D0 L   |     psw.0   =  0000D0 L   |     psw.1   =  0000D1 L
-    psw.2   =  0000D2 L   |     psw.3   =  0000D3 L   |     psw.4   =  0000D4 L
-    psw.5   =  0000D5 L   |     psw.6   =  0000D6 L   |     psw.7   =  0000D7 L
-    psw_txt    ****** GX  |     pt0     =  0000B9 L   |     pt1     =  0000BB L
-    pt2     =  0000BD L   |     px0     =  0000B8 L   |     px1     =  0000BA L
-    rb8     =  00009A L   |     rcap2h  =  0000CB L   |     rcap2l  =  0000CA L
-    rclk    =  0000CD L   |     ren     =  00009C L   |     reset_tx   ****** GX
-    return_u   ****** GX  |     ri      =  000098 L   |     rs0     =  0000D3 L
-    rs1     =  0000D4 L   |     rxd     =  0000B0 L   |     sbuf    =  000099 L
-    sbuf_txt   ****** GX  |     scon    =  000098 L   |     scon.0  =  000098 L
-    scon.1  =  000099 L   |     scon.2  =  00009A L   |     scon.3  =  00009B L
-    scon.4  =  00009C L   |     scon.5  =  00009D L   |     scon.6  =  00009E L
-    scon.7  =  00009F L   |     scon_txt   ****** GX  |     sfr_txt    ****** GX
-    skip_bla   ****** GX  |     sm0     =  00009F L   |     sm1     =  00009E L
-    sm2     =  00009D L   |     sp      =  000081 L   |     strncmp    ****** GX
-    t2con   =  0000C8 L   |     t2con.0 =  0000C8 L   |     t2con.1 =  0000C9 L
-    t2con.2 =  0000CA L   |     t2con.3 =  0000CB L   |     t2con.4 =  0000CC L
-    t2con.5 =  0000CD L   |     t2con.6 =  0000CE L   |     t2con.7 =  0000CF L
-    tb8     =  00009B L   |     tclk    =  0000CC L   |     tcon    =  000088 L
-    tcon.0  =  000088 L   |     tcon.1  =  000089 L   |     tcon.2  =  00008A L
-    tcon.3  =  00008B L   |     tcon.4  =  00008C L   |     tcon.5  =  00008D L
-    tcon.6  =  00008E L   |     tcon.7  =  00008F L   |     tcon_txt   ****** GX
-    tf0     =  00008D L   |     tf1     =  00008F L   |     tf2     =  0000CF L
-    th0     =  00008C L   |     th0_txt    ****** GX  |     th1     =  00008D L
-    th1_txt    ****** GX  |     th2     =  0000CD L   |     ti      =  000099 L
-    title_st   ****** GX  |     tl0     =  00008A L   |     tl0_txt    ****** GX
-    tl1     =  00008B L   |     tl1_txt    ****** GX  |     tl2     =  0000CC L
-    tmod    =  000089 L   |     tmod_txt   ****** GX  |     tr0     =  00008C L
-    tr1     =  00008E L   |     tr2     =  0000CA L   |     txd     =  0000B1 L
-    uart_ini   ****** GX  |     uart_rx_   ****** GX  |     uart_rx_   ****** GX
-    uart_rx_   ****** GX  |     uart_rx_   ****** GX  |     uart_tx_   ****** GX
-    uart_tx_   ****** GX  |     vt102_li   ****** GX  |     write_tx   ****** GX
+    p1.3    =  000093 L   |     p1.4    =  000094 L   |     p1.5    =  000095 L
+    p1.6    =  000096 L   |     p1.7    =  000097 L   |     p1_txt     ****** GX
+    p2      =  0000A0 L   |     p2.0    =  0000A0 L   |     p2.1    =  0000A1 L
+    p2.2    =  0000A2 L   |     p2.3    =  0000A3 L   |     p2.4    =  0000A4 L
+    p2.5    =  0000A5 L   |     p2.6    =  0000A6 L   |     p2.7    =  0000A7 L
+    p2_txt     ****** GX  |     p3      =  0000B0 L   |     p3.0    =  0000B0 L
+    p3.1    =  0000B1 L   |     p3.2    =  0000B2 L   |     p3.3    =  0000B3 L
+    p3.4    =  0000B4 L   |     p3.5    =  0000B5 L   |     p3.6    =  0000B6 L
+    p3.7    =  0000B7 L   |     p3_txt     ****** GX  |     pcon    =  000087 L
+    pcon_txt   ****** GX  |     peek_txt   ****** GX  |     poke_txt   ****** GX
+  1 print_du   000176 R   |   1 print_du   00017A R   |   1 print_sf   000350 R
+    println    ****** GX  |     printspc   ****** GX  |     printtab   ****** GX
+    ps      =  0000BC L   |     psw     =  0000D0 L   |     psw.0   =  0000D0 L
+    psw.1   =  0000D1 L   |     psw.2   =  0000D2 L   |     psw.3   =  0000D3 L
+    psw.4   =  0000D4 L   |     psw.5   =  0000D5 L   |     psw.6   =  0000D6 L
+    psw.7   =  0000D7 L   |     psw_txt    ****** GX  |     pt0     =  0000B9 L
+    pt1     =  0000BB L   |     pt2     =  0000BD L   |     px0     =  0000B8 L
+    px1     =  0000BA L   |     rb8     =  00009A L   |     rcap2h  =  0000CB L
+    rcap2l  =  0000CA L   |     rclk    =  0000CD L   |     ren     =  00009C L
+    reset_tx   ****** GX  |     ri      =  000098 L   |   1 row_data   000159 R
+    rs0     =  0000D3 L   |     rs1     =  0000D4 L   |     rxd     =  0000B0 L
+    sbuf    =  000099 L   |     sbuf_txt   ****** GX  |     scon    =  000098 L
+    scon.0  =  000098 L   |     scon.1  =  000099 L   |     scon.2  =  00009A L
+    scon.3  =  00009B L   |     scon.4  =  00009C L   |     scon.5  =  00009D L
+    scon.6  =  00009E L   |     scon.7  =  00009F L   |     scon_txt   ****** GX
+    sfr_txt    ****** GX  |     skip_bla   ****** GX  |     sm0     =  00009F L
+    sm1     =  00009E L   |     sm2     =  00009D L   |     sp      =  000081 L
+    strcmp     ****** GX  |     strncmp    ****** GX  |     sys_clrs   ****** GX
+    sys_getc   ****** GX  |     sys_gets   ****** GX  |     sys_init   ****** GX
+    sys_putc   ****** GX  |     sys_puts   ****** GX  |     sys_puts   ****** GX
+    sys_rese   ****** GX  |     sys_seri   ****** GX  |     t2con   =  0000C8 L
+    t2con.0 =  0000C8 L   |     t2con.1 =  0000C9 L   |     t2con.2 =  0000CA L
+    t2con.3 =  0000CB L   |     t2con.4 =  0000CC L   |     t2con.5 =  0000CD L
+    t2con.6 =  0000CE L   |     t2con.7 =  0000CF L   |     tb8     =  00009B L
+    tclk    =  0000CC L   |     tcon    =  000088 L   |     tcon.0  =  000088 L
+    tcon.1  =  000089 L   |     tcon.2  =  00008A L   |     tcon.3  =  00008B L
+    tcon.4  =  00008C L   |     tcon.5  =  00008D L   |     tcon.6  =  00008E L
+    tcon.7  =  00008F L   |     tcon_txt   ****** GX  |     tf0     =  00008D L
+    tf1     =  00008F L   |     tf2     =  0000CF L   |     th0     =  00008C L
+    th0_txt    ****** GX  |     th1     =  00008D L   |     th1_txt    ****** GX
+    th2     =  0000CD L   |     ti      =  000099 L   |     title_st   ****** GX
+    tl0     =  00008A L   |     tl0_txt    ****** GX  |     tl1     =  00008B L
+    tl1_txt    ****** GX  |     tl2     =  0000CC L   |     tmod    =  000089 L
+    tmod_txt   ****** GX  |     tr0     =  00008C L   |     tr1     =  00008E L
+    tr2     =  0000CA L   |     txd     =  0000B1 L   |     vt102_cl   ****** GX
+    vt102_ha   ****** GX  |     vt102_li   ****** GX  |     vt102_se   ****** GX
+    vt102_se   ****** GX  |     write_tx   ****** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 4
 Hexadecimal [24-Bits]
@@ -173,5 +177,6 @@ Hexadecimal [24-Bits]
 Area Table
 
    0 _CODE      size      0   flags    0
-   1 cseg       size    3A1   flags   20
+   1 CSEG       size    3DB   flags   20
+   2 XSEG       size      8   flags   40
 

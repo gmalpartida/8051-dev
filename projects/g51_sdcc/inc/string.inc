@@ -1,6 +1,3 @@
-.globl STRCMP
-.globl strncmp
-
 ; finds character c in the first n bytes of a memory buffer in program memory
 ; --> r6,r7: address of memory buffer
 ; --> r5: 	character for which to search
@@ -45,3 +42,6 @@
 .globl memcpy
 
 .globl strncmp
+
+.globl strcmp
+

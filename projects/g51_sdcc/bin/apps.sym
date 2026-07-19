@@ -140,5 +140,5 @@ Hexadecimal [24-Bits]
 Area Table
 
    0 _CODE      size      0   flags    0
-   1 cseg       size      3   flags   20
+   1 CSEG       size      3   flags   20
 

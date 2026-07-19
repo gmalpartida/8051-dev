@@ -1,4 +1,7 @@
 SRCS=\
+	 src/bios.asm\
+	 src/cmd_line_parser.asm\
+	 src/cmd_dispatch.asm\
 	 src/apps.asm\
 	 src/vt102.asm\
 	 src/conio.asm\

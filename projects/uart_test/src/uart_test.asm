@@ -18,7 +18,7 @@ ser_isr:
 	ljmp uart_rx_isr
 
 main:
-    mov sp, 02fh					; Initialize Stack
+    mov sp, #02fh					; Initialize Stack
     lcall uart_init					; Setup UART
 
 	setb es							; enable serial interrupt
@@ -27,10 +27,12 @@ main:
 cmd_prompt:
 
     mov dptr, #cmd_prompt_str
-    lcall uart_tx_asciz
+    acall uart_tx_asciz
 
 	mov dptr, #cmd_line_buffer
 	lcall uart_rx_asciz
+
+	lcall println
 
 	mov dptr, #cmd_line_buffer
 	lcall uart_tx_asciz_xram
@@ -49,17 +51,19 @@ println:
 	ret
 
 uart_init:
-    anl tmod, #0fh                 ; Clear Timer 1 mode bits
-    orl tmod, #20h                 ; Set Timer 1 to Mode 2 (8-bit auto-reload)
+    anl tmod, #0fh					; Clear Timer 1 mode bits
+    orl tmod, #20h					; Set Timer 1 to Mode 2 (8-bit auto-reload)
     
-    mov th1, #0ffh                  ; 57600 bps at 11.0592 MHz
+    ;mov th1, #0ffh                 ; 57600 bps at 11.0592 MHz
+	mov th1, #0fah					; 19200 bps
+	mov th1, #0fdh					; 9600 bps
     
-    orl pcon, #80h                 ; Set SMOD to 1 (Doubles the baud rate generation)
+    orl pcon, #80h					; Set SMOD to 1 (Doubles the baud rate generation)
     
-    mov scon, #50h                 ; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
+    mov scon, #50h					; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
     setb tr1                        ; Start Timer 1
     
-    ;setb ti                         ; set transmitter 'ready'
+    ;setb ti                        ; set transmitter 'ready'
 
 	mov a, #00h
 	mov dptr, #uart_rx_buffer_head
@@ -76,6 +80,8 @@ uart_init:
 ;	ret
 
 uart_rx_char:
+	push dpl
+	push dph
 	; if buffer is not empty, process char
 	mov dptr, #uart_rx_buffer_head
 	movx a, @dptr
@@ -102,16 +108,18 @@ uart_rx_char_skip_dph:
 	mov dptr, #uart_rx_buffer_head
 	movx @dptr, a		
 	pop acc							; restore retrieved char
+	pop dph
+	pop dpl
 	ret
 
 uart_tx_char:
-	jnb ti, uart_tx_char
-	clr ti
 	mov sbuf, a
+	jnb ti, $
+	clr ti
 	ret
 
 uart_tx_asciz:
-	mov a, 00h	
+	mov a, #00h	
 	movc a, @a + dptr
 	jz uart_tx_asciz_exit
 	acall uart_tx_char
@@ -133,10 +141,10 @@ uart_rx_asciz:
 	acall uart_rx_char
 	mov b, a									; make copy of it, next statements destroy char in a
 	jz uart_rx_asciz_exit						; if NULL then exit
-	xrl a, #0ah
+	xrl a, #0dh
 	jz uart_rx_asciz_exit						; if CR then exit
 	mov a, b									; restore copy of char
-	xrl a, #0dh
+	xrl a, #0ah
 	jz uart_rx_asciz_exit						; if LF then exit
 	mov a, b
 uart_rx_asciz_process_char:

@@ -1,20 +1,23 @@
 .include "uart.inc"
 .include "constants.inc"
+.include "vt102.inc"
 
 .area CSEG (CODE)
 
 uart_init:
-    anl tmod, #0x0f                 ; Clear Timer 1 mode bits
-    orl tmod, #0x20                 ; Set Timer 1 to Mode 2 (8-bit auto-reload)
+    anl tmod, #0x0f					; Clear Timer 1 mode bits
+    orl tmod, #0x20					; Set Timer 1 to Mode 2 (8-bit auto-reload)
     
-    mov th1, #0xff                  ; 57600 bps at 11.0592 MHz
+    ;mov th1, #0xff                 ; 57600 bps at 11.0592 MHz
+	mov th1, #0xfa					; 19200 bps
+	mov th1, #0xfd					; 9600 bps
     
-    orl pcon, #0x80                 ; Set SMOD to 1 (Doubles the baud rate generation)
+    orl pcon, #0x80					; Set SMOD to 1 (Doubles the baud rate generation)
     
-    mov scon, #0x50                 ; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
+    mov scon, #0x50					; Mode 1 (8-bit UART), ENABLE receiver (REN=1)
     setb tr1                        ; Start Timer 1
     
-    ;setb ti                         ; set transmitter 'ready'
+    ;setb ti                        ; set transmitter 'ready'
 
 	mov a, #0x00
 	mov dptr, #uart_rx_buffer_head
@@ -31,15 +34,17 @@ uart_init:
 ;	ret
 
 uart_rx_char:
+	push dpl
+	push dph
 	; if buffer is not empty, process char
 	mov dptr, #uart_rx_buffer_head
 	movx a, @dptr
-	mov b, a
+	mov b, a							; save buffer head for later use
 uart_rx_wait_loop:
 	mov dptr, #uart_rx_buffer_tail
-	movx a, @dptr
-	cjne a, b, uart_rx_process_char
-	sjmp uart_rx_wait_loop					; otherwise loop back and wait for char
+	movx a, @dptr						; read value of buffer tail
+	cjne a, b, uart_rx_process_char		; compare to buffer head, it not same then there is a char
+	sjmp uart_rx_wait_loop				; otherwise loop back and wait for char
 uart_rx_process_char:
 	; process char, store in a
 	mov dptr, #uart_rx_buffer
@@ -56,154 +61,101 @@ uart_rx_char_skip_dph:
 	inc a
 	mov dptr, #uart_rx_buffer_head
 	movx @dptr, a		
-	pop acc							; restore retrieved char
+	pop acc								; restore retrieved char
+uart_rx_char_exit:
+	pop dph
+	pop dpl
 	ret
 
 uart_tx_char:
-	clr ti
 	mov sbuf, a
-wait_for_tx_done:
-	jnb ti, wait_for_tx_done
+uart_tx_char_here:
+	jnb ti, uart_tx_char_here
 	clr ti
 	ret
 
 uart_tx_asciz:
-	clr a
+	mov a, #0x00	
 	movc a, @a + dptr
 	jz uart_tx_asciz_exit
-	acall uart_tx_char
+	lcall uart_tx_char
 	inc dptr
 	sjmp uart_tx_asciz
 uart_tx_asciz_exit:
 	ret
 
+uart_tx_asciz_xram:
+	movx a, @dptr
+	jz uart_tx_asciz_xram_exit
+	lcall uart_tx_char
+	inc dptr
+	sjmp uart_tx_asciz_xram
+uart_tx_asciz_xram_exit:
+	ret
+
 uart_rx_asciz:
-	acall uart_rx_char
+	mov R7, dph
+	mov R6, dpl									; save start of buffer for empty check later
+uart_rx_asciz_loop:
+	lcall uart_rx_char
 	mov b, a									; make copy of it, next statements destroy char in a
 	jz uart_rx_asciz_exit						; if NULL then exit
-	xrl a, #CR
+	xrl a, #0x0d
 	jz uart_rx_asciz_exit						; if CR then exit
 	mov a, b									; restore copy of char
-	xrl a, #LF
+	xrl a, #0x0a
 	jz uart_rx_asciz_exit						; if LF then exit
 	mov a, b
+	xrl a, #BS									; check for BS
+	jnz uart_rx_asciz_process_del
+	sjmp uart_rx_asciz_process_del_or_bs
+uart_rx_asciz_process_del:
+	mov a, b
+	xrl a, #DEL
+	jnz uart_rx_asciz_process_char
+uart_rx_asciz_process_del_or_bs:
+	mov a, dph
+	cjne a, 0x07, process_bs_or_del
+	mov a, dpl
+	cjne a, 0x06, process_bs_or_del
+	sjmp uart_rx_asciz_loop
+process_bs_or_del:
+	mov a, dpl
+	clr c
+	subb a, #0x01
+	mov dpl, a
+	mov a, dph
+	subb a, #0x00
+	mov dph, a
+	push dpl
+	push dph
+	lcall vt102_handle_BS
+	pop dph
+	pop dpl
+	sjmp uart_rx_asciz_loop
 uart_rx_asciz_process_char:
+	mov a, b
 	movx @dptr, a								; not NULL, CR or LF, keep it
 	inc dptr
-	acall uart_tx_char							; echo char
-	sjmp uart_rx_asciz
+	lcall uart_tx_char							; echo char
+	sjmp uart_rx_asciz_loop
 uart_rx_asciz_exit:
 	mov a, #0x00								; the last character must be NULL
 	movx @dptr, a
 	ret
 
-uart_rx_asciz2:
-    ; 1. Protect the start boundary using the stack
-    push dpl                     ; Push low byte of start address
-    push dph                     ; Push high byte of start address
-
-uart_rx_loop:
-    acall uart_rx_char           ; Get char into Acc
-    mov r0, a                    ; Save received character to temp R0
-
-    ; Check for CR
-    clr c
-    subb a, #CR
-    jz rx_terminate
-
-    ; Check for LF
-    mov a, r0
-    clr c
-    subb a, #LF
-    jz rx_terminate
-
-    ; Check for BS (0x08)
-    mov a, r0
-    clr c
-    subb a, #BS
-    jz rx_backspace
-
-    ; Check for DEL (0x7F)
-    mov a, r0
-    clr c
-    subb a, #DEL
-    jz rx_backspace
-
-    ; --- Normal Character Processing ---
-    mov a, r0
-    movx @dptr, a                ; Store in RAM buffer
-    inc dptr                     ; Move buffer pointer forward
-    
-    mov a, r0                    ; Echo char back to terminal
-    acall uart_tx_char          
-    sjmp uart_rx_loop
-
-rx_backspace:
-    ; --- Underflow Check ---
-    
-    ; 1. Check High Byte
-    mov r0, sp                   ; R0 points to top of stack (saved DPH)
-    mov a, @r0                   ; A = saved DPH
-    clr c
-    subb a, dph                  ; Compare saved DPH with current DPH
-    jnz do_backspace             ; If difference != 0, they don't match -> safe to delete
-
-    ; 2. Check Low Byte
-    mov a, sp
-    dec a                        ; Target SP - 1 (saved DPL)
-    mov r0, a                    ; R0 points to saved DPL
-    mov a, @r0                   ; A = saved DPL
-    clr c
-    subb a, dpl                  ; Compare saved DPL with current DPL
-    jnz do_backspace             ; If difference != 0, they don't match -> safe to delete
-
-    ; If both match exactly, buffer is empty. Ignore backspace.
-    sjmp uart_rx_loop
-
-do_backspace:
-    ; Decrement the 16-bit DPTR (8051 has no DEC DPTR, must do manually)
-    mov a, dpl
-    dec a
-    mov dpl, a
-    cjne a, #0xFF, skip_dph_dec  ; If low byte rolled over from 00 to FF
-    dec dph                      ; Decrement the high byte
-skip_dph_dec:
-
-    ; Visual erasure on user terminal (BS, Space, BS)
-    mov a, #BS
-    acall uart_tx_char
-    mov a, #SPC
-    acall uart_tx_char
-    mov a, #BS
-    acall uart_tx_char
-    sjmp uart_rx_loop
-
-rx_terminate:
-    ; Terminate string with NULL
-    mov a, #NULL
-    movx @dptr, a
-    
-    ; Echo a newline to terminal
-    mov a, #CR
-    acall uart_tx_char
-    mov a, #LF
-    acall uart_tx_char
-
-    ; 3. Clean up stack before exit
-    pop dph                      ; Discard saved high byte
-    pop dpl                      ; Discard saved low byte
-    ret
-
 uart_rx_isr:
-	push a
+	push acc
 	push b
 	push psw
 	push dpl
 	push dph
 	mov a, r0
-	push a
-	jnb ri, uart_rx_isr_exit
-	jbc ti, uart_rx_isr_exit
+	push acc
+	jb ri, uart_rx_handler
+	;jbc ti, uart_rx_isr_exit
+	sjmp uart_rx_isr_exit
+uart_rx_handler:
 	clr ri
 	mov a, sbuf							; retrieve received character
 	;mov sbuf, a
@@ -223,13 +175,13 @@ uart_rx_isr_skip_dph:
 	mov a, b							; restore character received
 	movx @dptr, a						; copy character to buffer
 uart_rx_isr_exit:
-	pop a
+	pop acc
 	mov r0, a
 	pop dph
 	pop dpl
 	pop psw
 	pop b
-	pop a
+	pop acc
 	reti
 
 return_uart_rx_buffer:
@@ -246,10 +198,8 @@ uart_rx_buffer_size:
 	subb a, b
 	ret
 	
-.area _XSEG (REL, CON, XDATA)
-uart_rx_buffer::			.blkb		0x0100
-uart_rx_buffer_head::	.blkb		0x01
-uart_rx_buffer_tail::	.blkb		0x01
-
-
+.area XSEG (XDATA)
+uart_rx_buffer::		.ds		0x0100
+uart_rx_buffer_head::	.ds		0x01
+uart_rx_buffer_tail::	.ds		0x01
 

@@ -1,12 +1,12 @@
 .include "constants.inc"
 .include "logo.inc"
-.include "uart.inc"
+.include "bios.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
 
 print_logo:
 	mov dptr, #g51_logo
-	lcall uart_tx_asciz
+	lcall sys_puts
 	ret
 
 g51_logo: 

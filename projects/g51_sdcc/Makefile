@@ -14,7 +14,7 @@ MINIPRO=minipro
 ROM="upd27c256a@dip28"
 
 AS_FLAGS=-los -Iinc 
-LD_FLAGS=-imjw -b VECTORS=0x0000 -b CSEG=0x0030 -b _XSEG=0x0000 -M
+LD_FLAGS=-imjw -b VECTORS=0x0000 -b CSEG=0x0030 -b XSEG=0x0000 -M
 RM_FLAGS=-rf
 UCSIM_FLAGS= -C $(UCSIM_FILE) -t 51 -s$(VPORT0) -X 11.0592 
 SOCAT_FLAGS=-d -d PTY,link=$(VPORT0),raw,echo=0 PTY,link=$(VPORT1),raw,echo=0

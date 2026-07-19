@@ -25,3 +25,5 @@
 .globl return_uart_rx_buffer
 
 .globl uart_rx_buffer_size
+
+.globl uart_tx_asciz_xram

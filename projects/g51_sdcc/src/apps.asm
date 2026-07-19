@@ -1,6 +1,6 @@
 .include "apps.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
 
 lcd_app:
 

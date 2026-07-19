@@ -15,7 +15,7 @@ Hexadecimal [24-Bits]
 
 
                                       2 
-                                      3 .area cseg (CODE)
+                                      3 .area CSEG (CODE)
                                       4 
       000000                          5 lcd_app:
                                       6 

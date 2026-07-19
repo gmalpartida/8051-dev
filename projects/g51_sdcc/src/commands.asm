@@ -1,12 +1,14 @@
 .include "commands.inc"
 .include "conio.inc"
-.include "uart.inc"
+.include "bios.inc"
 .include "ascii.inc"
 .include "string.inc"
 .include "vt102.inc"
 .include "constants.inc"
+.include "cmd_line_parser.inc"
+.include "bios.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
 
 do_help:
 	lcall println
@@ -21,15 +23,15 @@ do_help_loop:
 	orl a, r7
 	jz do_help_exit
 	mov a, #TAB
-	lcall uart_tx_char
+	lcall sys_putc
 	push dph				; save table pointer
 	push dpl
 	mov dph, r7				; get address of command
 	mov dpl, r6
-	lcall uart_tx_asciz; send command to uart
+	lcall sys_puts; send command to uart
 	mov a, #TAB
-	lcall uart_tx_char
-	lcall uart_tx_char
+	lcall sys_putc
+	lcall sys_putc
 	pop dpl
 	pop dph
 	inc dptr				; advance to command description
@@ -44,7 +46,7 @@ do_help_loop:
 	push dpl
 	mov dph, r7
 	mov dpl, r6
-	lcall uart_tx_asciz
+	lcall sys_puts
 	lcall println
 	pop dpl					; restore table pointer
 	pop dph
@@ -67,15 +69,15 @@ do_ls_loop:
 	orl a, r7
 	jz do_ls_exit
 	mov a, #TAB
-	lcall uart_tx_char
+	lcall sys_putc
 	push dph				; save table pointer
 	push dpl
 	mov dph, r7				; get address of app_name
 	mov dpl, r6
-	lcall uart_tx_asciz		; send app_name to uart
+	lcall sys_puts		; send app_name to uart
 	mov a, #TAB
-	lcall uart_tx_char
-	lcall uart_tx_char
+	lcall sys_putc
+	lcall sys_putc
 	pop dpl
 	pop dph
 	inc dptr				; advance to app description
@@ -90,7 +92,7 @@ do_ls_loop:
 	push dpl
 	mov dph, r7
 	mov dpl, r6
-	lcall uart_tx_asciz
+	lcall sys_puts
 	lcall println
 	pop dpl					; restore table pointer
 	pop dph
@@ -103,124 +105,125 @@ do_ls_loop:
 do_ls_exit:
 	ret
 
+do_reset:
+	lcall sys_reset
+	ret
+
 do_peek:
 	lcall println
-	lcall skip_blanks
-	lcall get_hex_address
-	inc r0
-	mov r7, a
-	lcall get_hex_address
-	mov r6, a
 
-	mov dph, r7
-	mov dpl, r6
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token			; get hex address
 
+	mov dptr, #hex_word
+	lcall sys_puts_xram
+	mov a, #':'
+	lcall sys_putc
+	mov a, #' '
+	lcall sys_putc
+
+	mov dptr, #hex_word
+	lcall ahex2word							; convert to binary
+	
+	mov dph, b
+	mov dpl, a
 	movx a, @dptr
-	mov b, a
-	swap a
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
+
+	lcall hex2asc
+
+	mov R0, a
 	mov a, b
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
+	mov a, R0
+	lcall sys_putc
+
 	lcall println
 	ret
 
 do_poke:
 	lcall println
-	lcall skip_blanks
-	lcall get_hex_address
-	inc r0
-	mov r7, a
-	lcall get_hex_address
-	mov r6, a
-	inc r0
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r5, a
-	mov dph, r7
-	mov dpl, r6
-	mov a, r5
-	movx @dptr, a 
-	lcall println
+
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token			; get hex address
+	mov dptr, #hex_byte
+	lcall cmd_line_parser_next_token
+
+	mov dptr, #hex_word
+	lcall ahex2word								; address in b:a
+	push a										; save a
+	push 0xf0									; save b
+
+	mov dptr, #hex_byte	
+	lcall ahex2byte
+
+	pop dph										; pop upper byte
+	pop dpl										; pop lower byte
+	movx @dptr, a
+
+	mov dptr, #hex_word
+	lcall sys_puts_xram
+	mov a, #':'
+	lcall sys_putc
+	mov a, #' '
+	lcall sys_putc
+	mov dptr, #hex_byte
+	lcall sys_puts_xram
+
 	ret
 
 do_dump:
 	lcall println
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r7, a
-	mov a, #TAB
-	lcall uart_tx_char	
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	lcall ahex2word								; address in b:a
+
+	mov dph, b
+	mov dpl, a
+
+	lcall printtab
 	acall print_dump_header
 	lcall println
-
-	mov r6, #0x00
-	mov r5, #0x10
+	
+	mov r1, #0x10
 do_dump_loop:
-	acall print_row_address
-	acall print_row_data
-	lcall println
-	mov a, r6
-	add a, #0x10
-	mov r6, a
-	djnz r5, do_dump_loop
-	ret
+	; print row address
+	mov a, dph
+	lcall hex2asc
 
-print_row_data:
-	mov dph, r7
-	mov dpl, r6
-	mov r4, #0x10
-print_row_data_loop:
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	mov a, dpl
+	lcall hex2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+	lcall printspc
+	lcall printspc
+	lcall printspc
+	lcall printspc
+	
+	mov r0, #0x10
+row_data_loop:
 	movx a, @dptr
-	mov b, a
-	swap a
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, b
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, #' '
-	lcall uart_tx_char
-	lcall uart_tx_char
+	lcall hex2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+	lcall printspc
+	lcall printspc
 	inc dptr
-	djnz r4, print_row_data_loop
+	djnz r0, row_data_loop
+	lcall println
+	djnz r1, do_dump_loop
+
 	ret
 
-print_row_address:
-	mov a, r7
-	swap a
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, r7
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, r6
-	swap a
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, r6
-	anl a, #0x0f
-	lcall nibble2asc
-	lcall uart_tx_char
-	mov a, #' '
-	lcall uart_tx_char
-	lcall uart_tx_char
-	lcall uart_tx_char
-	lcall uart_tx_char
-	ret
-
-clear_screen:
-	mov dptr, #VT102_CLEAR_SCREEN
-	lcall uart_tx_asciz
-	ret
 
 print_dump_header:
 	mov r4, #0xff
@@ -228,76 +231,88 @@ print_dump_header:
 print_dump_header_loop:
 	inc r4
 	mov a, #'0'
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, r4
 	anl a, #0x0f
 	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, #' '
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, #' '
-	lcall uart_tx_char
+	lcall sys_putc
 	djnz r3, print_dump_header_loop
 
 	ret
 
 ; fills a memory block with a specific byte
 do_fill:
-	lcall println	
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r6, a
-	inc r0
-	lcall get_hex_address
-	mov r7, a
-	inc r0
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r5, a
-	inc r0
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r4, a
+	lcall println
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token			; read address
+	mov dptr, #hex_byte
+	lcall cmd_line_parser_next_token			; read length
+	mov dptr, #hex_byte
+	lcall ahex2byte
+	push a										; push length to stack
+
+	mov dptr, #hex_byte
+	lcall cmd_line_parser_next_token			; read fill char
 	
+	mov dptr, #hex_byte
+	lcall ahex2byte								; convert fill char to binary
+	mov R4, a
+
+	pop 0x05									; retrieve length from stack into R5
+
+	mov dptr, #hex_word							; convert address to binary
+	lcall ahex2word								; address in b:a
+	mov R6, b
+	mov R7, a
 	lcall memset
+
 	ret
 
 ; copies a memory block from one location to another
 do_copy:
 	lcall println
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r6, a
-	inc r0
-	lcall get_hex_address
-	mov r7, a
-	inc r0
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r4, a
-	inc r0
-	lcall get_hex_address
-	mov r5, a
-	inc r0
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r3, a
+
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	lcall ahex2word
+	push 0xf0
+	push a
+
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	lcall ahex2word
+	push 0xf0
+	push a
+
+	mov dptr, #hex_byte
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_byte
+	lcall ahex2byte
+	mov R3, a
+	pop 0x05
+	pop 0x04
+	pop 0x07
+	pop 0x06
+
 	lcall memcpy
 	ret
 
 ; jumps to a memory address in program memory
-; --> r6, r7: memmory address in program memory
 do_goto:
 	lcall println
-	lcall skip_blanks
-	lcall get_hex_address
-	mov r6, a
-	inc r0
-	lcall get_hex_address
-	mov r7, a
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	lcall ahex2word
 
-	push 0x07
-	push 0x06
+	push a
+	push 0xf0
 	ret
 
 	ret
@@ -317,11 +332,11 @@ do_iram_row_loop:
 	swap a
 	anl a, #0x0f
 	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, b
 	anl a, #0x0f
 	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
 	push 0x07
 	mov r7, #0x01
 	lcall printtab
@@ -332,14 +347,14 @@ do_iram_col_loop:
 	swap a
 	anl a, #0x0f
 	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, b
 	anl a, #0x0f
 	lcall nibble2asc
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, #SPC
-	lcall uart_tx_char
-	lcall uart_tx_char
+	lcall sys_putc
+	lcall sys_putc
 	inc r0
 	djnz r6, do_iram_col_loop
 	lcall println
@@ -458,17 +473,21 @@ do_sfr:
 ; <-- none
 print_sfr_reg:
 	push 0xe0					; save contents of a register
-	lcall uart_tx_asciz
+	lcall sys_puts
 	mov a, #TAB
-	lcall uart_tx_char
+	lcall sys_putc
 	pop 0xe0
 	lcall hex2asc
 	push 0xe0
 	mov a, b
-	lcall uart_tx_char
+	lcall sys_putc
 	pop 0xe0
-	lcall uart_tx_char
+	lcall sys_putc
 	
+	ret
+
+do_clear:
+	lcall sys_clrscrn
 	ret
 
 do_write:
@@ -522,4 +541,21 @@ do_write_error:
 do_write_exit:
 	clr c
 	ret
+
+do_unknown:
+	lcall println
+    mov dptr, #msg_err
+    lcall sys_puts
+	lcall println
+	ret
+
+do_load:
+
+	ret
+	
+.area XSEG (XDATA)
+
+hex_word:		.ds			0x05
+hex_byte:		.ds			0x03
+
 

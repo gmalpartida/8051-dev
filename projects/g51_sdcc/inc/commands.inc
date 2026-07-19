@@ -10,7 +10,7 @@
 
 .globl do_dump
 
-.globl clear_screen
+.globl do_clear
 
 ; fills a memory block with a specific byte
 .globl do_fill
@@ -26,3 +26,9 @@
 .globl do_sfr
 
 .globl do_write
+
+.globl do_unknown
+
+.globl do_load
+
+.globl do_reset

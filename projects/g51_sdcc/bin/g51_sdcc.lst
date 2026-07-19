@@ -3,34 +3,16 @@ Hexadecimal [24-Bits]
 
 
 
-                                      1 .include "uart.inc"
-                                      1 .globl uart_init
-                                      2 
-                                      3 ; receives a character via serial line
-                                      4 ; ==> none
-                                      5 ; <== a: character received
-                                      6 .globl uart_rx_char
-                                      7 
-                                      8 ; sends a character via serial line
-                                      9 ; ==> a:	character to send
-                                     10 ; <== none
-                                     11 .globl uart_tx_char
-                                     12 
-                                     13 ; sends an null-terminated string via serial line
-                                     14 ; ==> dptr: address of string
-                                     15 ; <== none
-                                     16 .globl uart_tx_asciz
-                                     17 
-                                     18 ; receives a null-terminated string via serial line
-                                     19 ; ==> none
-                                     20 ; <== dptr: address of received string
-                                     21 .globl uart_rx_asciz
-                                     22 
-                                     23 .globl uart_rx_isr
-                                     24 
-                                     25 .globl return_uart_rx_buffer
-                                     26 
-                                     27 .globl uart_rx_buffer_size
+                                      1 .include "bios.inc"
+                                      1 .globl sys_putc
+                                      2 .globl sys_getc
+                                      3 .globl sys_puts
+                                      4 .globl sys_gets
+                                      5 .globl sys_puts_xram
+                                      6 .globl sys_init
+                                      7 .globl sys_serial_isr
+                                      8 .globl sys_clrscrn
+                                      9 .globl sys_reset
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 2
 Hexadecimal [24-Bits]
 
@@ -90,17 +72,20 @@ Hexadecimal [24-Bits]
                                       3 .include "conio.inc"
                                       1 
                                       2 .globl get_hex_address
-                                      3 .globl skip_blanks
-                                      4 
-                                      5 .globl println
-                                      6 
-                                      7 ; prints tab(s)
-                                      8 ; --> r7: how many tabs to print
+                                      3 
+                                      4 .globl skip_blanks
+                                      5 
+                                      6 .globl println
+                                      7 
+                                      8 ; prints tab
                                       9 .globl printtab
                                      10 
-                                     11 ; prints space(s)
-                                     12 ; --> r7: how many spaces to print
-                                     13 .globl printspc
+                                     11 ; prints space
+                                     12 .globl printspc
+                                     13 
+                                     14 .globl ahex2word
+                                     15 
+                                     16 .globl ahex2byte
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 4
 Hexadecimal [24-Bits]
 
@@ -174,7 +159,7 @@ Hexadecimal [24-Bits]
                                      10 
                                      11 .globl do_dump
                                      12 
-                                     13 .globl clear_screen
+                                     13 .globl do_clear
                                      14 
                                      15 ; fills a memory block with a specific byte
                                      16 .globl do_fill
@@ -190,59 +175,65 @@ Hexadecimal [24-Bits]
                                      26 .globl do_sfr
                                      27 
                                      28 .globl do_write
+                                     29 
+                                     30 .globl do_unknown
+                                     31 
+                                     32 .globl do_load
+                                     33 
+                                     34 .globl do_reset
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 7
 Hexadecimal [24-Bits]
 
 
 
                                       5 .include "string.inc"
-                                      1 .globl STRCMP
-                                      2 .globl strncmp
-                                      3 
-                                      4 ; finds character c in the first n bytes of a memory buffer in program memory
-                                      5 ; --> r6,r7: address of memory buffer
-                                      6 ; --> r5: 	character for which to search
-                                      7 ; --> r4:	how many bytes at which to look
-                                      8 ; <-- r6,r7: address at which character was found, otherwise NULL
-                                      9 ; <-- c: clear if found, otherwise set
-                                     10 .globl memchr_c
-                                     11 
-                                     12 ; finds character c in the first n bytes of a memory buffer in data memory
-                                     13 ; --> r6,r7: address of memory buffer
-                                     14 ; --> r5: 	character for which to search
-                                     15 ; --> r4:	how many bytes at which to look
-                                     16 ; <-- r6,r7: address at which character was found, otherwise NULL
-                                     17 .globl memchr
-                                     18 
-                                     19 ; compares the first n bytes of two blocks of memory, one of which is in program memory
-                                     20 ; --> r6, r7: 	address of block of memory in program memory
-                                     21 ; --> r4, r5: 	address of block of memory in data memory
-                                     22 ; --> r3: 		how many bytes to compare
-                                     23 ; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
-                                     24 
-                                     25 .globl memcmp_c
-                                     26 
-                                     27 ; copies n bytes from one memory block to another, one of which resides in program memory
-                                     28 ; --> r6, r7: address of source memory block in program memory
-                                     29 ; --> r4, r5: address of destination memory block in data memory
-                                     30 ; --> r3: 	  how many bytes to copy
-                                     31 
-                                     32 .globl memcpy_c
-                                     33 
-                                     34 ; initializes a memory block with a specific byte
-                                     35 ; --> r6, r7: address of memory block
-                                     36 ; --> r5: length of memory block
-                                     37 ; --> r4: byte to fill the block
-                                     38 
-                                     39 .globl memset
-                                     40 
-                                     41 ; moves a memory block from one location to another
-                                     42 ; --> r6, r7: address of source memory block
-                                     43 ; --> r4, r5: address of destination memory block
-                                     44 ; --> r3: how many bytes to move
-                                     45 .globl memcpy
-                                     46 
-                                     47 .globl strncmp
+                                      1 ; finds character c in the first n bytes of a memory buffer in program memory
+                                      2 ; --> r6,r7: address of memory buffer
+                                      3 ; --> r5: 	character for which to search
+                                      4 ; --> r4:	how many bytes at which to look
+                                      5 ; <-- r6,r7: address at which character was found, otherwise NULL
+                                      6 ; <-- c: clear if found, otherwise set
+                                      7 .globl memchr_c
+                                      8 
+                                      9 ; finds character c in the first n bytes of a memory buffer in data memory
+                                     10 ; --> r6,r7: address of memory buffer
+                                     11 ; --> r5: 	character for which to search
+                                     12 ; --> r4:	how many bytes at which to look
+                                     13 ; <-- r6,r7: address at which character was found, otherwise NULL
+                                     14 .globl memchr
+                                     15 
+                                     16 ; compares the first n bytes of two blocks of memory, one of which is in program memory
+                                     17 ; --> r6, r7: 	address of block of memory in program memory
+                                     18 ; --> r4, r5: 	address of block of memory in data memory
+                                     19 ; --> r3: 		how many bytes to compare
+                                     20 ; <-- r7:		0 if equal, -1 if first block is less than second block, otherwise 1
+                                     21 
+                                     22 .globl memcmp_c
+                                     23 
+                                     24 ; copies n bytes from one memory block to another, one of which resides in program memory
+                                     25 ; --> r6, r7: address of source memory block in program memory
+                                     26 ; --> r4, r5: address of destination memory block in data memory
+                                     27 ; --> r3: 	  how many bytes to copy
+                                     28 
+                                     29 .globl memcpy_c
+                                     30 
+                                     31 ; initializes a memory block with a specific byte
+                                     32 ; --> r6, r7: address of memory block
+                                     33 ; --> r5: length of memory block
+                                     34 ; --> r4: byte to fill the block
+                                     35 
+                                     36 .globl memset
+                                     37 
+                                     38 ; moves a memory block from one location to another
+                                     39 ; --> r6, r7: address of source memory block
+                                     40 ; --> r4, r5: address of destination memory block
+                                     41 ; --> r3: how many bytes to move
+                                     42 .globl memcpy
+                                     43 
+                                     44 .globl strncmp
+                                     45 
+                                     46 .globl strcmp
+                                     47 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 8
 Hexadecimal [24-Bits]
 
@@ -258,219 +249,97 @@ Hexadecimal [24-Bits]
 
 
 
-                                      7 
-                                      8 .area vectors
-      000000 02 00 00         [24]    9     ljmp main
-      000003                         10 ie0_isr:
-      000003 32               [24]   11 	reti
-      000004                         12 	.blkb	0x07
-      00000B                         13 tf0_isr:
-      00000B 32               [24]   14 	reti
-      00000C                         15 	.blkb	0x07
-      000013                         16 ie1_isr:
-      000013 32               [24]   17 	reti
-      000014                         18 	.blkb	0x07
-      00001B                         19 tf1_isr:
-      00001B 32               [24]   20 	reti
-      00001C                         21 	.blkb	0x07
-      000023                         22 ser_isr:
-      000023 02 00 00         [24]   23 	ljmp uart_rx_isr
-                                     24 
-                                     25 .area cseg
-      000000                         26 main:
-      000000 85 2F 81         [24]   27     mov sp, 0h2f					; Initialize Stack
-      000003 12 00 00         [24]   28     lcall uart_init					; Setup UART
-                                     29 
-      000006 D2 AC            [12]   30 	setb es							; enable serial interrupt
-      000008 D2 AF            [12]   31 	setb ea							; enable global interrupt
-                                     32 
-      00000A 12 00 00         [24]   33 	lcall clear_screen
-                                     34 
-      00000D 90 00 00         [24]   35 	mov dptr, #g51_logo
-      000010 12 00 00         [24]   36 	lcall uart_tx_asciz
-                                     37 
-      000013 12 00 00         [24]   38 	lcall println
-                                     39 
-      000016 90 00 00         [24]   40 	mov dptr, #title_str
-      000019 12 00 00         [24]   41 	lcall uart_tx_asciz
-      00001C 12 00 00         [24]   42 	lcall println
-                                     43 
-      00001F                         44 cmd_prompt:
-                                     45 
-      00001F 90 00 00         [24]   46     mov dptr, #command_prompt_str
-      000022 12 00 00         [24]   47     lcall uart_tx_asciz
-                                     48     
-      000025 90 00 00         [24]   49 	mov dptr, #cmd_line_buffer
-      000028 12 00 00         [24]   50 	lcall uart_rx_asciz
-                                     51 
-      00002B 12 00 00         [24]   52 	lcall println
-      00002E 80 EF            [24]   53 	sjmp cmd_prompt
-      000030                         54 stop:
-      000030 80 FE            [24]   55 	sjmp stop
-                                     56 
-                                     57     ; --- COMMAND PARSER ---
-                                     58     ; Check for "help"
-      000032                         59 check_help:
-      000032 90 00 00         [24]   60     mov dptr, #cmd_line_buffer
-      000035 12 00 00         [24]   61 	lcall skip_blanks
+                                      7 .include "cmd_dispatch.inc"
+                                      1 .globl	cmd_dispatcher_find
+                                      2 .globl cmd_dispatcher_exec
+                                      3 
+                                      4 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)              Page 10
 Hexadecimal [24-Bits]
 
 
 
-      000038 90 00 00         [24]   62     MOV DPTR, #help_txt
-      00003B 7A 04            [12]   63 	mov r2, #4
-      00003D 12 00 00         [24]   64     lcall strncmp
-      000040 B4 00 05         [24]   65 	cjne a, #0, check_ls
-      000043 12 00 00         [24]   66     lcall do_help
-      000046 80 D7            [24]   67 	sjmp cmd_prompt
-                                     68 
-                                     69     ; Check for "ls"
-      000048                         70 check_ls:
-      000048 90 00 00         [24]   71     mov dptr, #cmd_line_buffer
-      00004B 12 00 00         [24]   72 	lcall skip_blanks
-      00004E 90 00 00         [24]   73     mov dptr, #ls_txt
-      000051 7A 02            [12]   74 	mov r2, #2
-      000053 12 00 00         [24]   75     lcall strncmp
-      000056 B4 00 05         [24]   76 	cjne a, #0, check_peek
-      000059 12 00 00         [24]   77     lcall do_ls
-      00005C 80 C1            [24]   78 	sjmp cmd_prompt
-                                     79 
-      00005E                         80 check_peek:
-      00005E 90 00 00         [24]   81 	mov dptr, #cmd_line_buffer
-      000061 12 00 00         [24]   82 	lcall skip_blanks
-      000064 90 00 00         [24]   83 	mov dptr, #peek_txt
-      000067 7A 04            [12]   84 	mov r2, #4
-      000069 12 00 00         [24]   85 	lcall strncmp
-      00006C B4 00 05         [24]   86 	cjne a, #0, check_poke
-      00006F 12 00 00         [24]   87 	lcall do_peek
-      000072 80 AB            [24]   88 	sjmp cmd_prompt
-                                     89 
-      000074                         90 check_poke:
-      000074 90 00 00         [24]   91 	mov dptr, #cmd_line_buffer
-      000077 12 00 00         [24]   92 	lcall skip_blanks
-      00007A 90 00 00         [24]   93 	mov dptr, #poke_txt
-      00007D 7A 04            [12]   94 	mov r2, #4
-      00007F 12 00 00         [24]   95 	lcall strncmp
-      000082 B4 00 06         [24]   96 	cjne a, #0, check_dump
-      000085 12 00 00         [24]   97 	lcall do_poke
-      000088 02 00 1F         [24]   98 	ljmp cmd_prompt
-                                     99 
-      00008B                        100 check_dump:
-      00008B 90 00 00         [24]  101 	mov dptr, #cmd_line_buffer
-      00008E 12 00 00         [24]  102 	lcall skip_blanks
-      000091 90 00 00         [24]  103 	mov dptr, #dump_txt
-      000094 7A 04            [12]  104 	mov r2, #4
-      000096 12 00 00         [24]  105 	lcall strncmp
-      000099 B4 00 06         [24]  106 	cjne a, #0, check_reset
-      00009C 12 00 00         [24]  107 	lcall do_dump
-      00009F 02 00 1F         [24]  108 	ljmp cmd_prompt
-                                    109 
-      0000A2                        110 check_reset:
-      0000A2 90 00 00         [24]  111 	mov dptr, #cmd_line_buffer
-      0000A5 12 00 00         [24]  112 	lcall skip_blanks
-      0000A8 90 00 00         [24]  113 	mov dptr, #reset_txt
-      0000AB 7A 05            [12]  114 	mov r2, #5
-      0000AD 12 00 00         [24]  115 	lcall strncmp
-      0000B0 B4 00 03         [24]  116 	cjne a, #0, check_clear
+                                      8 .include "cmd_line_parser.inc"
+                                      1 
+                                      2 .globl cmd_line_parser_load
+                                      3 
+                                      4 .globl cmd_line_parser_next_token
+                                      5 
+                                      6 
+                                      7 
+                                      8 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)              Page 11
 Hexadecimal [24-Bits]
 
 
 
-      0000B3 02 00 00         [24]  117 	ljmp main	
-                                    118 
-      0000B6                        119 check_clear:
-      0000B6 90 00 00         [24]  120 	mov dptr, #cmd_line_buffer
-      0000B9 12 00 00         [24]  121 	lcall skip_blanks
-      0000BC 90 00 00         [24]  122 	mov dptr, #clear_txt
-      0000BF 12 00 00         [24]  123 	lcall strncmp
-      0000C2 B4 00 06         [24]  124 	cjne a, #0, check_fill
-      0000C5 12 00 00         [24]  125 	lcall clear_screen
-      0000C8 02 00 1F         [24]  126 	ljmp cmd_prompt
-                                    127 
-      0000CB                        128 check_fill:
-      0000CB 90 00 00         [24]  129 	mov dptr, #cmd_line_buffer
-      0000CE 12 00 00         [24]  130 	lcall skip_blanks
-      0000D1 90 00 00         [24]  131 	mov dptr, #fill_txt
-      0000D4 7A 04            [12]  132 	mov r2, #4
-      0000D6 12 00 00         [24]  133 	lcall strncmp
-      0000D9 B4 00 06         [24]  134 	cjne a, #0, check_copy
-      0000DC 12 00 00         [24]  135 	lcall do_fill
-      0000DF 02 00 1F         [24]  136 	ljmp cmd_prompt
-                                    137 
-      0000E2                        138 check_copy:
-      0000E2 90 00 00         [24]  139 	mov dptr, #cmd_line_buffer
-      0000E5 12 00 00         [24]  140 	lcall skip_blanks
-      0000E8 90 00 00         [24]  141 	mov dptr, #copy_txt
-      0000EB 7A 04            [12]  142 	mov r2, #4
-      0000ED 12 00 00         [24]  143 	lcall strncmp
-      0000F0 B4 00 06         [24]  144 	cjne a, #0, check_goto
-      0000F3 12 00 00         [24]  145 	lcall do_copy
-      0000F6 02 00 1F         [24]  146 	ljmp cmd_prompt
-                                    147 
-      0000F9                        148 check_goto:
-      0000F9 90 00 00         [24]  149 	mov dptr, #cmd_line_buffer
-      0000FC 12 00 00         [24]  150 	lcall skip_blanks
-      0000FF 90 00 00         [24]  151 	mov dptr, #goto_txt
-      000102 7A 04            [12]  152 	mov r2, #4
-      000104 12 00 00         [24]  153 	lcall strncmp
-      000107 B4 00 06         [24]  154 	cjne a, #0, check_iram
-      00010A 12 00 00         [24]  155 	lcall do_goto
-      00010D 02 00 1F         [24]  156 	ljmp cmd_prompt
-                                    157 
-      000110                        158 check_iram:
-      000110 90 00 00         [24]  159 	mov dptr, #cmd_line_buffer
-      000113 12 00 00         [24]  160 	lcall skip_blanks
-      000116 90 00 00         [24]  161 	mov dptr, #iram_txt
-      000119 7A 04            [12]  162 	mov r2, #4
-      00011B 12 00 00         [24]  163 	lcall strncmp
-      00011E B4 00 06         [24]  164 	cjne a, #0, check_sfr
-      000121 12 00 00         [24]  165 	lcall do_iram
-      000124 02 00 1F         [24]  166 	ljmp cmd_prompt
-                                    167 
-      000127                        168 check_sfr:
-      000127 90 00 00         [24]  169 	mov dptr, #cmd_line_buffer
-      00012A 12 00 00         [24]  170 	lcall skip_blanks
-      00012D 90 00 00         [24]  171 	mov dptr, #sfr_txt
+                                      9 
+                                     10 .area VECTORS (CODE)
+                                     11 
+      000000 02 00 00         [24]   12     ljmp main
+      000003                         13 ie0_isr:
+      000003 32               [24]   14 	reti
+      000004                         15 	.blkb	0x07
+      00000B                         16 tf0_isr:
+      00000B 32               [24]   17 	reti
+      00000C                         18 	.blkb	0x07
+      000013                         19 ie1_isr:
+      000013 32               [24]   20 	reti
+      000014                         21 	.blkb	0x07
+      00001B                         22 tf1_isr:
+      00001B 32               [24]   23 	reti
+      00001C                         24 	.blkb	0x07
+      000023                         25 ser_isr:
+      000023 02 00 00         [24]   26 	ljmp sys_serial_isr
+                                     27 
+                                     28 .area CSEG (CODE)
+                                     29 
+      000000                         30 main:
+      000000 75 81 2F         [24]   31     mov sp, #0x2f					; Initialize Stack
+      000003 12 00 00         [24]   32     lcall sys_init					; Setup system
+                                     33 
+      000006 D2 AC            [12]   34 	setb es							; enable serial interrupt
+      000008 D2 AF            [12]   35 	setb ea							; enable global interrupt
+                                     36 
+      00000A 12 00 00         [24]   37 	lcall sys_clrscrn
+                                     38 
+      00000D 90 00 00         [24]   39 	mov dptr, #g51_logo
+      000010 12 00 00         [24]   40 	lcall sys_puts
+                                     41 
+      000013 12 00 00         [24]   42 	lcall println
+                                     43 
+      000016 90 00 00         [24]   44 	mov dptr, #title_str
+      000019 12 00 00         [24]   45 	lcall sys_puts
+      00001C 12 00 00         [24]   46 	lcall println
+                                     47 
+      00001F 74 FF            [12]   48 	mov a, #0xff
+      000021 90 00 00         [24]   49 	mov dptr, #cmd
+      000024 F0               [24]   50 	movx @dptr, a
+      000025 A3               [24]   51 	inc dptr
+      000026 F0               [24]   52 	movx @dptr, a
+                                     53 
+      000027                         54 cmd_prompt:
+                                     55 
+      000027 90 00 00         [24]   56     mov dptr, #command_prompt_str
+      00002A 12 00 00         [24]   57     lcall sys_puts
+                                     58     
+      00002D 12 00 00         [24]   59 	lcall cmd_line_parser_load
+                                     60 
+      000030 90 00 00         [24]   61 	mov dptr, #cmd
+      000033 12 00 00         [24]   62 	lcall cmd_line_parser_next_token
+                                     63 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)              Page 12
 Hexadecimal [24-Bits]
 
 
 
-      000130 7A 03            [12]  172 	mov r2, #3
-      000132 12 00 00         [24]  173 	lcall strncmp
-      000135 B4 00 06         [24]  174 	cjne a, #0, check_write
-      000138 12 00 00         [24]  175 	lcall do_sfr
-      00013B 02 00 1F         [24]  176 	ljmp cmd_prompt
-                                    177 
-      00013E                        178 check_write:
-      00013E 90 00 00         [24]  179 	mov dptr, #cmd_line_buffer
-      000141 12 00 00         [24]  180 	lcall skip_blanks
-      000144 90 00 00         [24]  181 	mov dptr, #write_txt
-      000147 7A 05            [12]  182 	mov r2, #5
-      000149 12 00 00         [24]  183 	lcall strncmp
-      00014C B4 00 06         [24]  184 	cjne a, #0, unknown
-      00014F 12 00 00         [24]  185 	lcall do_write
-      000152 02 00 1F         [24]  186 	ljmp cmd_prompt
-                                    187 	
-                                    188     ; Unknown command
-      000155                        189 unknown:
-      000155 12 00 00         [24]  190 	lcall println
-      000158 90 00 00         [24]  191 	mov dptr, #cmd_line_buffer
-      00015B E6               [12]  192 	mov a, @r0
-      00015C 60 09            [24]  193 	jz unknown_cmd_prompt
-      00015E 90 00 00         [24]  194     mov dptr, #msg_err
-      000161 12 00 00         [24]  195     lcall uart_tx_asciz
-      000164 12 00 00         [24]  196 	lcall println
-      000167                        197 unknown_cmd_prompt:
-      000167 02 00 1F         [24]  198     ljmp cmd_prompt
-                                    199 
-      00016A                        200 halt:
-      00016A 80 FE            [24]  201 	sjmp halt
-                                    202 
-                                    203 .area _XSEG (REL, CON, XDATA)
-      000000                        204 cmd_line_buffer::			.blkb		0x0100
-                                    205 
-                                    206 
-                                    207 
+      000036 90 00 00         [24]   64 	mov dptr, #cmd
+      000039 12 00 00         [24]   65 	lcall cmd_dispatcher_exec
+                                     66 
+      00003C 12 00 00         [24]   67 	lcall println
+                                     68 
+      00003F 80 E6            [24]   69 	sjmp cmd_prompt
+                                     70 
+                                     71 .area XSEG (XDATA)
+      000000                         72 cmd:						.ds				0x10
+                                     73 

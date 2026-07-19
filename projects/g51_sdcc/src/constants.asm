@@ -1,7 +1,7 @@
 .include "constants.inc"
 .include "apps.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
 
 title_str: 
 	.db TAB, TAB, TAB
@@ -14,38 +14,35 @@ command_prompt_str:
 	.asciz "g51> "
 
 commands:
-	help_cmd:			.asciz	"help:"
+	help_cmd:			.asciz	"help"
 	help_cmd_descr:		.asciz	"displays list of available commands."
-	ls_cmd:				.asciz	"ls:"
+	ls_cmd:				.asciz	"ls"
 	ls_cmd_descr:		.asciz	"displays available applications."
-	peek_cmd:			.asciz	"peek:"
+	peek_cmd:			.asciz	"peek"
 	peek_cmd_descr:		.asciz	"examine a single memory cell."
 	peek_cmd_ex:		.asciz	"ex. peek 1b2c"
-	poke_cmd:			.asciz	"poke:"
+	poke_cmd:			.asciz	"poke"
 	poke_cmd_descr:		.asciz	"modify a single memory cell."
 	poke_cmd_ex:		.asciz	"ex. poke 1b2c 55"
-	dump_cmd:			.asciz	"dump:"
+	dump_cmd:			.asciz	"dump"
 	dump_cmd_descr:		.asciz	"displays a 256 memory block."
 	dump_cmd_ex:		.asciz	"ex. dump 12"
-	clear_cmd:			.asciz	"clear:"
+	clear_cmd:			.asciz	"clear"
 	clear_cmd_descr:	.asciz	"clear screen and homes the cursor."
-	reset_cmd:			.asciz	"reset:"
+	reset_cmd:			.asciz	"reset"
 	reset_cmd_descr:	.asciz	"perform a soft-reset of the system."
-	fill_cmd:			.asciz	"fill:"
+	fill_cmd:			.asciz	"fill"
 	fill_cmd_descr:		.asciz	"initializes a memory block with a specific byte."
 	fill_cmd_ex:		.asciz	"ex. fill 1ab7 ff 1a"
-	copy_cmd:			.asciz	"copy:"
+	copy_cmd:			.asciz	"copy"
 	copy_cmd_descr:		.asciz	"copies a block of data from one memory location to another."
 	copy_cmd_ex:		.asciz	"ex. copy 2d4f 83bd a5"
-	goto_cmd:			.asciz	"goto:"
+	goto_cmd:			.asciz	"goto"
 	goto_cmd_descr:		.asciz	"jumps to a location in program memory to execute code."
 	goto_cmd_ex:		.asciz	"ex. goto 8ae3"
-	call_cmd:			.asciz	"call:"
-	call_cmd_descr:		.asciz	"calls a subroutine to be executed."
-	call_cmd_ex:		.asciz	"ex. call f43d"
-	iram_cmd:			.asciz	"iram:"
+	iram_cmd:			.asciz	"iram"
 	iram_cmd_descr:		.asciz	"displays the contents of the internal memory area."
-	sfr_cmd:			.asciz	"sfr:"
+	sfr_cmd:			.asciz	"sfr"
 	sfr_cmd_descr:		.asciz	"displays the special function registers."
 	write_cmd:			.asciz	"write"
 	write_cmd_descr:	.asciz	"modify an sfr register,"
@@ -62,7 +59,6 @@ help_table:
 	.dw		fill_cmd, fill_cmd_descr
 	.dw		copy_cmd, copy_cmd_descr
 	.dw		goto_cmd, goto_cmd_descr
-	.dw		call_cmd, call_cmd_descr
 	.dw		iram_cmd, iram_cmd_descr
 	.dw		sfr_cmd, sfr_cmd_descr
 	.dw		write_cmd, write_cmd_descr

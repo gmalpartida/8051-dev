@@ -1,27 +1,42 @@
 .include "constants.inc"
 .include "string.inc"
 
-.area cseg (code)
-; --- String Compare Utility ---
-STRCMP:
-    ; Compares RAM string at R0 with CODE string at DPTR
-    ; Returns A=0 if match, A=1 if no match
-STRCMP_LOOP:
-    CLR A
-    MOVC A, @A+DPTR     ; Get char from CODE
-    MOV B, A            ; Store in B
-    MOV A, @R0          ; Get char from RAM
-    CJNE A, B, NO_MATCH ; Compare
-    JZ MATCH            ; If both are 0, they match
-    INC R0
-    INC DPTR
-    SJMP STRCMP_LOOP
-MATCH:
-    CLR A               ; Return 0
-    RET
-NO_MATCH:
-    MOV A, #0x01         ; Return 1
-    RET
+.area CSEG (CODE)
+
+; compares two null terminated strings
+; --> dptr		string in cseg
+; --> R7:R6		string in xseg
+; <-- C			set if equal, otherwise clear
+strcmp:
+strcmp_loop:
+	clr a
+	movc a, @a + dptr				; read char
+	mov b, a						; save char read
+	push dpl						; backup address of code segment string
+	push dph
+	mov dph, R7						; load address of xseg string
+	mov dpl, R6
+	movx a, @dptr					; read char
+	xrl a, b						; evaluate to zero if equal
+	jnz strcmp_no_match				; not zero so no match
+	mov a, b						; check if b is also zero
+	jz strcmp_match					; both null char so match, exit
+	inc dptr						; increment R7:R6 pointer
+	mov R7, dph						; save in registers
+	mov R6, dpl
+	pop dph							; restore code segment string
+	pop dpl
+	inc dptr						; increment pointer
+	sjmp strcmp_loop				; check next character
+strcmp_no_match:
+	clr c
+    sjmp strcmp_cleanup
+strcmp_match:
+	setb c
+strcmp_cleanup:
+	pop dph
+	pop dpl
+	ret
 
 strncmp:
 				; counter

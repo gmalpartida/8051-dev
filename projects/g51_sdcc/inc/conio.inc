@@ -1,13 +1,16 @@
 
 .globl get_hex_address
+
 .globl skip_blanks
 
 .globl println
 
-; prints tab(s)
-; --> r7: how many tabs to print
+; prints tab
 .globl printtab
 
-; prints space(s)
-; --> r7: how many spaces to print
+; prints space
 .globl printspc
+
+.globl ahex2word
+
+.globl ahex2byte

@@ -1,14 +1,11 @@
 XH3
-H 2 areas 30 global symbols
-S uart_tx_asciz Ref000000
-S uart_rx_char Ref000000
-S uart_tx_char Ref000000
+H 2 areas 31 global symbols
 S clear_txt Ref000000
+S sys_puts Ref000000
 S sfr_txt Ref000000
 S th0_txt Ref000000
 S th1_txt Ref000000
 S ie_txt Ref000000
-S uart_init Ref000000
 S tl0_txt Ref000000
 S tl1_txt Ref000000
 S help_table Ref000000
@@ -16,11 +13,13 @@ S ip_txt Ref000000
 S command_prompt_str Ref000000
 S psw_txt Ref000000
 S title_str Ref000000
-S return_uart_rx_buffer Ref000000
 S ls_txt Ref000000
 S .__.ABS. Def000000
 S p0_txt Ref000000
 S p1_txt Ref000000
+S sys_reset Ref000000
+S sys_puts_xram Ref000000
+S sys_getc Ref000000
 S b_txt Ref000000
 S p2_txt Ref000000
 S reset_txt Ref000000
@@ -33,27 +32,29 @@ S help_txt Ref000000
 S app_table Ref000000
 S write_txt Ref000000
 S newline_str Ref000000
+S sys_serial_isr Ref000000
 S poke_txt Ref000000
 S msg_err Ref000000
 S sbuf_txt Ref000000
 S pcon_txt Ref000000
-S uart_rx_isr Ref000000
+S sys_gets Ref000000
+S sys_init Ref000000
 S scon_txt Ref000000
 S tmod_txt Ref000000
 S tcon_txt Ref000000
+S sys_clrscrn Ref000000
 S dump_txt Ref000000
-S uart_rx_buffer_size Ref000000
 S goto_txt Ref000000
+S sys_putc Ref000000
 S copy_txt Ref000000
-S uart_rx_asciz Ref000000
 A _CODE size 0 flags 0 addr 0
-A cseg size 22B flags 20 addr 0
+A CSEG size 22B flags 20 addr 0
 S g51_logo Def000007
 S print_logo Def000000
 T 00 00 00
 R 00 00 00 01
 T 00 00 00 90 00 07 12 00 00 22
-R 00 00 00 01 00 04 00 01 02 07 00 00
+R 00 00 00 01 00 04 00 01 02 07 00 01
 T 00 00 07
 R 00 00 00 01
 T 00 00 07 5F 5F 5F 5F 5F 2F 5C 5C 5C 5C 5C 5C 5C

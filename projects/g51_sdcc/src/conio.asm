@@ -1,9 +1,44 @@
 .include "conio.inc"
 .include "constants.inc"
 .include "ascii.inc"
-.include "uart.inc"
+.include "bios.inc"
 
-.area cseg (CODE)
+.area CSEG (CODE)
+
+ahex2byte:
+	movx a, @dptr						; read upper nibble
+	lcall asc2nibble
+	mov b, a							; save it
+	inc dptr
+	movx a, @dptr						; read lower nibble
+	lcall asc2nibble
+	swap a								
+	anl a, #0xf0						; clear lower nibble
+	orl a, b							; merge both nibbles
+	swap a								
+	ret
+
+ahex2word:
+	lcall ahex2byte
+	push a								; store upper byte in stack
+	inc dptr
+	lcall ahex2byte
+	pop 0xf0							; pop upper byte onto b
+	ret									; return b:a
+
+byte2ahex:
+	
+
+	ret
+
+puthexnibble:
+	
+	ret
+
+puthexbyte:
+	
+
+	ret
 
 get_hex_address:
 	mov a, @r0
@@ -29,20 +64,20 @@ skip_blanks_exit:
 
 println:
 	mov a, #CR
-	lcall uart_tx_char
+	lcall sys_putc
 	mov a, #LF
-	lcall uart_tx_char
+	lcall sys_putc
 	ret
 
 ; prints tab(s)
 printtab:
 	mov a, #TAB
-	lcall uart_tx_char
+	lcall sys_putc
 	ret
 
 ; prints space(s)
 printspc:
 	mov a, #' '
-	lcall uart_tx_char
+	lcall sys_putc
 	ret
 

@@ -73,96 +73,95 @@ Symbol Table
     TXD     =  0000B1 L   |     a       =  0000E0 L   |     a.0     =  0000E0 L
     a.1     =  0000E1 L   |     a.2     =  0000E2 L   |     a.3     =  0000E3 L
     a.4     =  0000E4 L   |     a.5     =  0000E5 L   |     a.6     =  0000E6 L
-    a.7     =  0000E7 L   |   1 a_short_   0003AE R   |     ac      =  0000D6 L
+    a.7     =  0000E7 L   |   1 a_short_   000367 R   |     ac      =  0000D6 L
     acc     =  0000E0 L   |     acc.0   =  0000E0 L   |     acc.1   =  0000E1 L
     acc.2   =  0000E2 L   |     acc.3   =  0000E3 L   |     acc.4   =  0000E4 L
     acc.5   =  0000E5 L   |     acc.6   =  0000E6 L   |     acc.7   =  0000E7 L
-  1 acc_txt    0004EB GR  |   1 app_tabl   000491 GR  |     b       =  0000F0 L
+  1 acc_txt    0004A4 GR  |   1 app_tabl   00044A GR  |     b       =  0000F0 L
     b.0     =  0000F0 L   |     b.1     =  0000F1 L   |     b.2     =  0000F2 L
     b.3     =  0000F3 L   |     b.4     =  0000F4 L   |     b.5     =  0000F5 L
-    b.6     =  0000F6 L   |     b.7     =  0000F7 L   |   1 b_txt      0004EF GR
-  1 call_cmd   000255 R   |   1 call_cmd   00025B R   |   1 call_cmd   00027E R
-  1 clear_cm   000112 R   |   1 clear_cm   000119 R   |   1 clear_tx   000374 GR
-  1 command_   000027 GR  |   1 commands   00002D R   |   1 copy_cmd   0001B2 R
-  1 copy_cmd   0001B8 R   |   1 copy_cmd   0001F4 R   |   1 copy_txt   000385 GR
+    b.6     =  0000F6 L   |     b.7     =  0000F7 L   |   1 b_txt      0004A8 GR
+  1 clear_cm   00010D R   |   1 clear_cm   000113 R   |   1 clear_tx   00032D GR
+  1 command_   000027 GR  |   1 commands   00002D R   |   1 copy_cmd   0001AA R
+  1 copy_cmd   0001AF R   |   1 copy_cmd   0001EB R   |   1 copy_txt   00033E GR
     cprl2   =  0000C8 L   |     ct2     =  0000C9 L   |     cy      =  0000D7 L
-    dph     =  000083 L   |     dpl     =  000082 L   |   1 dump_cmd   0000E3 R
-  1 dump_cmd   0000E9 R   |   1 dump_cmd   000106 R   |   1 dump_txt   00036F GR
+    dph     =  000083 L   |     dpl     =  000082 L   |   1 dump_cmd   0000DF R
+  1 dump_cmd   0000E4 R   |   1 dump_cmd   000101 R   |   1 dump_txt   000328 GR
     ea      =  0000AF L   |     es      =  0000AC L   |     et0     =  0000A9 L
     et1     =  0000AB L   |     et2     =  0000AD L   |     ex0     =  0000A8 L
     ex1     =  0000AA L   |     exen2   =  0000CB L   |     exf2    =  0000CE L
-    f0      =  0000D5 L   |   1 fill_cmd   000167 R   |   1 fill_cmd   00016D R
-  1 fill_cmd   00019E R   |   1 fill_txt   000380 GR  |   1 goto_cmd   00020A R
-  1 goto_cmd   000210 R   |   1 goto_cmd   000247 R   |   1 goto_txt   00038A GR
-  1 help_cmd   00002D R   |   1 help_cmd   000033 R   |   1 help_tab   000321 GR
-  1 help_txt   00035D GR  |     ie      =  0000A8 L   |     ie.0    =  0000A8 L
+    f0      =  0000D5 L   |   1 fill_cmd   000160 R   |   1 fill_cmd   000165 R
+  1 fill_cmd   000196 R   |   1 fill_txt   000339 GR  |   1 goto_cmd   000201 R
+  1 goto_cmd   000206 R   |   1 goto_cmd   00023D R   |   1 goto_txt   000343 GR
+  1 help_cmd   00002D R   |   1 help_cmd   000032 R   |   1 help_tab   0002DE GR
+  1 help_txt   000316 GR  |     ie      =  0000A8 L   |     ie.0    =  0000A8 L
     ie.1    =  0000A9 L   |     ie.2    =  0000AA L   |     ie.3    =  0000AB L
     ie.4    =  0000AC L   |     ie.5    =  0000AD L   |     ie.7    =  0000AF L
-    ie0     =  000089 L   |     ie1     =  00008B L   |   1 ie_txt     0004DE GR
+    ie0     =  000089 L   |     ie1     =  00008B L   |   1 ie_txt     000497 GR
     int0    =  0000B2 L   |     int1    =  0000B3 L   |     ip      =  0000B8 L
     ip.0    =  0000B8 L   |     ip.1    =  0000B9 L   |     ip.2    =  0000BA L
     ip.3    =  0000BB L   |     ip.4    =  0000BC L   |     ip.5    =  0000BD L
-  1 ip_txt     0004E4 GR  |   1 iram_cmd   00028C R   |   1 iram_cmd   000292 R
-  1 iram_txt   00038F GR  |     it0     =  000088 L   |     it1     =  00008A L
-    lcd_app    ****** GX  |   1 lcd_app_   00040A R   |   1 lcd_app_   000406 R
-  1 ls_cmd     000058 R   |   1 ls_cmd_d   00005C R   |   1 ls_txt     000362 GR
-  1 mem_test   0003DB R   |   1 mem_test   0003EF R   |   1 msg_err    00039E GR
+  1 ip_txt     00049D GR  |   1 iram_cmd   00024B R   |   1 iram_cmd   000250 R
+  1 iram_txt   000348 GR  |     it0     =  000088 L   |     it1     =  00008A L
+    lcd_app    ****** GX  |   1 lcd_app_   0003C3 R   |   1 lcd_app_   0003BF R
+  1 ls_cmd     000057 R   |   1 ls_cmd_d   00005A R   |   1 ls_txt     00031B GR
+  1 mem_test   000394 R   |   1 mem_test   0003A8 R   |   1 msg_err    000357 GR
   1 newline_   000024 GR  |     ov      =  0000D2 L   |     p       =  0000D0 L
     p0      =  000080 L   |     p0.0    =  000080 L   |     p0.1    =  000081 L
     p0.2    =  000082 L   |     p0.3    =  000083 L   |     p0.4    =  000084 L
     p0.5    =  000085 L   |     p0.6    =  000086 L   |     p0.7    =  000087 L
-  1 p0_txt     0004A9 GR  |     p1      =  000090 L   |     p1.0    =  000090 L
+  1 p0_txt     000462 GR  |     p1      =  000090 L   |     p1.0    =  000090 L
     p1.1    =  000091 L   |     p1.2    =  000092 L   |     p1.3    =  000093 L
     p1.4    =  000094 L   |     p1.5    =  000095 L   |     p1.6    =  000096 L
-    p1.7    =  000097 L   |   1 p1_txt     0004CE GR  |     p2      =  0000A0 L
+    p1.7    =  000097 L   |   1 p1_txt     000487 GR  |     p2      =  0000A0 L
     p2.0    =  0000A0 L   |     p2.1    =  0000A1 L   |     p2.2    =  0000A2 L
     p2.3    =  0000A3 L   |     p2.4    =  0000A4 L   |     p2.5    =  0000A5 L
-    p2.6    =  0000A6 L   |     p2.7    =  0000A7 L   |   1 p2_txt     0004DB GR
+    p2.6    =  0000A6 L   |     p2.7    =  0000A7 L   |   1 p2_txt     000494 GR
+    p3      =  0000B0 L   |     p3.0    =  0000B0 L   |     p3.1    =  0000B1 L
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 3
 Hexadecimal [24-Bits]
 
 Symbol Table
 
-    p3      =  0000B0 L   |     p3.0    =  0000B0 L   |     p3.1    =  0000B1 L
     p3.2    =  0000B2 L   |     p3.3    =  0000B3 L   |     p3.4    =  0000B4 L
     p3.5    =  0000B5 L   |     p3.6    =  0000B6 L   |     p3.7    =  0000B7 L
-  1 p3_txt     0004E1 GR  |     pcon    =  000087 L   |   1 pcon_txt   0004AF GR
-  1 peek_cmd   00007D R   |   1 peek_cmd   000083 R   |   1 peek_cmd   0000A1 R
-  1 peek_txt   000365 GR  |   1 poke_cmd   0000AF R   |   1 poke_cmd   0000B5 R
-  1 poke_cmd   0000D2 R   |   1 poke_txt   00036A GR  |     ps      =  0000BC L
+  1 p3_txt     00049A GR  |     pcon    =  000087 L   |   1 pcon_txt   000468 GR
+  1 peek_cmd   00007B R   |   1 peek_cmd   000080 R   |   1 peek_cmd   00009E R
+  1 peek_txt   00031E GR  |   1 poke_cmd   0000AC R   |   1 poke_cmd   0000B1 R
+  1 poke_cmd   0000CE R   |   1 poke_txt   000323 GR  |     ps      =  0000BC L
     psw     =  0000D0 L   |     psw.0   =  0000D0 L   |     psw.1   =  0000D1 L
     psw.2   =  0000D2 L   |     psw.3   =  0000D3 L   |     psw.4   =  0000D4 L
     psw.5   =  0000D5 L   |     psw.6   =  0000D6 L   |     psw.7   =  0000D7 L
-  1 psw_txt    0004E7 GR  |     pt0     =  0000B9 L   |     pt1     =  0000BB L
-    pt2     =  0000BD L   |     pwm_app    ****** GX  |   1 pwm_app_   000439 R
-  1 pwm_app_   000435 R   |     px0     =  0000B8 L   |     px1     =  0000BA L
+  1 psw_txt    0004A0 GR  |     pt0     =  0000B9 L   |     pt1     =  0000BB L
+    pt2     =  0000BD L   |     pwm_app    ****** GX  |   1 pwm_app_   0003F2 R
+  1 pwm_app_   0003EE R   |     px0     =  0000B8 L   |     px1     =  0000BA L
     rb8     =  00009A L   |     rcap2h  =  0000CB L   |     rcap2l  =  0000CA L
-    rclk    =  0000CD L   |     ren     =  00009C L   |   1 reset_cm   00013C R
-  1 reset_cm   000143 R   |   1 reset_tx   00037A GR  |     ri      =  000098 L
+    rclk    =  0000CD L   |     ren     =  00009C L   |   1 reset_cm   000136 R
+  1 reset_cm   00013C R   |   1 reset_tx   000333 GR  |     ri      =  000098 L
     rs0     =  0000D3 L   |     rs1     =  0000D4 L   |     rxd     =  0000B0 L
-    sbuf    =  000099 L   |   1 sbuf_txt   0004D6 GR  |     scon    =  000098 L
+    sbuf    =  000099 L   |   1 sbuf_txt   00048F GR  |     scon    =  000098 L
     scon.0  =  000098 L   |     scon.1  =  000099 L   |     scon.2  =  00009A L
     scon.3  =  00009B L   |     scon.4  =  00009C L   |     scon.5  =  00009D L
-    scon.6  =  00009E L   |     scon.7  =  00009F L   |   1 scon_txt   0004D1 GR
-  1 sfr_cmd    0002C5 R   |   1 sfr_cmd_   0002CA R   |   1 sfr_txt    000394 GR
+    scon.6  =  00009E L   |     scon.7  =  00009F L   |   1 scon_txt   00048A GR
+  1 sfr_cmd    000283 R   |   1 sfr_cmd_   000287 R   |   1 sfr_txt    00034D GR
     sm0     =  00009F L   |     sm1     =  00009E L   |     sm2     =  00009D L
-    sp      =  000081 L   |   1 sp_txt     0004AC R   |     t2con   =  0000C8 L
+    sp      =  000081 L   |   1 sp_txt     000465 R   |     t2con   =  0000C8 L
     t2con.0 =  0000C8 L   |     t2con.1 =  0000C9 L   |     t2con.2 =  0000CA L
     t2con.3 =  0000CB L   |     t2con.4 =  0000CC L   |     t2con.5 =  0000CD L
     t2con.6 =  0000CE L   |     t2con.7 =  0000CF L   |     tb8     =  00009B L
     tclk    =  0000CC L   |     tcon    =  000088 L   |     tcon.0  =  000088 L
     tcon.1  =  000089 L   |     tcon.2  =  00008A L   |     tcon.3  =  00008B L
     tcon.4  =  00008C L   |     tcon.5  =  00008D L   |     tcon.6  =  00008E L
-    tcon.7  =  00008F L   |   1 tcon_txt   0004B4 GR  |     tf0     =  00008D L
+    tcon.7  =  00008F L   |   1 tcon_txt   00046D GR  |     tf0     =  00008D L
     tf1     =  00008F L   |     tf2     =  0000CF L   |     th0     =  00008C L
-  1 th0_txt    0004C6 GR  |     th1     =  00008D L   |   1 th1_txt    0004CA GR
+  1 th0_txt    00047F GR  |     th1     =  00008D L   |   1 th1_txt    000483 GR
     th2     =  0000CD L   |     ti      =  000099 L   |   1 title_st   000000 GR
-    tl0     =  00008A L   |   1 tl0_txt    0004BE GR  |     tl1     =  00008B L
-  1 tl1_txt    0004C2 GR  |     tl2     =  0000CC L   |     tmod    =  000089 L
-  1 tmod_txt   0004B9 GR  |     tr0     =  00008C L   |     tr1     =  00008E L
+    tl0     =  00008A L   |   1 tl0_txt    000477 GR  |     tl1     =  00008B L
+  1 tl1_txt    00047B GR  |     tl2     =  0000CC L   |     tmod    =  000089 L
+  1 tmod_txt   000472 GR  |     tr0     =  00008C L   |     tr1     =  00008E L
     tr2     =  0000CA L   |     txd     =  0000B1 L   |     vt102_ap   ****** GX
-  1 vt102_ap   000466 R   |   1 vt102_ap   000460 R   |   1 write_cm   0002F3 R
-  1 write_cm   0002F9 R   |   1 write_cm   000311 R   |   1 write_tx   000398 GR
+  1 vt102_ap   00041F R   |   1 vt102_ap   000419 R   |   1 write_cm   0002B0 R
+  1 write_cm   0002B6 R   |   1 write_cm   0002CE R   |   1 write_tx   000351 GR
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Intel 8051)               Page 4
 Hexadecimal [24-Bits]
@@ -170,5 +169,5 @@ Hexadecimal [24-Bits]
 Area Table
 
    0 _CODE      size      0   flags    0
-   1 cseg       size    4F1   flags   20
+   1 CSEG       size    4AA   flags   20
 
