@@ -14,3 +14,7 @@
 ; <-- b: ascii equivalent of upper nibble
 ; <-- a: ascii equivalent of lower nibble
 .globl hex2asc
+
+.globl asc2byte
+
+.globl byte2asc

@@ -7,6 +7,7 @@
 .include "constants.inc"
 .include "cmd_line_parser.inc"
 .include "bios.inc"
+.include "uart.inc"
 
 .area CSEG (CODE)
 
@@ -550,12 +551,179 @@ do_unknown:
 	ret
 
 do_load:
+	lcall println
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	movx a, @dptr
+	push a
+	inc dptr
+	movx a, @dptr
+	pop 0xf0
+	lcall asc2byte
+	inc dptr
+	push dpl
+	push dph
+	mov dptr, #ihex_address
+	movx @dptr, a
+	pop dph
+	pop dpl
+	movx a, @dptr
+	push a
+	inc dptr
+	movx a, @dptr
+	pop 0xf0
+	lcall asc2byte
+	mov dptr, #(ihex_address+1)
+	movx @dptr, a
+dl_loop:
+	lcall sys_getc
+	cjne a, #':', dl_loop			; discard start of record character ':'
+	mov dptr, #ihex_checksum
+	mov a, #0x00
+	movx @dptr, a
+dl_record_length:					; read 2 ascii characters
+	lcall sys_getc					; read upper ascii nibble
+	push a							; backup upper nibble
+	lcall sys_getc					; read lower ascii nibble
+	pop 0xf0						; restore into b
+	lcall asc2byte					; convert b:a to byte
+	mov dptr, #ihex_record_length	; save to ihex_byte_count
+	movx @dptr, a
+	lcall dl_add_to_checksum
+dl_address:							; read 4 ascii characters
+	lcall sys_getc
+	push a
+	lcall sys_getc
+	pop 0xf0
+	lcall asc2byte
+	lcall dl_add_to_checksum
+	lcall sys_getc
+	push a
+	lcall sys_getc
+	pop 0xf0
+	lcall asc2byte
+	lcall dl_add_to_checksum
+dl_record_type:						
+	lcall sys_getc					; read 2 ascii characters
+	push a
+	lcall sys_getc
+	pop 0xf0
+	lcall asc2byte					; read record type
+	lcall dl_add_to_checksum
+	mov dptr, #ihex_record_type
+	movx @dptr, a
 
+	mov dptr, #ihex_record_length
+	movx a, @dptr
+	mov R7, a
+	jz dl_checksum
+dl_payload_loop:					; read 2 ascii characters on each iteration
+	lcall sys_getc
+	push a
+	lcall sys_getc
+	pop 0xf0
+	lcall asc2byte
+	push a							; save data byte
+	mov dptr, #ihex_address
+	movx a, @dptr					; read high byte of destination address
+	push a
+	inc dptr
+	movx a, @dptr					; read low byte of destination address
+	mov dpl, a
+	pop dph							; dptr points to destination address
+	pop a							; restore data from stack
+	movx @dptr, a					; write data to destination address
+	lcall dl_add_to_checksum
+	inc dptr
+	push dpl
+	push dph
+	mov dptr, #ihex_address
+	pop a
+	movx @dptr, a
+	inc dptr
+	pop a
+	movx @dptr, a
+	djnz R7, dl_payload_loop
+dl_checksum:						; read 2 ascii characters
+	lcall sys_getc
+	push a
+	lcall sys_getc
+	pop 0xf0
+	lcall asc2byte
+	lcall dl_add_to_checksum
+	mov dptr, #ihex_checksum
+	movx a, @dptr
+	jnz dl_checksum_error			; a contains the total checksum
+
+	mov a, #'.'
+	lcall sys_putc
+	sjmp dl_check_eof
+dl_checksum_error:
+	mov a, #'x'
+	lcall sys_putc
+dl_check_eof:
+	lcall printspc
+	mov dptr, #ihex_record_type
+	movx a, @dptr
+	jnz dl_exit
+	ljmp dl_loop
+dl_exit:
+	lcall println
 	ret
 	
+dl_add_to_checksum:
+	push a
+	push 0xf0
+	push dpl
+	push dph
+	mov b, a
+	mov dptr, #ihex_checksum
+	movx a, @dptr
+	add a, b
+	movx @dptr, a
+	pop dph
+	pop dpl
+	pop 0xf0
+	pop a
+
+	ret
+
+do_test:
+	lcall println
+	mov dptr, #hex_word
+	lcall cmd_line_parser_next_token
+	mov dptr, #hex_word
+	movx a, @dptr
+	push a
+	inc dptr
+	movx a, @dptr
+	pop 0xf0
+	lcall asc2byte
+	inc dptr
+	push dpl
+	push dph
+	mov dptr, #ihex_address
+	movx @dptr, a
+	pop dph
+	pop dpl
+	movx a, @dptr
+	push a
+	inc dptr
+	movx a, @dptr
+	pop 0xf0
+	lcall asc2byte
+	mov dptr, #(ihex_address+1)
+	movx @dptr, a
+	ret
+
 .area XSEG (XDATA)
 
-hex_word:		.ds			0x05
-hex_byte:		.ds			0x03
+hex_word:			.ds			0x05
+hex_byte:			.ds			0x03
+ihex_record_length:	.ds			0x01
+ihex_address:		.ds			0x02
+ihex_checksum:		.ds			0x01
+ihex_record_type:	.ds			0x01
 
 

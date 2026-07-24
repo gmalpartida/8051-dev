@@ -92,7 +92,7 @@ write_txt:
 	.asciz "write"
 
 msg_err:    
-	.asciz "Unknown Command"
+	.asciz "Invalid Command"
 
 a_short_text:
 	.asciz "The quick brown fox jumps over the lazy dog."

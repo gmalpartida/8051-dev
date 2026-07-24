@@ -8,9 +8,9 @@ uart_init:
     anl tmod, #0x0f					; Clear Timer 1 mode bits
     orl tmod, #0x20					; Set Timer 1 to Mode 2 (8-bit auto-reload)
     
-    ;mov th1, #0xff                 ; 57600 bps at 11.0592 MHz
-	mov th1, #0xfa					; 19200 bps
-	mov th1, #0xfd					; 9600 bps
+    mov th1, #0xff                 ; 57600 bps at 11.0592 MHz
+	;mov th1, #0xfa					; 19200 bps
+	;mov th1, #0xfd					; 9600 bps
     
     orl pcon, #0x80					; Set SMOD to 1 (Doubles the baud rate generation)
     
@@ -23,6 +23,10 @@ uart_init:
 	mov dptr, #uart_rx_buffer_head
 	movx @dptr, a
 	mov dptr,#uart_rx_buffer_tail
+	movx @dptr, a
+	mov dptr, #uart_rx_buffer_count
+	movx @dptr, a
+	mov dptr, #uart_rx_xoff_sent
 	movx @dptr, a
 
     ret
@@ -43,7 +47,7 @@ uart_rx_char:
 uart_rx_wait_loop:
 	mov dptr, #uart_rx_buffer_tail
 	movx a, @dptr						; read value of buffer tail
-	cjne a, b, uart_rx_process_char		; compare to buffer head, it not same then there is a char
+	cjne a, b, uart_rx_process_char		; compare to buffer head, if not the same then there is a char
 	sjmp uart_rx_wait_loop				; otherwise loop back and wait for char
 uart_rx_process_char:
 	; process char, store in a
@@ -61,8 +65,19 @@ uart_rx_char_skip_dph:
 	inc a
 	mov dptr, #uart_rx_buffer_head
 	movx @dptr, a		
-	pop acc								; restore retrieved char
+	mov dptr, #uart_rx_buffer_count
+	movx a, @dptr
+	dec a
+	movx @dptr, a
+	cjne a, #64, uart_rx_char_exit
+	mov dptr, #uart_rx_xoff_sent
+	movx a, @dptr
+	jz uart_rx_char_exit
+	mov sbuf, #0x011					; send xon
+	mov a, #0x00						; clear xoff sent flag
+	movx @dptr, a
 uart_rx_char_exit:
+	pop acc								; restore retrieved char
 	pop dph
 	pop dpl
 	ret
@@ -158,7 +173,6 @@ uart_rx_isr:
 uart_rx_handler:
 	clr ri
 	mov a, sbuf							; retrieve received character
-	;mov sbuf, a
 	mov b, a							; save it for later
 	mov dptr, #uart_rx_buffer_tail
 	movx a, @dptr						; get tail position
@@ -167,13 +181,23 @@ uart_rx_handler:
 	movx @dptr, a						; save it back
 	mov dptr, #uart_rx_buffer			; get address of rx buffer
 	mov a, r0							; restore buffer tail value
-	add a, dpl								; add buffer tail value to buffer address
+	add a, dpl							; add buffer tail value to buffer address
 	jnc uart_rx_isr_skip_dph
 	inc dph
 uart_rx_isr_skip_dph:
 	mov dpl, a
 	mov a, b							; restore character received
 	movx @dptr, a						; copy character to buffer
+	mov dptr, #uart_rx_buffer_count		; increment buffer count
+	movx a, @dptr
+	inc a
+	movx @dptr, a
+	cjne a, #192, uart_rx_isr_exit		; buffer is not quite full yet
+	mov a, #0x13						; send xoff
+	mov sbuf, a
+	mov dptr, #uart_rx_xoff_sent		; set xoff sent flag
+	mov a, #0x01
+	movx @dptr, a
 uart_rx_isr_exit:
 	pop acc
 	mov r0, a
@@ -202,4 +226,5 @@ uart_rx_buffer_size:
 uart_rx_buffer::		.ds		0x0100
 uart_rx_buffer_head::	.ds		0x01
 uart_rx_buffer_tail::	.ds		0x01
-
+uart_rx_buffer_count:	.ds		0x01
+uart_rx_xoff_sent:		.ds		0x01

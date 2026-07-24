@@ -32,3 +32,5 @@
 .globl do_load
 
 .globl do_reset
+
+.globl do_test

@@ -2,49 +2,37 @@
 
 .area CSEG (CODE)
 
-; Function: asc2bin
-; Input:  Accumulator (A) = ASCII character ('0'-'9', 'A'-'F')
-; Output: Accumulator (A) = Binary value (00h-0Fh)
-; Uses:   R0 (temporary storage)
-
-asc2nibble:
-    MOV R2, A         	; Store original character in R2
-    CLR C             	; Clear carry for subtraction
-    SUBB A, #0x30      	; Subtract 30h to handle '0'-'9'
-    
-    ; Check if result is > 9 (indicating it was likely 'A'-'F')
-    MOV R1, A         	; Temporary copy of intermediate result
-    CLR C
-    SUBB A, #0x0A      	; Subtract 10 (0Ah)
-    JNC IS_ALPHA      	; If no borrow (A >= 10), it's 'A'-'F'
-    
-    ; It's a digit '0'-'9'
-    MOV A, R1         	; Restore the '0'-'9' result
-    RET
-
-IS_ALPHA:
-    ; It's a letter 'A'-'F'
-    MOV A, R2         	; Start again with original ASCII char
-	anl a, #0b11011111	; convert to uppercase
-    SUBB A, #0x37      	; Subtract 37h to get binary 10-15
-    RET
-
-; converts a binary value to an ascii character
-; --> a: binary value to be converted
-; <-- a: ascii character 
+; =============================================================================
+; Function: nibble2asc
+; Input:  A = Binary value to be converted (0x00 - 0x0F)
+; Output: A = Lowercase ASCII character ('0'-'9', 'a'-'f')
+; =============================================================================
 nibble2asc:
-	clr c
-	mov r2, a
-	subb a, #0x0a
-	jc nibble2asc_is_digit
-	mov a, r2
-	add a, #0x37
-	orl a, #0b00100000	; convert to lowercase
-	ret
+    ; Compare A to 10. 
+    ; If A < 10, the Carry Flag (C) is automatically SET.
+    ; If A >= 10, the Carry Flag (C) is CLEARED.
+    cjne a, #10, check_range
+check_range:
+    jc nibble2asc_is_digit      ; If Carry is 1 (A < 10), it's a digit!
+
+    ; It's a letter ('a'-'f')
+    add a, #0x37                ; Convert to ascii
+	orl a, #0b00100000
+    ret
+
 nibble2asc_is_digit:
-	mov a, r2
-	add a, #0x30
-	ret
+    add a, #0x30                ; Convert to '0'-'9'
+    ret
+
+byte2asc:
+	mov b, a					; make a copy of a
+	swap a						; move upper nibble to lower nibble
+	anl a, #0x0f					; zero out upper nibble
+	lcall nibble2asc			; convert to ascii
+	xch a, b					; b contains ascii of upper nibble, a contains lower nibble
+	anl a, #0x0f					; zero out upper nibble
+	lcall nibble2asc
+	ret							; return b:a
 
 ; converts a hex value to ascii
 ; --> a: hex value
@@ -61,4 +49,34 @@ hex2asc:
 	lcall nibble2asc
 	ret
 
+asc2byte:
+	xch a, b						; mov high byte to a					
+	lcall asc2nibble				; convert to binary
+	swap a							; swap nibbles, binary value is in upper nibble
+	xch a, b						; mov low byte to a
+	lcall asc2nibble				; convert to binary
+	orl a, b						; combine high nibble and low nibble
+	ret
+; =============================================================================
+; Function: asc2nibble
+; Input:  Accumulator (A) = Lowercase ASCII character ('0'-'9', 'a'-'f')
+; Output: Accumulator (A) = Binary value (00h-0Fh)
+; Uses:   No stack, no external registers.
+; =============================================================================
+asc2nibble:
+    clr c
+    subb a, #0x30       ; Subtract 30h ('0' becomes 0, 'a' becomes 31h)
+    
+    ; Compare intermediate result with 10
+    cjne a, #10, check_alpha
+check_alpha:
+    jc asc2nibble_done  ; If A < 10, it is a digit '0'-'9'. Exit!
+
+    ; If we got here, it's a lowercase letter 'a'-'f' (sitting at 31h-36h)
+    clr c
+	orl a, #0b00100000	; convert to lowercase
+    subb a, #0x27       ; Subtract 27h to bridge the gap (31h - 27h = 0Ah)
+
+asc2nibble_done:
+    ret
 
