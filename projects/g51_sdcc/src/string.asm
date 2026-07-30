@@ -178,39 +178,54 @@ memcpy_c_loop:
 	ret
 
 ; initializes a memory block with a specific byte
-; --> r6, r7: address of memory block
-; --> r5: length of memory block
-; --> r4: byte to fill the block
-
+; --> dptr: address of memory block
+; --> r7:r6: length of memory block
+; --> r5: byte to fill the block
 memset:
-	mov dph, r6
-	mov dpl, r7
-memset_loop:
-	mov a, r4
-	movx @dptr, a
+	mov a, r6					; check for length = 0
+	orl a, r7
+	jz memset_exit				; both r6 and r7 are zero, exit
+
+	mov a, r5
+	movx @dptr, a				; copy next char
 	inc dptr
-	djnz r5, memset_loop
+	
+	dec r6
+	cjne r6, #0xff, memset_skip_dec_r7
+	dec r7
+memset_skip_dec_r7:
+	sjmp memset
+
+memset_exit:
 	ret
 
-
 ; moves a memory block from one location to another
-; --> r6, r7: address of source memory block
-; --> r4, r5: address of destination memory block
-; --> r3: how many bytes to move
+; --> dptr:		address of source memory block
+; --> r7:r6:	address of destination memory block
+; --> r5:r4:	how many bytes to copy
 memcpy:
-	mov dph, r6
-	mov dpl, r7
+	mov a, r4
+	orl a, r5
+	jz memcpy_exit
+
 	movx a, @dptr
 	inc dptr
-	mov r6, dph
-	mov r7, dpl
-	mov dph, r4
-	mov dpl, r5
+	push dpl
+	push dph
+	mov dph, r7
+	mov dpl, r6
 	movx @dptr, a
 	inc dptr
-	mov r4, dph
-	mov r5, dpl
-	djnz r3, memcpy
-
+	mov r7, dph
+	mov r6, dpl
+	pop dph
+	pop dpl
+	
+	dec r4
+	cjne r4, #0xff, memcpy_skip_dec_r5 
+	dec r5
+memcpy_skip_dec_r5:
+	sjmp memcpy
+memcpy_exit:
 	ret
 

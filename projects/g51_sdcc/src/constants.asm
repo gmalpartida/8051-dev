@@ -1,7 +1,49 @@
 .include "constants.inc"
 .include "apps.inc"
+.include "bios.inc"
+.include "ascii.inc"
+.include "conio.inc"
 
 .area CSEG (CODE)
+
+print_sfr_table:
+	mov dptr, #sfr_table
+print_sfr_table_loop:
+	clr a
+	movc a, @a + dptr			; sfr name
+	xch a, b
+	inc dptr
+	clr a
+	movc a, @a + dptr
+	push a
+	orl a, b					; last entry both bytes are 0
+	jz print_sfr_table_exit
+	pop a
+
+	push dpl
+	push dph
+	mov dpl, a
+	mov dph, b
+	lcall sys_puts
+	pop dph
+	pop dpl
+	inc dptr
+	clr a
+	movc a, @a + dptr
+	lcall byte2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	lcall println
+	inc dptr
+	sjmp print_sfr_table_loop
+	
+print_sfr_table_exit:
+	pop a
+	ret
+
 
 title_str: 
 	.db TAB, TAB, TAB
@@ -127,23 +169,71 @@ app_table:
 	.dw vt102_app_name, vt102_app_descr, vt102_app
 	.dw 0, 0, 0									; end of table
 
-p0_txt: 	.asciz	"P0"
-sp_txt: 	.asciz	"SP"
-pcon_txt:	.asciz	"PCON"
-tcon_txt:	.asciz	"TCON"
-tmod_txt:	.asciz	"TMOD"
-tl0_txt:	.asciz	"TL0"
-tl1_txt:	.asciz	"TL1"
-th0_txt:	.asciz	"TH0"
-th1_txt:	.asciz	"TH1"
-p1_txt:		.asciz	"P1"
-scon_txt:	.asciz	"SCON"
-sbuf_txt:	.asciz	"SBUF"
-p2_txt:		.asciz	"P2"
-ie_txt:		.asciz	"IE"
-p3_txt:		.asciz	"P3"
-ip_txt:		.asciz	"IP"
-psw_txt:	.asciz	"PSW"
-acc_txt:	.asciz	"ACC"
-b_txt:		.asciz	"B"
+p0_sfr: 	.asciz	"P0"
+sp_sfr: 	.asciz	"SP"
+pcon_sfr:	.asciz	"PCON"
+tcon_sfr:	.asciz	"TCON"
+tmod_sfr:	.asciz	"TMOD"
+tl0_sfr:	.asciz	"TL0"
+tl1_sfr:	.asciz	"TL1"
+th0_sfr:	.asciz	"TH0"
+th1_sfr:	.asciz	"TH1"
+p1_sfr:		.asciz	"P1"
+scon_sfr:	.asciz	"SCON"
+sbuf_sfr:	.asciz	"SBUF"
+p2_sfr:		.asciz	"P2"
+ie_sfr:		.asciz	"IE"
+p3_sfr:		.asciz	"P3"
+ip_sfr:		.asciz	"IP"
+psw_sfr:	.asciz	"PSW"
+acc_sfr:	.asciz	"ACC"
+b_sfr:		.asciz	"B"
+dpl_sfr:	.asciz	"DPL"
+dph_sfr:	.asciz	"DPH"
+
+sfr_table:
+	.dw		p0_sfr
+	.db		0x80
+	.dw		sp_sfr
+	.db		0x81
+	.dw		dpl_sfr
+	.db		0x82
+	.dw		dph_sfr
+	.db		0x83
+	.dw		pcon_sfr
+	.db		0x87
+	.dw		tcon_sfr
+	.db		0x88
+	.dw		tmod_sfr
+	.db		0x89
+	.dw		tl0_sfr
+	.db		0x8a
+	.dw		tl1_sfr
+	.db		0x8b
+	.dw		th0_sfr
+	.db		0x8c
+	.dw		th1_sfr
+	.db		0x8d
+	.dw		p1_sfr
+	.db		0x90
+	.dw		scon_sfr
+	.db		0x98
+	.dw		sbuf_sfr
+	.db		0x99
+	.dw		p2_sfr
+	.db		0xa0
+	.dw		ie_sfr
+	.db		0xa8
+	.dw		p3_sfr
+	.db		0xb0
+	.dw		ip_sfr
+	.db		0xb8
+	.dw		psw_sfr
+	.db		0xd0
+	.dw		acc_sfr
+	.db		0xe0
+	.dw		b_sfr
+	.db		0xf0
+	.dw		0x0000
+	.db		0x00
 

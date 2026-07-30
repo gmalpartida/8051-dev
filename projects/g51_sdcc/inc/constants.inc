@@ -11,24 +11,6 @@ DEL			.equ		0x7f
 .globl command_prompt_str
 .globl help_table
 .globl app_table
-.globl p0_txt
-.globl p1_txt
-.globl p2_txt
-.globl p3_txt
-.globl pcon_txt
-.globl psw_txt
-.globl ip_txt
-.globl ie_txt
-.globl tcon_txt
-.globl tmod_txt
-.globl tl0_txt
-.globl tl1_txt
-.globl th0_txt
-.globl th1_txt
-.globl scon_txt
-.globl sbuf_txt
-.globl acc_txt
-.globl b_txt
 .globl help_txt
 .globl ls_txt
 .globl peek_txt
@@ -43,3 +25,5 @@ DEL			.equ		0x7f
 .globl iram_txt
 .globl sfr_txt
 .globl msg_err
+
+.globl print_sfr_table

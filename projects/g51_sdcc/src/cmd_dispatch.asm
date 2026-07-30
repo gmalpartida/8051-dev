@@ -28,7 +28,7 @@ cmd_dispatcher_exec:
 
 	ret
 
-; finds a the entry for the specified command
+; finds the entry for the specified command
 ; --> R7:R6		address of command to find
 ; <-- dptr		address of entry for found command, otherwise address of unknow command entry
 ; <-- C			set if found, otherwise clear
@@ -160,5 +160,5 @@ cmd_dispatch_table:
 
 	.db			#0xff
 	.dw			#0x00
-	.dw			do_unknown
+	.dw			do_invalid
 

@@ -27,7 +27,7 @@
 
 .globl do_write
 
-.globl do_unknown
+.globl do_invalid
 
 .globl do_load
 

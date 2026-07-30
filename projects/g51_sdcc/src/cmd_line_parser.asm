@@ -19,12 +19,16 @@ cmd_line_parser_next_token:
 	; advance to current buffer position
 	lcall cmd_line_parser_set_cur_pos
 	lcall cmd_line_parser_skip_blanks
+	mov b, #0x00							; initialize token length counter
 clp_next_char:
 	movx a, @dptr							; read character from buffer
 	jz clp_next_token_exit					; if NULL then exit
 	cjne a, #' ', clp_next_token_process	
 	sjmp clp_next_token_exit				; if SPC then exit
 clp_next_token_process:
+	xch a, b
+	inc a
+	xch a, b
 	push dph								; save buffer address
 	push dpl
 	mov dph, R7								; restore destination address

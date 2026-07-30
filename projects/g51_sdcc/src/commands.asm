@@ -8,11 +8,16 @@
 .include "cmd_line_parser.inc"
 .include "bios.inc"
 .include "uart.inc"
+.include "math.inc"
 
 .area CSEG (CODE)
 
 do_help:
 	lcall println
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_help_err
 	mov dptr, #help_table
 do_help_loop:
 	clr a
@@ -54,11 +59,17 @@ do_help_loop:
 	inc dptr				; advance to next record in table
 	inc dptr
 	sjmp do_help_loop
+do_help_err:
+	lcall do_invalid
 do_help_exit:
 	ret
 
 do_ls:
 	lcall println
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_ls_err
 	mov dptr, #app_table
 do_ls_loop:
 	clr a
@@ -102,19 +113,30 @@ do_ls_loop:
 	inc dptr
 	inc dptr
 	sjmp do_ls_loop
-	
+do_ls_err:
+	lcall do_invalid
 do_ls_exit:
 	ret
 
 do_reset:
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_reset_err
 	lcall sys_reset
+do_reset_err:
+	lcall do_invalid
 	ret
 
 do_peek:
 	lcall println
 
 	mov dptr, #hex_word
-	lcall cmd_line_parser_next_token			; get hex address
+	lcall cmd_line_parser_next_token		; get hex address
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token		; read any trailing garbage
+	xch a, b								; check token length <> 0
+	jnz do_peek_err							; if any trailing garbage read then invalid command
 
 	mov dptr, #hex_word
 	lcall sys_puts_xram
@@ -137,7 +159,10 @@ do_peek:
 	lcall sys_putc
 	mov a, R0
 	lcall sys_putc
-
+	sjmp do_peek_exit
+do_peek_err:
+	lcall do_invalid	
+do_peek_exit:
 	lcall println
 	ret
 
@@ -148,6 +173,10 @@ do_poke:
 	lcall cmd_line_parser_next_token			; get hex address
 	mov dptr, #hex_byte
 	lcall cmd_line_parser_next_token
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_poke_err
 
 	mov dptr, #hex_word
 	lcall ahex2word								; address in b:a
@@ -169,13 +198,20 @@ do_poke:
 	lcall sys_putc
 	mov dptr, #hex_byte
 	lcall sys_puts_xram
-
+	sjmp do_poke_exit
+do_poke_err:
+	lcall do_invalid
+do_poke_exit:
 	ret
 
 do_dump:
 	lcall println
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_dump_err
 	mov dptr, #hex_word
 	lcall ahex2word								; address in b:a
 
@@ -222,9 +258,11 @@ row_data_loop:
 	djnz r0, row_data_loop
 	lcall println
 	djnz r1, do_dump_loop
-
+	sjmp do_dump_exit
+do_dump_err:
+	lcall do_invalid
+do_dump_exit:
 	ret
-
 
 print_dump_header:
 	mov r4, #0xff
@@ -250,27 +288,47 @@ do_fill:
 	lcall println
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token			; read address
-	mov dptr, #hex_byte
+	mov dptr, #hex_word
+	lcall ahex2word								; address in b:a
+	push 0xf0									; push b = high byte of address
+	push a										; push a = low byte of address
+
+	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token			; read length
-	mov dptr, #hex_byte
-	lcall ahex2byte
-	push a										; push length to stack
+	mov dptr, #hex_word
+	lcall ahex2word
+	push 0xf0									; push b = high byte of length
+	push a										; push a = low byte of length
 
 	mov dptr, #hex_byte
 	lcall cmd_line_parser_next_token			; read fill char
-	
 	mov dptr, #hex_byte
-	lcall ahex2byte								; convert fill char to binary
-	mov R4, a
+	lcall ahex2byte
+	push a										; push a = fill char
 
-	pop 0x05									; retrieve length from stack into R5
+	mov dptr, #cmd_line_input_temp				; check for trailing garbage
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_fill_err
+	
+	pop 0x05									; pop fill char into R5
+	
+	pop 0x06									; pop low byte of length
+	pop 0x07									; pop high byte of length
 
-	mov dptr, #hex_word							; convert address to binary
-	lcall ahex2word								; address in b:a
-	mov R6, b
-	mov R7, a
+	pop dpl										; pop low byte of address
+	pop dph										; pop high byte of address
+
 	lcall memset
-
+	sjmp do_fill_exit
+do_fill_err:
+	pop a										; cleanup stack if error
+	pop a
+	pop a
+	pop a
+	pop a
+	lcall do_invalid
+do_fill_exit:
 	ret
 
 ; copies a memory block from one location to another
@@ -291,17 +349,27 @@ do_copy:
 	push 0xf0
 	push a
 
-	mov dptr, #hex_byte
+	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
-	mov dptr, #hex_byte
-	lcall ahex2byte
-	mov R3, a
-	pop 0x05
-	pop 0x04
-	pop 0x07
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_copy_err
+
+	mov dptr, #hex_word
+	lcall ahex2word
+	mov R5, b
+	mov R4, a
 	pop 0x06
+	pop 0x07
+	pop dpl
+	pop dph
 
 	lcall memcpy
+	sjmp do_copy_exit
+do_copy_err:
+	lcall do_invalid
+do_copy_exit:
 	ret
 
 ; jumps to a memory address in program memory
@@ -309,17 +377,31 @@ do_goto:
 	lcall println
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_goto_err
 	mov dptr, #hex_word
 	lcall ahex2word
 
 	push a
 	push 0xf0
 	ret
+	
+	sjmp do_goto_exit
 
+do_goto_err:
+	lcall do_invalid
+do_goto_exit:
 	ret
 
 do_iram:
 	lcall println
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_iram_err
+
 	mov r7, #0x01
 	lcall printtab
 	acall print_dump_header
@@ -360,112 +442,25 @@ do_iram_col_loop:
 	djnz r6, do_iram_col_loop
 	lcall println
 	djnz r7, do_iram_row_loop
+	sjmp do_iram_exit
+do_iram_err:
+	lcall do_invalid
+do_iram_exit:
 	ret
 
 do_sfr:
 	lcall println
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jz do_sfr_no_err
+	ljmp do_sfr_err
+do_sfr_no_err:
+	lcall print_sfr_table
 
-	mov dptr, #p0_txt
-	mov a, p0
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #p1_txt
-
-	mov a, p1
-	acall print_sfr_reg
-	mov dptr, #p2_txt
-	mov r7, #1
-	lcall printtab
-
-	mov a, p2
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-
-	mov dptr, #p3_txt
-	mov a, p3
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-
-	lcall println
-
-	mov dptr, #pcon_txt
-	mov a, pcon
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	
-	mov dptr, #psw_txt
-	mov a, psw
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-
-	mov dptr, #ip_txt
-	mov a, ip
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-
-	mov dptr, #ie_txt
-	mov a, ie
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	lcall println
-
-	mov dptr, #tcon_txt
-	mov a, tcon
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #tmod_txt
-	mov a, tmod
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #tl0_txt
-	mov a, tl0
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #tl1_txt
-	mov a, tl1
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #th0_txt
-	mov a, th0
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #th1_txt
-	mov a, th1
-	acall print_sfr_reg
-	lcall println
-
-	mov dptr, #scon_txt
-	mov a, scon
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #sbuf_txt
-	mov a, sbuf
-	acall print_sfr_reg
-	lcall println
-
-	mov dptr, #acc_txt
-	acall print_sfr_reg
-	mov r7, #1
-	lcall printtab
-	mov dptr, #b_txt
-	mov a, b
-	acall print_sfr_reg
-	lcall println
-
-	lcall println
+do_sfr_err:
+	lcall do_invalid
+do_sfr_exit:
 	ret
 
 ; prints the contents of an sfr register
@@ -488,7 +483,15 @@ print_sfr_reg:
 	ret
 
 do_clear:
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_clear_err
 	lcall sys_clrscrn
+	sjmp do_clear_exit
+do_clear_err:
+	lcall do_invalid
+do_clear_exit:
 	ret
 
 do_write:
@@ -543,7 +546,7 @@ do_write_exit:
 	clr c
 	ret
 
-do_unknown:
+do_invalid:
 	lcall println
     mov dptr, #msg_err
     lcall sys_puts
@@ -554,6 +557,13 @@ do_load:
 	lcall println
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jz dl_no_err
+	ljmp dl_err
+dl_no_err:
+
 	mov dptr, #hex_word
 	movx a, @dptr
 	push a
@@ -668,6 +678,8 @@ dl_check_eof:
 	movx a, @dptr
 	jnz dl_exit
 	ljmp dl_loop
+dl_err:
+	lcall do_invalid
 dl_exit:
 	lcall println
 	ret
@@ -691,39 +703,36 @@ dl_add_to_checksum:
 
 do_test:
 	lcall println
-	mov dptr, #hex_word
-	lcall cmd_line_parser_next_token
-	mov dptr, #hex_word
-	movx a, @dptr
+	lcall rand_init
+
+	lcall get_seed
 	push a
-	inc dptr
-	movx a, @dptr
-	pop 0xf0
-	lcall asc2byte
-	inc dptr
-	push dpl
-	push dph
-	mov dptr, #ihex_address
-	movx @dptr, a
-	pop dph
-	pop dpl
-	movx a, @dptr
-	push a
-	inc dptr
-	movx a, @dptr
-	pop 0xf0
-	lcall asc2byte
-	mov dptr, #(ihex_address+1)
-	movx @dptr, a
+	xch a, b
+	lcall byte2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	pop a
+	lcall byte2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	lcall println
+
 	ret
 
 .area XSEG (XDATA)
 
-hex_word:			.ds			0x05
-hex_byte:			.ds			0x03
-ihex_record_length:	.ds			0x01
-ihex_address:		.ds			0x02
-ihex_checksum:		.ds			0x01
-ihex_record_type:	.ds			0x01
+hex_word:				.ds			0x10
+hex_byte:				.ds			0x10
+cmd_line_input_temp:	.ds			0x10
+ihex_record_length:		.ds			0x01
+ihex_address:			.ds			0x02
+ihex_checksum:			.ds			0x01
+ihex_record_type:		.ds			0x01
 
 
