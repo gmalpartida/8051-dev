@@ -222,8 +222,10 @@ uart_rx_buffer_size:
 	subb a, b
 	ret
 	
-.area XSEG (XDATA)
+.area XSEG_CMD_LINE_BUFFER (XDATA, PAG)
 uart_rx_buffer::		.ds		0x0100
+
+.area XSEG (XDATA)
 uart_rx_buffer_head::	.ds		0x01
 uart_rx_buffer_tail::	.ds		0x01
 uart_rx_buffer_count:	.ds		0x01

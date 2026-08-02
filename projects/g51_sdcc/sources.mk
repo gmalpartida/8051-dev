@@ -1,4 +1,5 @@
 SRCS=\
+	 src/sfr.asm\
 	 src/math.asm\
 	 src/bios.asm\
 	 src/cmd_line_parser.asm\

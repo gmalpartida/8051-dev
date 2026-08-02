@@ -103,8 +103,10 @@ cmd_line_parser_skip_blanks:
 clp_skip_blanks_exit:
 	ret
 
-.area XSEG (XDATA)
+.area XSEG_UART_BUFFER (XDATA, PAG)
 
 cmd_line_buffer:		.ds 0x0100
+
+.area XSEG (XDATA)
 cmd_line_buffer_pos:	.ds	0x01
 

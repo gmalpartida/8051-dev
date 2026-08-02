@@ -26,4 +26,3 @@ DEL			.equ		0x7f
 .globl sfr_txt
 .globl msg_err
 
-.globl print_sfr_table

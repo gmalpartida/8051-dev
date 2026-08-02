@@ -9,6 +9,7 @@
 .include "bios.inc"
 .include "uart.inc"
 .include "math.inc"
+.include "sfr.inc"
 
 .area CSEG (CODE)
 
@@ -171,6 +172,7 @@ do_poke:
 
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token			; get hex address
+
 	mov dptr, #hex_byte
 	lcall cmd_line_parser_next_token
 	mov dptr, #cmd_line_input_temp
@@ -457,29 +459,10 @@ do_sfr:
 	ljmp do_sfr_err
 do_sfr_no_err:
 	lcall print_sfr_table
-
+	sjmp do_sfr_exit
 do_sfr_err:
 	lcall do_invalid
 do_sfr_exit:
-	ret
-
-; prints the contents of an sfr register
-; --> dptr: address of register name
-; --> a: contents of register
-; <-- none
-print_sfr_reg:
-	push 0xe0					; save contents of a register
-	lcall sys_puts
-	mov a, #TAB
-	lcall sys_putc
-	pop 0xe0
-	lcall hex2asc
-	push 0xe0
-	mov a, b
-	lcall sys_putc
-	pop 0xe0
-	lcall sys_putc
-	
 	ret
 
 do_clear:
