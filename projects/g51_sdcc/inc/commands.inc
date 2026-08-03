@@ -33,4 +33,6 @@
 
 .globl do_reset
 
-.globl do_test
+.globl do_test_goto
+
+.globl do_test_rand

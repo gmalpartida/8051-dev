@@ -172,18 +172,21 @@ do_poke:
 
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token			; get hex address
-
-	mov dptr, #hex_byte
-	lcall cmd_line_parser_next_token
-	mov dptr, #cmd_line_input_temp
-	lcall cmd_line_parser_next_token
 	xch a, b
-	jnz do_poke_err
+	jz do_poke_invalid
 
 	mov dptr, #hex_word
-	lcall ahex2word								; address in b:a
-	push a										; save a
-	push 0xf0									; save b
+	lcall ahex2word
+	push a
+	push 0xf0
+	mov r0, #0x00
+
+do_poke_loop:
+	mov dptr, #hex_byte
+	lcall cmd_line_parser_next_token
+	xch a, b									; if length = 0, then exit
+	jz do_poke_exit
+	mov r0, #0x01
 
 	mov dptr, #hex_byte	
 	lcall ahex2byte
@@ -191,19 +194,18 @@ do_poke:
 	pop dph										; pop upper byte
 	pop dpl										; pop lower byte
 	movx @dptr, a
+	inc dptr
+	push dpl
+	push dph
 
-	mov dptr, #hex_word
-	lcall sys_puts_xram
-	mov a, #':'
-	lcall sys_putc
-	mov a, #' '
-	lcall sys_putc
-	mov dptr, #hex_byte
-	lcall sys_puts_xram
-	sjmp do_poke_exit
-do_poke_err:
+	sjmp do_poke_loop
+do_poke_invalid:
 	lcall do_invalid
+	ret
 do_poke_exit:
+	pop a
+	pop a
+	cjne r0, #0x01, do_poke_invalid
 	ret
 
 do_dump:
@@ -684,9 +686,8 @@ dl_add_to_checksum:
 
 	ret
 
-do_test:
+do_test_rand:
 	lcall println
-	lcall rand_init
 
 	lcall get_seed
 	push a
@@ -705,6 +706,37 @@ do_test:
 	lcall sys_putc
 
 	lcall println
+
+	mov r0, #0x55					; repeat 5 times
+do_test_rand_loop:
+	lcall rand
+
+	push a
+	xch a, b
+	lcall byte2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	pop a
+	lcall byte2asc
+	xch a, b
+	lcall sys_putc
+	xch a, b
+	lcall sys_putc
+
+	lcall println
+
+	djnz r0, do_test_rand_loop
+
+	ret
+
+do_test_goto:
+	mov dph, 0x08
+	mov dpl, 0xa5
+
+	lcall do_goto
 
 	ret
 

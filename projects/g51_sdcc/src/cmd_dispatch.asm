@@ -95,7 +95,8 @@ cmd_dispatch_goto:		.asciz			"goto"
 cmd_dispatch_iram:		.asciz			"iram"
 cmd_dispatch_sfr:		.asciz			"sfr"
 cmd_dispatch_write:		.asciz			"write"
-cmd_dispatch_test:		.asciz			"test"
+cmd_dispatch_test_rand:	.asciz			"test_rand"
+cmd_dispatch_test_goto:	.asciz			"test_goto"
 
 cmd_dispatch_table:
 	.db			#0x00
@@ -155,8 +156,12 @@ cmd_dispatch_table:
 	.dw			do_write
 
 	.db			#0x0e
-	.dw			cmd_dispatch_test
-	.dw			do_test
+	.dw			cmd_dispatch_test_rand
+	.dw			do_test_rand
+
+	.db			#0x0f
+	.dw			cmd_dispatch_test_goto
+	.dw			do_test_goto
 
 	.db			#0xff
 	.dw			#0x00
