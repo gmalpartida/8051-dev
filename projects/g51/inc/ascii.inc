@@ -12,12 +12,6 @@
 ; <-- a: ascii character 
 .globl nibble2ahex
 
-; converts a hex value to ascii
-; --> a: hex value
-; <-- b: ascii equivalent of upper nibble
-; <-- a: ascii equivalent of lower nibble
-.globl hex2ahex
-
 .globl asc2byte
 
 .globl byte2ahex

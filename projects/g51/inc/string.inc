@@ -16,6 +16,8 @@
 ; <-- r6,r7: address at which character was found, otherwise NULL
 .globl memchr
 
+.globl memcmp
+
 ; compares the first n bytes of two blocks of memory, one of which is in program memory
 ; --> r6, r7: 	address of block of memory in program memory
 ; --> r4, r5: 	address of block of memory in data memory

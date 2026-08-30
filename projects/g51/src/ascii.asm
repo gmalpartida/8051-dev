@@ -55,21 +55,6 @@ byte2ahex:
 	lcall nibble2ahex
 	ret							; return b:a
 
-; converts a hex value to ascii
-; --> a: hex value
-; <-- b: ascii equivalent of upper nibble
-; <-- a: ascii equivalent of lower nibble
-hex2ahex:
-	mov r7, a
-	swap a
-	anl a, #0x0f
-	lcall nibble2ahex
-	mov b, a
-	mov a, r7
-	anl a, #0x0f
-	lcall nibble2ahex
-	ret
-
 asc2byte:
 	xch a, b						; mov high byte to a					
 	lcall ahex2nibble				; convert to binary

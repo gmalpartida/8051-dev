@@ -45,30 +45,35 @@ print_hex_word:
 	lcall print_hex_byte				; print low byte
 	ret
 
-read_hex_nibble:
+get_hex_nibble:
 	lcall sys_getc
 	lcall ahex2nibble	
 	ret
 
-read_hex_byte:
-	lcall read_hex_nibble			; read high nibble into a
+get_hex_byte:
+	lcall get_hex_nibble			; read high nibble into a
 	push a							; save high nibble for later use
-	lcall read_hex_nibble			; read low nibble into a
+	lcall get_hex_nibble			; read low nibble into a
 	pop 0xf0						; retrieve high nibble
 	xch a, b						; process high nibble first
 	swap a							
 	orl a, b						; merge both nibbles into a
 	ret
 
-read_hex_word:
-	lcall read_hex_byte
+get_hex_word:
+	lcall get_hex_byte
 	push a
-	lcall read_hex_byte
+	lcall get_hex_byte
 	pop 0xf0
 
 	ret
 
-
-
-
+read_hex_byte:
+	movx a, @dptr								; read high nibble
+	push a
+	inc dptr
+	movx a, @dptr								; read low nibble
+	pop 0xf0									; restore high byte into b
+	lcall asc2byte								; convert to byte
+	ret
 

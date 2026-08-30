@@ -15,10 +15,12 @@
 
 .globl print_hex_word
 
-.globl read_hex_nibble
+.globl get_hex_nibble
+
+.globl get_hex_byte
+
+.globl get_hex_word
 
 .globl read_hex_byte
-
-.globl read_hex_word
 
 .endif

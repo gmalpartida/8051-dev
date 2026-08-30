@@ -17,9 +17,20 @@
 do_help:
 	lcall println
 
+	mov dptr, #cmd_line_input_temp
+	lcall cmd_line_parser_next_token
+	xch a, b
+	jnz do_help_err
+
 	lcall cmd_dispatch_print_table
 
+	sjmp do_help_exit
+
+do_help_err:
+	lcall do_invalid
+
 	lcall println
+do_help_exit:
 
 	ret
 
@@ -109,7 +120,7 @@ do_peek:
 	mov r6, #<mem_type
 	mov dptr, #rom_str
 	lcall strcmp
-	jc do_peek_rom
+	jc do_peek_rom_lbl
 
 	mov r7, #>mem_type
 	mov r6, #<mem_type
@@ -121,6 +132,7 @@ do_peek:
 
 do_peek_xram_lbl:
 	lcall do_peek_xram
+	jnc do_peek_err
 	sjmp do_peek_exit
 
 do_peek_iram_lbl:
@@ -129,6 +141,7 @@ do_peek_iram_lbl:
 
 do_peek_rom_lbl:
 	lcall do_peek_rom
+	jnc do_peek_err
 	sjmp do_peek_exit
 
 do_peek_sfr_lbl:
@@ -144,6 +157,8 @@ do_peek_exit:
 do_peek_rom:
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
+	xch a, b
+	jz dpr_err
 	mov dptr, #hex_word
 	lcall ahex2word							; address in b:a
 	push a									; save in stack because
@@ -152,22 +167,13 @@ do_peek_rom:
 	lcall cmd_line_parser_next_token		; get length
 	xch a, b
 	cjne a, #0x00, dpr_len_provided
-	mov dptr, #hex_word
-	mov a, #'0'
-	movx @dptr, a
-	inc dptr
-	mov a, #'1'
-	movx @dptr, a
-	inc dptr
-	mov a, #'0'
-	movx @dptr, a
-	inc dptr
-	movx @dptr, a
+	mov b, #0x01
+	mov a, #0x00
+	sjmp dpr_len_read
 dpr_len_provided:
-	pop 0x07								; restore into r7
-	pop 0x06								; restore into r6
 	mov dptr, #hex_word
 	lcall ahex2word							; length in b:a
+dpr_len_read:
 	mov r3, b
 	mov r2, a
 	lcall printtab
@@ -176,6 +182,8 @@ dpr_len_provided:
 	lcall println
 	mov r4, #0x10
 
+	pop 0x07
+	pop 0x06
 do_peek_rom_loop:
 	mov a, r2
 	orl a, r3
@@ -209,13 +217,18 @@ dpxl_rom_cont:
 	cjne r2, #0xff, do_peek_rom_loop
 	dec r3
 	sjmp do_peek_rom_loop
-
+dpr_err:
+	clr c
+	ret
 do_peek_rom_exit:
+	setb c
 	ret
 
 do_peek_xram:
 	mov dptr, #hex_word
 	lcall cmd_line_parser_next_token
+	xch a, b
+	jz dpx_err
 	mov dptr, #hex_word
 	lcall ahex2word							; address in b:a
 	push a
@@ -224,24 +237,14 @@ do_peek_xram:
 	lcall cmd_line_parser_next_token		; get length
 	xch a, b
 	cjne a, #0x00, len_provided
-	mov dptr, #hex_word
-	mov a, #'0'
-	movx @dptr, a
-	inc dptr
-	mov a, #'1'
-	movx @dptr, a
-	inc dptr
-	mov a, #'0'
-	inc dptr
-	movx @dptr, a
-	inc dptr
+	mov b, #0x01
 	mov a, #0x00
-	movx @dptr, a
+	sjmp dpx_len_read
+
 len_provided:
-	pop 0x07								; pop address into r7:r6
-	pop 0x06
 	mov dptr, #hex_word
 	lcall ahex2word							; length in b:a
+dpx_len_read:
 	mov r2, a
 	mov r3, b
 	lcall printtab
@@ -249,7 +252,8 @@ len_provided:
 	lcall do_print_header_block
 	lcall println
 	mov r4, #0x10
-
+	pop 0x07
+	pop 0x06
 do_peek_xram_loop:
 	mov a, r2
 	orl a, r3
@@ -282,8 +286,11 @@ dpxl_cont:
 	cjne r2, #0xff, do_peek_xram_loop
 	dec r3
 	sjmp do_peek_xram_loop
-
+dpx_err:
+	clr c
+	ret
 do_peek_xram_exit:
+	setb c
 	ret
 
 
@@ -421,7 +428,6 @@ do_fill:
 	xch a, b
 	inc dptr
 	movx a, @dptr
-	;lcall ahex2byte
 	lcall asc2byte
 	push a										; push a = fill char
 
@@ -605,41 +611,26 @@ do_load:
 	mov dptr, #hex_word							; read address
 	lcall cmd_line_parser_next_token
 	xch a, b
-	jnz dl_addr_provided
+	jnz dl_got_address
 	ljmp dl_err
-dl_addr_provided:
+dl_got_address:
 	mov dptr, #cmd_line_input_temp				; check for any unneeded input
 	lcall cmd_line_parser_next_token
 	xch a, b
-	jz dl_no_err
+	jz dl_no_more_params
 	ljmp dl_err
-dl_no_err:
-
+dl_no_more_params:
 	mov dptr, #hex_word							; contains the address
-	movx a, @dptr								; read high byte
-	push a
-	inc dptr
-	movx a, @dptr								; read low byte
-	pop 0xf0									; restore high byte into b
-	lcall asc2byte
+	lcall read_hex_byte
 	inc dptr
 	push dpl
 	push dph
 	mov dptr, #ihex_address
 	movx @dptr, a
-	mov dptr, #ihex_base_address
-	movx @dptr, a
 	pop dph
 	pop dpl
-	movx a, @dptr
-	push a
-	inc dptr
-	movx a, @dptr
-	pop 0xf0
-	lcall asc2byte
+	lcall read_hex_byte
 	mov dptr, #(ihex_address+1)					; ihex_address contains address where to load hex file
-	movx @dptr, a
-	mov dptr, #(ihex_base_address+1)			; ihex_base_address contains same address as ihex_address
 	movx @dptr, a
 
 dl_loop:
@@ -649,39 +640,17 @@ dl_loop:
 	mov a, #0x00
 	movx @dptr, a
 dl_record_length:					; read 2 ascii characters
-	lcall sys_getc					; read upper ascii nibble
-	push a							; backup upper nibble
-	lcall sys_getc					; read lower ascii nibble
-	pop 0xf0						; restore into b
-	lcall asc2byte					; convert b:a to byte
+	lcall get_hex_byte
 	mov dptr, #ihex_record_length	; save to ihex_byte_count
 	movx @dptr, a
 	lcall dl_add_to_checksum
 dl_address:							; read 4 ascii characters
-	lcall sys_getc
-	push a
-	lcall sys_getc
-	pop 0xf0
-	lcall asc2byte
-	push a
+	lcall get_hex_byte
 	lcall dl_add_to_checksum
-	lcall sys_getc
-	push a
-	lcall sys_getc
-	pop 0xf0
-	lcall asc2byte
-	push a
+	lcall get_hex_byte
 	lcall dl_add_to_checksum
-	pop a
-	pop 0xf0
-	mov dptr, #ihex_address
-	lcall dl_add_to_address
 dl_record_type:						
-	lcall sys_getc					; read 2 ascii characters
-	push a
-	lcall sys_getc
-	pop 0xf0
-	lcall asc2byte					; read record type
+	lcall get_hex_byte
 	lcall dl_add_to_checksum
 	mov dptr, #ihex_record_type
 	movx @dptr, a
@@ -691,11 +660,7 @@ dl_record_type:
 	mov R7, a
 	jz dl_checksum
 dl_payload_loop:					; read 2 ascii characters on each iteration
-	lcall sys_getc
-	push a
-	lcall sys_getc
-	pop 0xf0
-	lcall asc2byte
+	lcall get_hex_byte
 	push a							; save data byte
 	mov dptr, #ihex_address
 	movx a, @dptr					; read high byte of destination address
@@ -718,22 +683,11 @@ dl_payload_loop:					; read 2 ascii characters on each iteration
 	movx @dptr, a
 	djnz R7, dl_payload_loop
 dl_checksum:						; read 2 ascii characters
-	lcall sys_getc
-	push a
-	lcall sys_getc
-	pop 0xf0
-	lcall asc2byte
+	lcall get_hex_byte
 	lcall dl_add_to_checksum
 	mov dptr, #ihex_checksum
 	movx a, @dptr
-	jnz dl_checksum_error			; a contains the total checksum
-
-	mov a, #'.'
-	lcall sys_putc
-	sjmp dl_check_eof
-dl_checksum_error:
-	mov a, #'x'
-	lcall sys_putc
+	lcall dl_print_marker
 dl_check_eof:
 	lcall printspc
 	mov dptr, #ihex_record_type
@@ -746,6 +700,17 @@ dl_exit:
 	lcall println
 	ret
 	
+dl_print_marker:
+	jnz dl_error_marker			; a contains the total checksum
+	mov a, #'.'
+	lcall sys_putc
+	sjmp dl_print_marker_exit
+dl_error_marker:
+	mov a, #'x'
+	lcall sys_putc
+dl_print_marker_exit:
+	ret
+
 dl_add_to_checksum:
 	push a
 	push 0xf0
@@ -761,43 +726,6 @@ dl_add_to_checksum:
 	pop 0xf0
 	pop a
 
-	ret
-
-dl_add_to_address:
-	movx a, @dptr
-	mov r1, a
-	inc dptr
-	movx a, @dptr
-	mov r0, a
-
-	push dpl
-	push dph
-
-	mov dph, b
-	mov dpl, a
-
-	movx a, @dptr
-	mov r3, a
-	inc dptr
-	movx a, @dptr
-	
-	clr c
-	add a, r0
-	mov r4, a						; save result of adding low bytes
-
-	mov a, r3						; add high bytes + carry from previous 
-	addc a, r1
-
-	mov r5, a
-
-	mov dptr, #ihex_address
-	mov a, r4
-	movx @dptr, a
-
-	inc dptr
-	mov a, r5
-	movx @dptr, a
-	
 	ret
 
 do_print_header_block:
@@ -823,7 +751,7 @@ do_test:
 do_test_loop:
 	lcall println
 
-	lcall read_hex_word
+	lcall get_hex_word
 
 	push 0xf0
 	push a
@@ -835,7 +763,7 @@ do_test_loop:
 	lcall sys_putc
 	lcall printspc
 
-	lcall read_hex_word
+	lcall get_hex_word
 
 	push 0xf0
 	push a
@@ -875,5 +803,4 @@ ihex_record_length:		.ds			0x01
 ihex_address:			.ds			0x02
 ihex_checksum:			.ds			0x01
 ihex_record_type:		.ds			0x01
-ihex_base_address:		.ds			0x02
 
